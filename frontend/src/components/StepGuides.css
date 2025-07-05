@@ -1,13 +1,15 @@
-.content-steps{
-    display: flex;
-    background-color: #191A23;
-    color: white;
-    flex-direction: column;
-    text-align: center;
-    padding: 20px;
-    margin: 40px;
-    border-radius: 20px;
+.content-steps {
+  max-width: 1200px;
+  margin: 40px auto; /* <<< ตรงนี้ */
+  padding: 20px;
+  background-color: #191A23;
+  color: white;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
 }
+
 .content-steps h2{
     text-align: center;
 }
@@ -25,6 +27,77 @@ p{
     margin-bottom: 10px;
 }
 .step-item img{
+    max-width: 100px;
+    max-height: 100px;
+}
+
+@media only screen and (max-width: 320px) {
+  .content-steps{
+    display: flex;
+    background-color: #191A23;
+    color: white;
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+    margin: 40px;
+    border-radius: 20px;
+}
+
+.steps-grid{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.step-item img{
     width: 100px;
-    height: 100px;
+    height: auto;
+}
+}
+
+@media only screen and (max-width: 480px) {
+  .content-steps{
+    display: flex;
+    background-color: #191A23;
+    color: white;
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+    margin: 40px;
+    border-radius: 20px;
+}
+
+.steps-grid{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.step-item img{
+    width: 100px;
+    height: auto;
+}
+}
+@media only screen and (max-width: 600px) {
+  .content-steps{
+    display: flex;
+    background-color: #191A23;
+    color: white;
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+    margin: 40px;
+    border-radius: 20px;
+}
+
+.steps-grid{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.step-item img{
+    width: 100px;
+    height: auto;
+}
 }

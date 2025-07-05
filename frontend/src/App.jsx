@@ -1,16 +1,18 @@
-// import viteLogo from '/vite.svg'
-import Header from "./components/Header";
-import Content from "./components/content";
-import Footer from "./components/Footer"
-import './App.css'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+// import './App.css'
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import RegisterPage from "./pages/RegisterPage";
 
 function App() {
   return (
-    <div className="container">
-      <Header/>
-      <Content/>
-      <Footer/>
-    </div>
+    <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Home/>}/>
+      <Route path="/login" element={<Login/>}/>
+      <Route path="/register" element={<RegisterPage/>}/>
+    </Routes>
+    </BrowserRouter>
   )
 }
 

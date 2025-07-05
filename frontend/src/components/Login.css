@@ -1,0 +1,118 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  /* background-color: #f0f0f0; */
+  padding: 20px;
+  gap: 30px;
+}
+
+
+.login-content {
+  padding: 20px;
+  border-radius: 12px;
+  /* box-shadow: 0 4px 12px rgba(0,0,0,0.1); */
+  background-color: white;
+}
+
+
+/* <-------section LoginForm--------> */
+
+.login-title {
+  margin: 10px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.login-title h1 {
+  font-size: 24px;
+  text-align: center;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; 
+  margin-bottom: 16px;
+}
+
+
+.form-group input {
+  width: 300px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #8897ad;
+  background-color: #f8f8f8;
+}
+
+button {
+  width: 300px;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 10px;
+  border: none;
+}
+
+.form-group button {
+  background-color: #b9ff66;
+}
+
+.form-group button:hover {
+  background-color: #9ee644;
+  cursor: pointer;
+}
+
+/* <-------section social--------> */
+.social-login {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  align-items: center;
+}
+
+.google-btn{
+    background-color: #f8f8f8;
+}
+
+.facebook-btn{
+    background-color: #000;
+    color: white;
+}
+
+/* <------section Link---------> */
+.register-link{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* <------section Picture---------> */
+.picture-login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  height: 100%; 
+}
+
+.picture-login img {
+  width: 350px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.picture-login img:hover {
+  transform: scale(1.05);
+}

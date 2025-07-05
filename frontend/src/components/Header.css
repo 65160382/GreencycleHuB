@@ -1,27 +1,87 @@
-.header{
-    /* margin: 0px; */
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #FFFFFF;
-}
-.header h1{
-    font-size: 2rem;
-    color: #191A23;
-}
-button{
-    margin: 0 5px;
-    padding: 10px;
-    border-radius: 10px;
-    border: none;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    cursor: pointer;
-}
-.btn-login{
-    background-color: #B9FF66;
-}
-.btn-regis{
-    background-color: #F3F3F3;
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #ffffff;
 }
 
+.header h1 {
+  font-size: 2rem;
+  color: #191a23;
+}
+
+.nav-links {
+  display: flex;
+  gap: 8px;
+}
+
+/* ปุ่มพื้นฐาน */
+.nav-links button {
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.btn-login {
+  background-color: #b9ff66;
+}
+
+.btn-regis {
+  background-color: #f3f3f3;
+}
+
+.btn-login:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
+  transform: scale(1.02);
+  transition: all 0.2s ease;
+  text-decoration: underline;
+}
+
+.btn-regis:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
+  transform: scale(1.02);
+  transition: all 0.2s ease;
+  text-decoration: underline;
+}
+
+/* Responsive สำหรับมือถือ */
+@media only screen and (max-width: 320px) {
+  .header h1 {
+    font-size: 1.25rem;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    align-items: flex-end; /* ให้ปุ่มเรียงชิดขวา */
+  }
+
+  button {
+    font-size: 0.7rem;
+    padding: 7px;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .header {
+    display: flex;
+    flex-direction: row;
+    padding: 15px;
+  }
+  .header h1 {
+    font-size: 1.25rem;
+  }
+
+  .nav-links {
+    margin-right: 10px;
+  }
+
+  button {
+    font-size: 0.7rem;
+    padding: 7px;
+  }
+}

@@ -36,7 +36,7 @@ footer {
 
 .footer-links ul li a:hover {
     text-decoration: underline;
-} */
+} 
 
 .footer-contact p {
     margin: 5px 0;
@@ -56,4 +56,37 @@ footer {
     margin-top: 20px;
     padding-top: 10px;
     border-top: 1px solid #ddd;
+}
+
+@media only screen and (max-width: 320px) {
+  .footer-container {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+}
+}
+
+@media only screen and (max-width: 480px) {
+    .footer-container {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+}
+}
+
+@media only screen and (max-width: 600px) {
+    .footer-container {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+}
+}
+
+@media only screen and (max-width: 768px) {
+    .footer-container {
+    display: flex;
+    flex-direction: row;
+    font-size: 15px;
+    margin: auto;
+}
 }
