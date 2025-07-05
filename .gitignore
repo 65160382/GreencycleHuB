@@ -1,0 +1,71 @@
+# ===============================
+# Node.js
+# ===============================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+package-lock.json
+yarn.lock
+.env
+.env.*.local
+
+# ===============================
+# React
+# ===============================
+build/
+*.tsbuildinfo
+*.local
+*.cache
+*.log
+
+# Vite / Next.js / CRA
+dist/
+dist-ssr/
+.next/
+out/
+
+# ===============================
+# Docker
+# ===============================
+# Docker files & volumes
+.docker/
+docker-compose.override.yml
+*.pid
+
+# Docker bind mount cache
+tmp/
+*.pid
+*.seed
+*.sqlite
+*.db
+
+# ===============================
+# Logs
+# ===============================
+logs/
+*.log
+
+# ===============================
+# OS / Editor files
+# ===============================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+*.swp
+*.swo
+*.swn
+*.bak
+*.orig
+*.tmp
+
+# VSCode / JetBrains
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln

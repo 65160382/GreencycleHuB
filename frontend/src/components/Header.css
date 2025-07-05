@@ -1,0 +1,27 @@
+.header{
+    /* margin: 0px; */
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #FFFFFF;
+}
+.header h1{
+    font-size: 2rem;
+    color: #191A23;
+}
+button{
+    margin: 0 5px;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+.btn-login{
+    background-color: #B9FF66;
+}
+.btn-regis{
+    background-color: #F3F3F3;
+}
+
