@@ -33,9 +33,8 @@ services:
     ports:
       - "${PORT}:3000"
     volumes:
-      # - .:/usr/src/app # ระบุตำแหน่งโฟลเดอร์ที่เก็บโค้ด Node.js
       - .:/usr/src/app             # bind‑mount โค้ดทั้งหมดเข้ามา
-      - /usr/src/app/node_modules  # กันไม่ให้ node_modules ฝั่ง host ทับ
+      # - node_modules:/usr/src/app/node_modules  # กันไม่ให้ node_modules ฝั่ง host ทับ
     depends_on:
       - database
     environment:
@@ -44,20 +43,6 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
       - PORT=${PORT}
-    develop:
-      watch:
-        - action: sync # Sync ไฟล์ทุกครั้งที่มีการเปลี่ยนแปลงใน ./backend
-          path: ./backend # โฟลเดอร์จากเครื่องเรา (host)
-          target: /usr/src/app #  path ใน container ที่โค้ดไปอยู่ (WORKDIR ใน Dockerfile)
-          ignore:
-            - node_modules/
-            - .git/
-            - .env
-            - logs/
-            - coverage/
-        # Rebuild on package.json changes
-        - action: rebuild
-          path: ./backend/package.json
-
 volumes:
   mysql_data:
+  # node_modules:   # <<< เพิ่มบรรทัดนี้เพื่อแยก node_modules ออกมาเป็น volume
