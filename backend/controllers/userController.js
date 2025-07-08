@@ -1,9 +1,10 @@
 const User = require("../models/userModel");
+const Customer = require("../models/customerModel");
 
 exports.findUser = async (req, res) => {
   try {
-    const { email,password } = req.body;
-    const users = await User.findOne(email,password);
+    const { email, password } = req.body;
+    const users = await User.findOne(email, password);
     if (!users) {
       return res.status(404).json({ message: "ไม่พบ email นี้ในระบบ" });
     }
@@ -14,16 +15,25 @@ exports.findUser = async (req, res) => {
 };
 
 // fname,lname,email,password
-exports.insertUser = async (req, res) => {
+exports.registerUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const users = await User.register(email, password);
-    if (!users) {
-      return res.status(404).json({ message: "ไม่สามารถเพิ่มข้อมูลได้" });
+    const { email, password, firstname, lastname } = req.body;
+    //ตรวจสอบ email ซ้ำหรือไม่
+    const check = await User.checkEmailQuery(email);
+    if(check.length>0){
+      return res.status(409).json({ message: "อีเมลนี้มีในระบบแล้ว กรุณาใช้อีเมลอื่น!" });
     }
-    res.json(users);
-    console.log(users);
-    res.status(201).json({ message: "ลงทะเบียนสำเร็จ", userId: users.insertId }); // ✅ เพิ่ม response กลับให้ชัดเจน
+    // เพิ่มข้อมูลลงตาราง User
+    const userid = await User.createUser(email, password);
+    
+    // เพิ่มข้อมูลลงตาราง Customer
+    const result = await Customer.createCustomer(firstname,lastname,email,userid);
+    
+    if (result.affectedRows === 1) {
+      return res.status(201).json({ message: "ลงทะเบียนสำเร็จ!" });
+    } else {
+      return res.status(400).json({ message: "ไม่สามารถลงทะเบียนได้" });
+    }
   } catch (err) {
     res.status(500).json({ message: "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์" });
   }
