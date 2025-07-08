@@ -1,4 +1,4 @@
-// import "./content.css";
+// import "./Content.css";
 import Slideshow from "./Slideshow";
 import IntroSection from "./IntroSection";
 import StepGuides from "./StepGuides";

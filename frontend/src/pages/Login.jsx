@@ -1,6 +1,6 @@
-import LoginForm from "../components/LoginForm";
-import SociaclLogin from "../components/SocialLogin";
-import '../components/Login.css'
+import LoginForm from "../components/Loginpage/LoginForm";
+import SociaclLogin from "../components/Loginpage/SocialLogin";
+import '../components/Loginpage/Login.css'
 
 export default function Login() {
   return (
@@ -13,6 +13,7 @@ export default function Login() {
         <SociaclLogin/>
         <div className="register-link">
           <p>หากยังไม่มีบัญชี </p>
+          <a href="#">ลงทะเบียนเข้าสู่ระบบ</a>
         </div>
       </div>
       <div className="picture-login">
