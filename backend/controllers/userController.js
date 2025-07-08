@@ -1,5 +1,7 @@
 const User = require("../models/userModel");
 const Customer = require("../models/customerModel");
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 exports.loginUser = async (req, res) => {
   try {
@@ -11,17 +13,35 @@ exports.loginUser = async (req, res) => {
     const userPass = user[0];
     const match = await User.checkPassword(password,userPass)
 
-    if(match===true){
-      req.session.user = {
+    // if(match===true){
+    //   req.session.user = {
+    //     id: userPass.users_id,
+    //     email: userPass.users_email,
+    //     role: userPass.roles_id
+    //   };
+    //   console.log(req.session.user)
+    //   return res.status(200).json({ message: "เข้าสู่ระบบสำเร็จ!"});
+    // }
+
+    // return res.status(400).json({ message: "รหัสผ่านไม่ถูกต้อง" });
+
+    if(!match){
+      return res.status(400).json({ message: "รหัสผ่านไม่ถูกต้อง" });
+    }
+
+    const payload = {
+      user: {
         id: userPass.users_id,
         email: userPass.users_email,
         role: userPass.roles_id
-      };
-      console.log(req.session.user)
-      return res.status(200).json({ message: "เข้าสู่ระบบสำเร็จ!"});
+      }
     }
 
-    return res.status(400).json({ message: "รหัสผ่านไม่ถูกต้อง" });
+    jwt.sign(payload,process.env.JWT_SECRET,{expiresIn: process.env.JWT_EXPIRES_IN},(err,token)=>{
+      if(err) throw err; // ถ้ามี err ส่ง error ออกมา
+      res.json({token, payload}); // ส่ง token, payload ไปให้ user
+    });
+
   } catch (err) {
     res.status(500).json({ message: "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์" });
   }
