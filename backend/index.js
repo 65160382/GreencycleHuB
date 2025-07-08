@@ -2,11 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const session = require('express-session');
-require("dotenv").config();
-
 
 const app = express();
-const port = process.env.PORT;
+const port = 3000;
 
 const userRoutes = require("./routes/userRoutes");
 
@@ -21,7 +19,7 @@ app.use(session({ // เรียกใช้ session
 app.use(userRoutes);
 
 app.get("/", (req, res) => {
-  res.send("Hello Piyawat Seepattha");
+  res.send("Hello Piyawat ");
 });
 
 app.listen(port, () => {

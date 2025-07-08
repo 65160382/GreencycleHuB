@@ -1,20 +1,32 @@
 const User = require("../models/userModel");
 const Customer = require("../models/customerModel");
 
-exports.findUser = async (req, res) => {
+exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const users = await User.findOne(email, password);
-    if (!users) {
+    const user = await User.checkEmailQuery(email);
+    if(user.length===0) {
       return res.status(404).json({ message: "ไม่พบ email นี้ในระบบ" });
     }
-    res.json(users);
+    const userPass = user[0];
+    const match = await User.checkPassword(password,userPass)
+
+    if(match===true){
+      req.session.user = {
+        id: userPass.users_id,
+        email: userPass.users_email,
+        role: userPass.roles_id
+      };
+      console.log(req.session.user)
+      return res.status(200).json({ message: "เข้าสู่ระบบสำเร็จ!"});
+    }
+
+    return res.status(400).json({ message: "รหัสผ่านไม่ถูกต้อง" });
   } catch (err) {
     res.status(500).json({ message: "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์" });
   }
 };
 
-// fname,lname,email,password
 exports.registerUser = async (req, res) => {
   try {
     const { email, password, firstname, lastname } = req.body;

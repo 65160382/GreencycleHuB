@@ -2,11 +2,12 @@ const pool = require("../config/database");
 const bcrypt = require("bcryptjs");
 
 class User {
-  static async login(email, password) {
+  static async checkPassword(password,userPass) {
     try {
-      // return [results];
+      const match = bcrypt.compareSync(password,userPass.users_password);
+      return match;
     } catch (err) {
-      console.error("Error fetching users:", err);
+      console.error("Error check password:", err);
       throw err;
     }
   }
@@ -35,7 +36,7 @@ class User {
         email,
         hashedPassword,
       ]);
-      return result.insertId
+      return result.insertId;
     } catch (err) {
       console.error("Error execute user!", err);
       throw err;
