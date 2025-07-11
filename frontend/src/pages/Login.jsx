@@ -8,9 +8,10 @@ const Login = () => {
   // สร้าง state เพื่อเก็บข้อมูล
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // เรียกใช้ hook navigate สำหรับเปลี่ยนการแสดงผลของหน้าจอ
+  // เรียกใช้ hook navigate สำหรับเปลี่ยนการแสดงผลของหน้าจอ 
   const navigate = useNavigate(); 
 
+  
   const handleLogin = async () => {
     try {
      const response = await fetch('http://localhost:3000/api/login',{
