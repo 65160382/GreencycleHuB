@@ -1,8 +1,7 @@
 import LoginForm from "../components/Loginpage/LoginForm";
-import SociaclLogin from "../components/Loginpage/SocialLogin";
 import "../components/Loginpage/Login.css";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   // สร้าง state เพื่อเก็บข้อมูล
@@ -19,7 +18,8 @@ const Login = () => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({email: email,password: password})
+      credentials: 'include', // ส่ง cookies ไปด้วย
+      body: JSON.stringify({email: email,password: password}),
      });
 
      if(response.ok){
@@ -49,10 +49,9 @@ const Login = () => {
           onPasswordChange={setPassword} // ส่งฟังก์ชันเปลี่ยนค่า
           onSubmit={handleLogin}
         />
-        <SociaclLogin />
         <div className="register-link">
           <p>หากยังไม่มีบัญชี </p>
-          <a href="#">ลงทะเบียนเข้าสู่ระบบ</a>
+          <Link to={"/register"}>ลงทะเบียนเข้าสู่ระบบ</Link>
         </div>
       </div>
       <div className="picture-login">
