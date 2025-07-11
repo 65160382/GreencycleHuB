@@ -1,14 +1,14 @@
 import RegisterForm from "../components/Registerpage/RegisterForm";
-import '../components/Registerpage/Register.css'
+import "../components/Registerpage/Register.css";
 
-export default function RegisterPage() {
+const Register = () => {
   return (
     <div className="container">
       <div className="register-content">
         <div className="register-title">
           <h1>GreencycleHub</h1>
         </div>
-        <RegisterForm/>
+        <RegisterForm />
         <div className="login-link">
           <p>มีบัญชีผู้ใช้อยู่แล้ว </p>
           <a href="#">เข้าสู่ระบบ</a>
@@ -19,4 +19,6 @@ export default function RegisterPage() {
       </div>
     </div>
   );
-}
+};
+
+export default Register;

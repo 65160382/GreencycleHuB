@@ -4,7 +4,8 @@ import IntroSection from "./IntroSection";
 import StepGuides from "./StepGuides";
 import WastetypeCard from "./WastetypeCard";
 
-export default function Content() {
+
+const Content = () => {
   return (
     <div className="content">
       <Slideshow />
@@ -12,5 +13,7 @@ export default function Content() {
       <StepGuides/>
       <WastetypeCard/>
     </div>
-  );
+  )
 }
+
+export default Content

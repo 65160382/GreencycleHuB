@@ -13,18 +13,6 @@ exports.loginUser = async (req, res) => {
     const userPass = user[0];
     const match = await User.checkPassword(password,userPass)
 
-    // if(match===true){
-    //   req.session.user = {
-    //     id: userPass.users_id,
-    //     email: userPass.users_email,
-    //     role: userPass.roles_id
-    //   };
-    //   console.log(req.session.user)
-    //   return res.status(200).json({ message: "เข้าสู่ระบบสำเร็จ!"});
-    // }
-
-    // return res.status(400).json({ message: "รหัสผ่านไม่ถูกต้อง" });
-
     if(!match){
       return res.status(400).json({ message: "รหัสผ่านไม่ถูกต้อง" });
     }

@@ -1,12 +1,5 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-// exports.isAuthenticated =  (req, res, next) => {
-//     if(req.session.user){
-//         next();
-//     }else{
-//         return res.status(401).json({message: "กรุณาเข้าสู่ระบบกก่อน!"})
-//     }
-// }
 
 exports.auth = async (req, res, next) =>{
     try {

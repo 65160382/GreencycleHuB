@@ -1,14 +1,14 @@
 import "./Footer.css";
 
-export default function Footer() {
+const Footer = () => {
   return (
     <footer>
-      <div class="footer-container">
-        <div class="footer-logo">
+      <div className="footer-container">
+        <div className="footer-logo">
           <h2>GreencycleHub ♻️</h2>
           <p>เปลี่ยนขยะให้มีค่า เพื่อโลกที่ดีกว่า</p>
         </div>
-        <div class="footer-links">
+        <div className="footer-links">
           <h3>เมนูหลัก</h3>
           <ul>
             <li>
@@ -25,19 +25,21 @@ export default function Footer() {
             </li>
           </ul>
         </div>
-        <div class="footer-contact">
+        <div className="footer-contact">
           <h3>ติดต่อเรา</h3>
           <p>📍 ที่อยู่: ชลบุรี, ประเทศไทย</p>
           <p>📞 โทร: 02-123-4567</p>
           <p>📧 อีเมล: support@GreencycleHub.com</p>
         </div>
-        <div class="footer-social">
+        <div className="footer-social">
           <h3>ติดตามเรา</h3>
         </div>
       </div>
-      <div class="footer-bottom">
+      <div className="footer-bottom">
         <p>© 2025 GreencycleHub. All rights reserved.</p>
       </div>
     </footer>
-  );
+  )
 }
+
+export default Footer
