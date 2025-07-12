@@ -65,6 +65,11 @@ form {
   cursor: pointer;
 }
 
+.error-message {
+  color: red;
+  font-size: 14px;
+  /* margin-top: 5px; */
+}
 
 /* <------section Link---------> */
 .register-link {
