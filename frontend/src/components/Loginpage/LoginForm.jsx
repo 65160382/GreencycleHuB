@@ -1,12 +1,23 @@
-export default function LoginForm(){
-    return(
-        <form>
+
+// รับค่า state ที่ส่งมาจาก component แม่
+const LoginForm = ({email, password, onEmailChange, onPasswordChange, onSubmit}) => {
+  
+  // ฟังก์ชั่นจักการการส่งข้อมูลใน form
+  const handleSubmit =(e)=>{
+    e.preventDefault();
+    onSubmit();
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>อีเมล</label>
             <input
               type="email"
               className="email"
               placeholder="อีเมล"
+              value={email}
+              onChange={(e)=>onEmailChange(e.target.value)} //เมื่อมีการเปลี่ยนแปลงใน input จะเรียกใช้ฟังก์ onUsernamechange แล้วส่งค่าใน input.value ไปให้ 
               required
             ></input>
           </div>
@@ -16,6 +27,8 @@ export default function LoginForm(){
               type="password"
               className="password"
               placeholder="รหัสผ่าน"
+              value={password}
+              onChange={(e)=>onPasswordChange(e.target.value)}
               required
             ></input>
           </div>
@@ -23,5 +36,7 @@ export default function LoginForm(){
             <button type="submit">เข้าสู่ระบบ</button>
           </div>
         </form>
-    )
+  )
 }
+
+export default LoginForm
