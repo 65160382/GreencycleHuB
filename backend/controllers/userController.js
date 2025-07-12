@@ -7,14 +7,14 @@ exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.checkEmailQuery(email);
-    if(user.length===0) {
-      return res.status(404).json({ message: "ไม่พบ email นี้ในระบบ" });
+    if (user.length === 0) {
+      return res.status(404).json({ message: { email: "อีเมลของคุณไม่ถูกต้อง!"} });
     }
     const userPass = user[0];
     const match = await User.checkPassword(password,userPass)
 
-    if(!match){
-      return res.status(400).json({ message: "รหัสผ่านไม่ถูกต้อง" });
+    if (!match) {
+      return res.status(400).json({ message: { password: "รหัสผ่านไม่ถูกต้อง"}});
     }
 
     const payload = {
