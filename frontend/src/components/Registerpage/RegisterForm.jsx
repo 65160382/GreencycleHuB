@@ -1,25 +1,66 @@
-const RegisterForm = () => {
-  const formdata = [
-    { label: "ชื่อจริง", name: "firstname", type: "text", className: "firstname", placeholder: "ชื่อจริง" },
-    { label: "นามสกุล", name: "lastname", type: "text", className: "lastname", placeholder: "นามสกุล" },
-    { label: "อีเมล", name: "email", type: "email", className: "email", placeholder: "อีเมล" },
-    { label: "รหัสผ่าน", name: "password", type: "password", className: "password", placeholder: "รหัสผ่าน" }
-  ];
+const RegisterForm = ({
+  email,
+  password,
+  firstname,
+  lastname,
+  onEmailChange,
+  onPasswordChange,
+  onFirstnameChange,
+  onLastnameChange,
+  onSubmit,
+}) => {
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit();
+  };
 
   return (
-    <form>
-      {formdata.map((item, index) => (
-        <div className="form-group" key={index}>
-          <label>{item.label}</label>
-          <input
-            type={item.type}
-            name={item.name}
-            className={item.className}
-            placeholder={item.placeholder}
-            required
-          />
-        </div>
-      ))}
+    <form onSubmit={handleSubmit}>
+      <div className="form-group">
+        <label>ชื่อจริง</label>
+        <input
+          type="text"
+          className="firstname"
+          placeholder="ชื่อจริง"
+          value={firstname}
+          onChange={(e) => onFirstnameChange(e.target.value)}
+          required
+        />
+      </div>
+      <div className="form-group">
+        <label>นามสกุล</label>
+        <input
+          type="text"
+          className="lastname"
+          placeholder="นามสกุล"
+          value={lastname}
+          onChange={(e) => onLastnameChange(e.target.value)}
+          required
+        />
+      </div>
+      <div className="form-group">
+        <label>อีเมล</label>
+        <input
+          type="email"
+          className="email"
+          placeholder="อีเมล"
+          value={email}
+          onChange={(e) => onEmailChange(e.target.value)}
+          required
+        />
+      </div>
+      <div className="form-group">
+        <label>รหัสผ่าน</label>
+        <input
+          type="password"
+          className="password"
+          placeholder="รหัสผ่าน"
+          value={password}
+          onChange={(e) => onPasswordChange(e.target.value)}
+          required
+        />
+      </div>
 
       <div className="form-group">
         <button type="submit">ลงทะเบียนเข้าสู่ระบบ</button>
