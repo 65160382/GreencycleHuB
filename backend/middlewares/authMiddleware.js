@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
+// สร้าง token เวลาผู้ใช้ login หรือ register
 exports.createToken = (payload) => {
   try {
     const token = jwt.sign(
@@ -15,9 +16,11 @@ exports.createToken = (payload) => {
   }
 };
 
+// ตรวจสอบว่ามี token หรือไม่เป็นการตรวจสอบว่าผู้ใช้ login หรือไม่
 exports.auth = async (req, res, next) => {
   try {
-    const token = req.headers["authtoken"]; // token ที่ต้องส่งให้ Front-end
+    // const token = req.headers["authtoken"]; // token ที่ต้องส่งให้ Front-end
+    const token = req.cookies.token; // ตรวจสอบ token ใน cookies
     if (!token) {
       return res.status(401).json({ message: "ไม่มี Token!" });
     }

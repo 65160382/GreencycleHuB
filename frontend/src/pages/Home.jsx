@@ -1,14 +1,13 @@
-// import React from 'react'
-import Header from "../components/Guestpage/Header";
-import Footer from "../components/Guestpage/Footer";
+import Header from "../components/Core-UI/Header";
+import Footer from "../components/Core-UI/Footer";
 import Imagenav from "../components/Homepage/Imagenav";
 import Typewastenav from "../components/Homepage/typewastenav";
 import Amountnav from "../components/Homepage/Amountnav";
 
-export default function Home() {
+export default function Home({isLoggedIn}) {
   return (
     <div>
-      <Header />
+      <Header isLoggedIn={isLoggedIn}/>
       
       {/* ส่วนของแสดงสไลด์โชว์รูปภาพพร้อมมีข้อความแนะนำ */}
       <Imagenav />

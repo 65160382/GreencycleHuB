@@ -8,7 +8,8 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT;
 
-const userRoutes = require("./routes/userRoutes");
+// const userRoutes = require("./routes/userRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 // app.use(cors());
 app.use(cors({
@@ -19,7 +20,8 @@ app.use(cors({
 app.use(cookieParser());
 app.use(bodyParser.json());
 
-app.use("/api", userRoutes);
+app.use("/api", authRoutes);
+// app.use("/auth", authRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello Piyawat Seepattha");

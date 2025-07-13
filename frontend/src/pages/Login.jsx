@@ -3,7 +3,7 @@ import "../components/Loginpage/Login.css";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Login = ({setIsLoggedIn}) => {
   // สร้าง state เพื่อเก็บข้อมูล
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,7 +25,7 @@ const Login = () => {
      if(response.ok){
       // รอให้ response จาก fetch() ถูกแปลงจาก JSON string เป็น JavaScript object แล้วเก็บไว้ในตัวแปร data”
       const data = await response.json();
-      // console.log(data);
+      setIsLoggedIn(true) // อัปเดตสถานะทันทีหลัง login
       navigate("/home",{data});
      }else{
       // handleError();

@@ -1,6 +1,6 @@
-import Header from "../components/Guestpage/Header";
+import Header from "../components/Core-UI/Header";
 import Content from "../components/Guestpage/Content";
-import Footer from "../components/Guestpage/Footer";
+import Footer from "../components/Core-UI/Footer";
 
 export default function Guest() {
   return (

@@ -91,3 +91,7 @@ exports.registerUser = async (req, res) => {
     res.status(500).json({ message: "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์" });
   }
 };
+
+exports.checkAuth = async (req,res) =>{
+ return res.status(200).json({ user: req.user });
+};
