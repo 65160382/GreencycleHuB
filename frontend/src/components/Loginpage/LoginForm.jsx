@@ -15,33 +15,33 @@ const LoginForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} >
       <div className="form-group">
-        <label>อีเมล</label>
+        <label className="block text-gray-700 font-semibold mb-2">อีเมล</label>
         <input
           type="email"
-          className="email"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
           placeholder="อีเมล"
           value={email}
           onChange={(e) => onEmailChange(e.target.value)} //เมื่อมีการเปลี่ยนแปลงใน input จะเรียกใช้ฟังก์ onUsernamechange แล้วส่งค่าใน input.value ไปให้
           required
         ></input>
-        {error?.email && <p className="error-message">{error.email}</p>}
+        {error?.email && <p className="text-red-500 text-sm mt-1">{error.email}</p>}
       </div>
       <div className="form-group">
-        <label>รหัสผ่าน</label>
+        <label className="block text-gray-700 font-semibold mb-2">รหัสผ่าน</label>
         <input
           type="password"
-          className="password"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
           placeholder="รหัสผ่าน"
           value={password}
           onChange={(e) => onPasswordChange(e.target.value)}
           required
         ></input>
-        {error?.password && <p className="error-message">{error.password}</p>}
+        {error?.password && <p className="text-red-500 text-sm mt-1">{error.password}</p>}
       </div>
       <div className="form-group">
-        <button type="submit">เข้าสู่ระบบ</button>
+        <button  type="submit" className="w-full text-black py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200">เข้าสู่ระบบ</button>
       </div>
     </form>
   );

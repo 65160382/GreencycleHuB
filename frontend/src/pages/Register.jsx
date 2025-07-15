@@ -1,5 +1,5 @@
 import RegisterForm from "../components/Registerpage/RegisterForm";
-import "../components/Registerpage/Register.css";
+// import "../components/Registerpage/Register.css";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -37,11 +37,11 @@ const Register = () => {
   };
 
   return (
-    <div className="container">
-      <div className="register-content">
-        <div className="register-title">
-          <h1>GreencycleHub</h1>
-          <p>Register</p>
+    <div className="flex flex-col md:flex-row justify-center items-center min-h-screen p-5 gap-8">
+      <div className="p-6 rounded-xl w-full max-w-md">
+        <div className="mb-4 text-center">
+          <h1 className="text-2xl font-bold">GreencycleHub</h1>
+          <p className="text-base">Register</p>
         </div>
         <RegisterForm
           email={email}
@@ -54,13 +54,13 @@ const Register = () => {
           onLastnameChange={setLastname}
           onSubmit={handleRegister}
         />
-        <div className="login-link">
-          <p>มีบัญชีผู้ใช้อยู่แล้ว </p>
-          <Link to={"/login"}>เข้าสู่ระบบ</Link>
+        <div className="flex justify-center mt-5 gap-2 text-sm">
+          <p >มีบัญชีผู้ใช้อยู่แล้ว </p>
+          <Link to={"/login"} className="text-blue-500 hover:underline">เข้าสู่ระบบ</Link>
         </div>
       </div>
-      <div className="picture-register">
-        <img src="register-recycle-waste.jpg" alt="login-picture"></img>
+      <div className="hidden md:flex justify-center items-center p-2">
+        <img src="register-recycle-waste.jpg" alt="register-picture" className="w-[300px] lg:w-[350px] h-auto object-contain rounded-xl shadow-lg transition-transform duration-300 hover:scale-105"></img>
       </div>
     </div>
   );

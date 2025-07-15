@@ -1,4 +1,4 @@
-import "./WastetypeCard.css";
+// import "./WastetypeCard.css";
 
 export default function WastetypeCard() {
   const wasteTypes = [
@@ -38,14 +38,28 @@ export default function WastetypeCard() {
     },
   ];
   return (
-    <div className="container-card">
-      <h2>ประเภทขยะที่รับซื้อในระบบ</h2>
-      <div className="wastetype-card">
+    <div className="bg-gradient-to-br from-green-50 to-white p-6">
+      <h2 className="text-3xl font-bold ml-5 mb-5 py-5 text-green-800">
+        ประเภทขยะที่รับซื้อในระบบ
+      </h2>
+
+      <div className="flex flex-col gap-6">
         {wasteTypes.map((waste, index) => (
-          <div className="waste-card-item" key={index}>
-            <img src={waste.image} alt={waste.name}/>
-            <p className="head">{waste.name}</p>
-            <p className="des">{waste.description}</p>
+          <div
+            key={index}
+            className="flex flex-col sm:flex-row items-center gap-6 bg-white shadow-md rounded-xl p-5 border border-gray-200 hover:shadow-lg transition"
+          >
+            <img
+              src={waste.image}
+              alt={waste.name}
+              className="w-32 h-32 object-contain"
+            />
+            <div className="text-center sm:text-left">
+              <h3 className="text-xl font-semibold text-gray-800 mb-1">
+                {waste.name}
+              </h3>
+              <p className="text-gray-600 text-base">{waste.description}</p>
+            </div>
           </div>
         ))}
       </div>
