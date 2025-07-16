@@ -23,7 +23,7 @@ export default function IntroSection() {
         <img
           src="https://static.thairath.co.th/media/Dtbezn3nNUxytg04ajY5FY6LrRmAAcVkqkVMMPvLlMpwSo.jpg"
           alt="รีไซเคิล"
-          className="w-full max-w-md mx-auto"
+          className="w-full max-w-md mx-auto rounded-xl"
         />
       </div>
     </section>

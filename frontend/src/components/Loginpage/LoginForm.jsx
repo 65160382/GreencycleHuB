@@ -16,7 +16,7 @@ const LoginForm = ({
 
   return (
     <form onSubmit={handleSubmit} >
-      <div className="form-group">
+      <div className="p-2.5 ">
         <label className="block text-gray-700 font-semibold mb-2">อีเมล</label>
         <input
           type="email"
@@ -28,7 +28,7 @@ const LoginForm = ({
         ></input>
         {error?.email && <p className="text-red-500 text-sm mt-1">{error.email}</p>}
       </div>
-      <div className="form-group">
+      <div className="p-2.5">
         <label className="block text-gray-700 font-semibold mb-2">รหัสผ่าน</label>
         <input
           type="password"
@@ -40,8 +40,8 @@ const LoginForm = ({
         ></input>
         {error?.password && <p className="text-red-500 text-sm mt-1">{error.password}</p>}
       </div>
-      <div className="form-group">
-        <button  type="submit" className="w-full text-black py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200">เข้าสู่ระบบ</button>
+      <div className="flex p-2.5">
+        <button  type="submit" className="w-full bg-[#b9ff66] text-black py-2 px-4 rounded-lg transition-colors duration-200 hover:bg-[#a3e957]">เข้าสู่ระบบ</button>
       </div>
     </form>
   );

@@ -43,16 +43,18 @@ export default function WastetypeCard() {
         ประเภทขยะที่รับซื้อในระบบ
       </h2>
 
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-wrap gap-6">
         {wasteTypes.map((waste, index) => (
           <div
             key={index}
-            className="flex flex-col sm:flex-row items-center gap-6 bg-white shadow-md rounded-xl p-5 border border-gray-200 hover:shadow-lg transition"
+            // className="flex flex-col sm:flex-row items-center gap-6 bg-white shadow-md rounded-xl p-5 border border-gray-200 hover:shadow-lg transition"
+            className="flex-wrap max-w-[450px] border  justify-center items-center bg-white rounded-xl p-5"
           >
             <img
               src={waste.image}
               alt={waste.name}
-              className="w-32 h-32 object-contain"
+              // className="w-32 h-32 object-contain"
+              className="w-[400px] h-auto mb-2.5"
             />
             <div className="text-center sm:text-left">
               <h3 className="text-xl font-semibold text-gray-800 mb-1">
