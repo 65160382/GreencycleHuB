@@ -10,20 +10,13 @@ const RegisterForm = ({
   onSubmit,
 }) => {
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault(); // ป้องกันไม่ให้โหลดหน้าเว็บใหม่
     onSubmit();
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="max-w-md mx-auto bg-white p-8 rounded-xl shadow-md space-y-6"
-    >
-      <h2 className="text-2xl font-bold text-center text-gray-800">
-        สมัครสมาชิก
-      </h2>
-
-      <div>
+    <form onSubmit={handleSubmit}>
+      <div className="p-2.5 ">
         <label className="block text-gray-700 font-medium mb-1">ชื่อจริง</label>
         <input
           type="text"
@@ -35,7 +28,7 @@ const RegisterForm = ({
         />
       </div>
 
-      <div>
+      <div className="p-2.5 ">
         <label className="block text-gray-700 font-medium mb-1">นามสกุล</label>
         <input
           type="text"
@@ -47,7 +40,7 @@ const RegisterForm = ({
         />
       </div>
 
-      <div>
+      <div className="p-2.5 ">
         <label className="block text-gray-700 font-medium mb-1">อีเมล</label>
         <input
           type="email"
@@ -59,7 +52,7 @@ const RegisterForm = ({
         />
       </div>
 
-      <div>
+      <div className="p-2.5 ">
         <label className="block text-gray-700 font-medium mb-1">รหัสผ่าน</label>
         <input
           type="password"
@@ -71,10 +64,10 @@ const RegisterForm = ({
         />
       </div>
 
-      <div>
+      <div className="p-2.5 ">
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded-md font-semibold hover:bg-blue-600 transition duration-200"
+          className="w-full bg-[#b9ff66] text-black py-2 px-4 rounded-lg transition-colors duration-200 hover:bg-[#a3e957]"
         >
           ลงทะเบียนเข้าสู่ระบบ
         </button>

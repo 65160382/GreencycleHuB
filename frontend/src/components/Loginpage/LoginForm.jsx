@@ -20,7 +20,7 @@ const LoginForm = ({
         <label className="block text-gray-700 font-semibold mb-2">อีเมล</label>
         <input
           type="email"
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="อีเมล"
           value={email}
           onChange={(e) => onEmailChange(e.target.value)} //เมื่อมีการเปลี่ยนแปลงใน input จะเรียกใช้ฟังก์ onUsernamechange แล้วส่งค่าใน input.value ไปให้
@@ -32,7 +32,7 @@ const LoginForm = ({
         <label className="block text-gray-700 font-semibold mb-2">รหัสผ่าน</label>
         <input
           type="password"
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="รหัสผ่าน"
           value={password}
           onChange={(e) => onPasswordChange(e.target.value)}
