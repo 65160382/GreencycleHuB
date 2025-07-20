@@ -8,10 +8,9 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT;
 
-// const userRoutes = require("./routes/userRoutes");
 const authRoutes = require("./routes/authRoutes");
+const imageRoutes = require("./routes/imageRoutes");
 
-// app.use(cors());
 app.use(cors({
   origin: 'http://localhost:5173', // ระบุ origin เฉพาะ แทน '*'
   credentials: true // อนุญาตให้ส่ง cookies
@@ -21,7 +20,7 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 
 app.use("/api", authRoutes);
-// app.use("/auth", authRoutes);
+app.use("/api",imageRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello Piyawat Seepattha");
