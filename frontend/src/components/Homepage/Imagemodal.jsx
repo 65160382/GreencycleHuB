@@ -120,7 +120,7 @@ const Imagemodal = ({ isOpen, onClose }) => {
 
         {/* ปุ่มอัปโหลดไฟล์ */}
         <div className="flex justify-center">
-          <Uploadphoto />
+          <Uploadphoto image={image} />
         </div>
       </div>
     </div>
