@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Loading from "../Core-UI/Loading";
 
-export const Uploadphoto = ({ image }) => {
+export const Uploadphoto = ({ image, setPredictResult }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleUpload = async () => {
@@ -19,6 +19,7 @@ export const Uploadphoto = ({ image }) => {
       if (response.ok) {
         const data = await response.json();
         console.log("data:", data);
+        setPredictResult(data); //เก็บผลลัพธ์การวิเคราะห์ประเภทขยะ
       }
     } catch (error) {
       console.error("เกิดข้อผิดพลาด", error);
@@ -28,15 +29,25 @@ export const Uploadphoto = ({ image }) => {
   };
 
   return (
-    <div className="">
+    <>
       {isLoading && <Loading />}
-      <button
-        type="submit"
-        className="border p-2.5 w-auto m-2.5 rounded-xl bg-[#B9FF66] font-medium cursor-pointer"
-        onClick={handleUpload}
-      >
-        วิเคราะห์รูปภาพ
-      </button>
-    </div>
+      {image ? (
+        <button
+          type="submit"
+          className="w-[140px] px-4 py-2.5 bg-[#B9FF66] text-black font-medium rounded-xl shadow-md hover:bg-[#a7f054] focus:outline-none focus:ring-2 focus:ring-[#B9FF66]/60 transition-all duration-200"
+          onClick={handleUpload}
+        >
+          วิเคราะห์รูปภาพ
+        </button>
+      ) : (
+        <button
+          type="submit"
+          className="w-[140px] px-4 py-2.5 bg-[#F3F3F3] text-[#353637] font-medium rounded-xl shadow-md "
+          disabled={!image}
+        >
+          วิเคราะห์รูปภาพ
+        </button>
+      )}
+    </>
   );
 };

@@ -3,7 +3,6 @@ const Uploadfile = ({onFileSelect}) => {
   const handleOnChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-    //   setIsLoading(true);
       console.log("ไฟล์ที่เลือก:", file);
       onFileSelect(file);
     } else {

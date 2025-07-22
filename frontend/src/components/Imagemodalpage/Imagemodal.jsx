@@ -2,10 +2,16 @@ import { IoCloseCircle } from "react-icons/io5";
 import { Volume2, Camera, X } from "lucide-react";
 import Uploadfile from "./Uploadfile";
 import { Uploadphoto } from "./Uploadphoto";
+import Submitdata from "./Submitdata";
 import { useEffect, useState } from "react";
 
 const Imagemodal = ({ isOpen, onClose }) => {
   const [image, setImage] = useState(null);
+  // const [wasteType, setWasteType] = useState("");
+  const [weight,setWeight] = useState("");
+
+  // สร้าง state สำหรับเก็บผลลัพธ์การวิเคราะห์ประเภทขยะ
+  const [predictResult, setPredictResult] = useState(null);
 
   useEffect(() => {
     if (!isOpen) {
@@ -24,6 +30,8 @@ const Imagemodal = ({ isOpen, onClose }) => {
 
   const deleteFileSelect = async () => {
     setImage(null);
+    setWeight(""); 
+    setPredictResult(null); // ล้างผลลัพธ์การวิเคราะห์เมื่อมีการลบรูป
     console.log("ลบภาพที่เลือกแล้ว!");
   };
 
@@ -58,10 +66,11 @@ const Imagemodal = ({ isOpen, onClose }) => {
         </div>
 
         {/* ส่วนคำแนะนำ */}
-        <div className="flex flex-row gap-2.5 justify-center items-center border p-2.5 rounded-xl border-[#FFEAA7] bg-[#FFF3CD] shadow-sm">
+        <div className="flex flex-row gap-2.5  border p-2.5 rounded-xl border-[#FFEAA7] bg-[#FFF3CD] shadow-md">
           <Volume2 className="w-5 text-[#856404]" />
-          <p className="text-[#856404] ">
-            คำแนะนำ : กรุณาถ่ายรูปขยะ 1 ชิ้น เพื่อให้ระบบวิเคราะห์ประเภท
+          <p className="text-[#856404] text-base">
+            <strong>คำแนะนำ : </strong>กรุณาถ่ายรูปขยะ 1 ชิ้น
+            เพื่อให้ระบบวิเคราะห์ประเภท
             จากนั้นกรอกจำนวนขยะที่มีทั้งหมดเพื่อยืนยันจำนวน{" "}
           </p>
         </div>
@@ -119,9 +128,62 @@ const Imagemodal = ({ isOpen, onClose }) => {
         </div>
 
         {/* ปุ่มอัปโหลดไฟล์ */}
-        <div className="flex justify-center">
-          <Uploadphoto image={image} />
-        </div>
+        {!predictResult && (
+          <div className="flex justify-center">
+            <Uploadphoto image={image} setPredictResult={setPredictResult} />
+          </div>
+        )}
+
+        {/* แสดงผลลัพธ์การวิเคราะห์ประเภทขยะ */}
+        {predictResult && (
+          <>
+            <div className="border-2 border-[#349A2D] bg-[#F6FFE5] justify-center flex flex-col p-2.5 mt-4 mb-4 rounded-2xl max-w-md mx-auto">
+              <h1 className="text-[#349A2D] font-semibold ml-2.5">
+                ตรวจพบขยะประเภท : {predictResult.label}
+              </h1>
+              <p className="text-base ml-2.5">
+                ความน่าจะเป็น : {predictResult.probabilities}%
+              </p>
+            </div>
+
+            {/* แสดงประเภทขยะที่ตรวจพบแล้วนำข้อมูลตรงนี้ไปเก็บในฐานข้อมูล */}
+            {/* <div className="flex flex-col mt-2.5 mb-2.5 px-2.5 py-2.5 ">
+              <h1 className="font-medium mb-2.5">ประเภทของขยะรีไซเคิล 
+                <input type="text" className="" value={predictResult.label} readOnly />
+              </h1>
+              <p className="font-medium mt-2.5">
+                ความมั่นใจของระบบ {predictResult.probabilities}
+              </p>
+            </div> */}
+
+            {/* ส่วนคำแนะนำ */}
+            <div className="flex flex-row gap-2.5 border p-2.5 mt-4  rounded-xl border-[#FFEAA7] bg-[#FFF3CD] shadow-md">
+              <Volume2 className="w-5 text-[#856404]" />
+              <p className="text-[#856404] text-base">
+                <strong>คำแนะนำ : </strong>
+                ผู้ใช้กรุณาชัั่งน้ำหนักและกรอกน้ำหนักโดยรวมของขยะรีไซเคิลชนิดนี้
+              </p>
+            </div>
+
+            {/* ส่วนกรอกน้ำหนักขยะ */}
+            <div className="flex flex-row gap-2.5 mt-2.5 mb-2.5 items-center p-2 font-medium">
+              <p className="">จำนวนน้ำหนักของขยะรวมทั้งหมดที่ผู้ใช้มี</p>
+              <input
+                type="number"
+                step="0.1" //ทศนิยม 1 ตำแหน่ง
+                min="0" //ไม่ให้กรอกค่าติดลบ
+                className="border border-[#D4D7E3] bg-[#F7FBFF] text-[#353637] rounded-xl px-2.5 py-2 w-[210px]"
+                placeholder="กรอกน้ำหนักขยะของคุณ"
+                value={weight}
+                onChange={(e) => setWeight(e.target.value)} //อัปเดตค่าเมื่อมีการเปลี่ยนแปลง
+              ></input>
+              <p className="">กิโลกรัม</p>
+            </div>
+
+            {/* ปุ่มสำหรับบันทึกข้อมูลขยะที่ผู้ใช้กรอกน้ำหนักแล้ว */}
+            <Submitdata image={image} weight={weight} />
+          </>
+        )}
       </div>
     </div>
   );

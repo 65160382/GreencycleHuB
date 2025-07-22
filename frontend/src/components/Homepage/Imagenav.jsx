@@ -1,4 +1,4 @@
-import Imagemodal from "./Imagemodal";
+import Imagemodal from "../Imagemodalpage/Imagemodal";
 import { TbZoomScan } from "react-icons/tb";
 import { useState } from "react";
 //    {/* ส่วนของแสดงสไลด์โชว์รูปภาพพร้อมมีข้อความแนะนำ */}
