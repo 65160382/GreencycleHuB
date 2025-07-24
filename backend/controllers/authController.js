@@ -18,6 +18,8 @@ exports.loginUser = async (req, res) => {
       return res.status(400).json({ message: { password: "รหัสผ่านไม่ถูกต้อง"}});
     }
 
+    // เรียกใช้ api ที่ join userid --> table customer เพื่อ เอาค่า cus_id
+
     const payload = {
       user: {
         id: userPass.users_id,
@@ -63,6 +65,8 @@ exports.registerUser = async (req, res) => {
       email,
       userid
     );
+
+    // เรียกใช้ api ที่ join userid --> table customer เพื่อ เอาค่า cus_id 
 
     if (result.affectedRows === 1) {
       const payload = {

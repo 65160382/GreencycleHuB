@@ -27,6 +27,7 @@ exports.auth = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET); //ตรวจสอบ Token
     req.user = decoded; // ส่งข้อมูลไปเก็บไว้ในตัวแปร req.user
+    console.log(req.user);
     next();
   } catch (error) {
     console.log(error);

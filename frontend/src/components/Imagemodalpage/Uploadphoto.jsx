@@ -14,6 +14,7 @@ export const Uploadphoto = ({ image, setPredictResult }) => {
       const response = await fetch("http://localhost:3000/api/predict", {
         method: "POST",
         body: formData, //ส่งข้อมูลรูปภาพไปยัง api
+        credentials: "include",
       });
 
       if (response.ok) {
