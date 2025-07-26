@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 const Imagemodal = ({ isOpen, onClose }) => {
   const [image, setImage] = useState(null);
-  // const [wasteType, setWasteType] = useState("");
+  const [wasteType, setWasteType] = useState("");
   const [weight,setWeight] = useState("");
 
   // สร้าง state สำหรับเก็บผลลัพธ์การวิเคราะห์ประเภทขยะ
@@ -16,6 +16,7 @@ const Imagemodal = ({ isOpen, onClose }) => {
   useEffect(() => {
     if (!isOpen) {
       deleteFileSelect(); // ลบรูปเมื่อปิด modal
+      setWasteType(""); // ล้างค่าผลลัพธ์ที่ predict มา
     }
   }, [isOpen]);
 
@@ -146,16 +147,6 @@ const Imagemodal = ({ isOpen, onClose }) => {
               </p>
             </div>
 
-            {/* แสดงประเภทขยะที่ตรวจพบแล้วนำข้อมูลตรงนี้ไปเก็บในฐานข้อมูล */}
-            {/* <div className="flex flex-col mt-2.5 mb-2.5 px-2.5 py-2.5 ">
-              <h1 className="font-medium mb-2.5">ประเภทของขยะรีไซเคิล 
-                <input type="text" className="" value={predictResult.label} readOnly />
-              </h1>
-              <p className="font-medium mt-2.5">
-                ความมั่นใจของระบบ {predictResult.probabilities}
-              </p>
-            </div> */}
-
             {/* ส่วนคำแนะนำ */}
             <div className="flex flex-row gap-2.5 border p-2.5 mt-4  rounded-xl border-[#FFEAA7] bg-[#FFF3CD] shadow-md">
               <Volume2 className="w-5 text-[#856404]" />
@@ -181,7 +172,7 @@ const Imagemodal = ({ isOpen, onClose }) => {
             </div>
 
             {/* ปุ่มสำหรับบันทึกข้อมูลขยะที่ผู้ใช้กรอกน้ำหนักแล้ว */}
-            <Submitdata image={image} weight={weight} />
+            <Submitdata image={image} weight={weight} wasteType={predictResult.label} />
           </>
         )}
       </div>

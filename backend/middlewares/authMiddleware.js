@@ -4,11 +4,7 @@ require("dotenv").config();
 // สร้าง token เวลาผู้ใช้ login หรือ register
 exports.createToken = (payload) => {
   try {
-    const token = jwt.sign(
-      payload, 
-      process.env.JWT_SECRET, 
-      { expiresIn: process.env.JWT_EXPIRES_IN }
-    );
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
     return token;
     }catch (error) {
     console.log(error);
@@ -27,7 +23,7 @@ exports.auth = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET); //ตรวจสอบ Token
     req.user = decoded; // ส่งข้อมูลไปเก็บไว้ในตัวแปร req.user
-    console.log(req.user);
+    // console.log(req.user);
     next();
   } catch (error) {
     console.log(error);

@@ -1,31 +1,37 @@
 const User = require("../models/userModel");
 const Customer = require("../models/customerModel");
-const jwt = require("jsonwebtoken");
 const { createToken } = require("../middlewares/authMiddleware");
 require("dotenv").config();
 
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.checkEmailQuery(email);
-    if (user.length === 0) {
-      return res.status(404).json({ message: { email: "อีเมลของคุณไม่ถูกต้อง!"} });
+    const [user] = await User.checkEmailQuery(email);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: { email: "อีเมลของคุณไม่ถูกต้อง!" } });
     }
-    const userPass = user[0];
-    const match = await User.checkPassword(password, userPass);
 
+    const match = await User.checkPassword(password, user);
     if (!match) {
-      return res.status(400).json({ message: { password: "รหัสผ่านไม่ถูกต้อง"}});
+      return res
+        .status(400)
+        .json({ message: { password: "รหัสผ่านไม่ถูกต้อง" } });
     }
 
-    // เรียกใช้ api ที่ join userid --> table customer เพื่อ เอาค่า cus_id
+    //ดึงข้อมูลจาก user พร้อมเปลี่ยนชื่อ users_id --> uid
+    const { users_id: uid, users_email, roles_id } = user;
+    // ดึงข้อมูล customer ตาม user_id
+    const [customer] = await Customer.getCustomer(uid);
+
+    const { cus_id: customerid } = customer;
 
     const payload = {
-      user: {
-        id: userPass.users_id,
-        email: userPass.users_email,
-        role: userPass.roles_id,
-      },
+      id: uid,
+      email: users_email,
+      role: roles_id,
+      cus_id: customerid, //เก็บค่า cus_id
     };
 
     // เรียกใช้ฟังก์ชั่น createToken
@@ -39,7 +45,7 @@ exports.loginUser = async (req, res) => {
       maxAge: 3000000,
     });
 
-    res.json({ payload }); // ส่ง payload ไปให้ user
+    res.json({ payload }); // ส่ง payload ไปให้ react
   } catch (err) {
     res.status(500).json({ message: "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์" });
   }
@@ -59,21 +65,19 @@ exports.registerUser = async (req, res) => {
     const userid = await User.createUser(email, password);
 
     // เพิ่มข้อมูลลงตาราง Customer
-    const result = await Customer.createCustomer(
+    const cusId = await Customer.createCustomer(
       firstname,
       lastname,
       email,
       userid
     );
 
-    // เรียกใช้ api ที่ join userid --> table customer เพื่อ เอาค่า cus_id 
-
-    if (result.affectedRows === 1) {
+    // ส่งค่า customerid ไป ใส่ไว้ใน token เมื่อผู้ใช้สมัครสมาชิก
+    if (cusId) {
       const payload = {
-        user: {
-          id: userid,
-          email: email,
-        },
+        id: userid,
+        email: email,
+        cus_id: cusId,
       };
 
       // เรียกใช้ฟังก์ชั่น createToken
@@ -87,7 +91,10 @@ exports.registerUser = async (req, res) => {
         maxAge: 3000000,
       });
 
-      return res.status(201).json({ message: "ลงทะเบียนสำเร็จ!" }, { payload });
+      return res.status(201).json({
+        message: "ลงทะเบียนสำเร็จ!",
+        payload,
+      });
     } else {
       return res.status(400).json({ message: "ไม่สามารถลงทะเบียนได้" });
     }
@@ -96,6 +103,6 @@ exports.registerUser = async (req, res) => {
   }
 };
 
-exports.checkAuth = async (req,res) =>{
- return res.status(200).json({ user: req.user });
+exports.checkAuth = async (req, res) => {
+  return res.status(200).json({ user: req.user });
 };

@@ -2,6 +2,8 @@ const tf = require("@tensorflow/tfjs");
 const jpeg = require("jpeg-js"); // ใช้ jpeg-js เพื่อ decode ไฟล์ JPEG เป็น pixel data (RGB)
 const URL = "https://teachablemachine.withgoogle.com/models/t2DhazXW-/"; // import model techablemahine
 const cloudinary = require("../config/cloudinary");
+const WasteCollection = require("../models/wasteCollectionModel");
+const RecycleType = require("../models/recycleTypeModel");
 
 // ตัวแปรเก็บโมเดล (global)
 let model = null;
@@ -39,7 +41,14 @@ exports.predictImage = async (req, res) => {
     const prediction = Array.from(predictionData); // แปลงเป็น Array ปกติ
 
     // สร้าง array ของ label:
-    const labels = ["pet", "hdpe", "can", "glass", "card", "Non-recyclable"];
+    const labels = [
+      "Plastic-PET",
+      "Plastic-HDPE",
+      "Can",
+      "BottleGlass",
+      "Card-box",
+      "Non-recyclable",
+    ];
 
     //  หาค่า index ที่มีค่าความน่าจะเป็นสูงสุด
     const maxIndex = prediction.indexOf(Math.max(...prediction));
@@ -79,18 +88,45 @@ exports.uploadImage = async (req, res) => {
       folder: "Recycle-collect",
     });
 
-    // res.status(200).json(result);
     const public_id = result.public_id; // เก็บข้อมูล public_id
-    console.log(public_id);
     const secure_url = result.secure_url; // เก็บข้อมูล secure_url
-    console.log(secure_url);
+    res.status(200).json({ public_id, secure_url }); // ส่ง public_id , secure_url ไปให้ react
   } catch (error) {
     console.error("อัปโหลดไม่สำเร็จ:", error);
     res.status(500).json({ message: "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์" });
   }
 };
 
- // เรียกใช้ api ที่อัพเดตตาราง waste_collection (public url ใน cloudinary , wasteType , weight , cus_id = ?)
+// เรียกใช้ api ที่อัพเดตตาราง waste_collection (public url ใน cloudinary , wasteType , weight , cus_id = ?)
+exports.createWasteCollection = async (req, res) => {
+  try {
+    // รับค่า public_id, secure_url, wastetype, weight
+    const { public_id, secure_url, waste_type, weight } = req.body;
 
+    // รับค่า cus_id จาก token/session
+    const cusId = req.user.cus_id;
+    console.log("cusid",cusId)
 
+    // ค้นหา id ประเภทขยะจากชื่อที่ได้รับมา
+    const [recycleTypeRow] = await RecycleType.getrecycleTypeByName(waste_type);
+    const { rec_type_id: recycleTypeId } = recycleTypeRow; // destuctering เอา id พร้อมเปลี่ยนชื่อ
+    
+    // เพิ่มข้อมูลลง table waste_collection
+    const result = await WasteCollection.insertWasteCollection(
+      public_id,
+      secure_url,
+      recycleTypeId,
+      weight,
+      cusId
+    );
+    if (!result) {
+      res.status(400).json({ message: "ไม่สามารถเพิ่มข้อมูลได้" });
+    }
 
+    // res.json({ result });
+    res.status(200).json({ message: "บันทึกข้อมูลสำเร็จ!"})
+  } catch (error) {
+    console.error("อัปโหลดไม่สำเร็จเกิดข้อผิดพลาด!:", error);
+    res.status(500).json({ message: "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์" });
+  }
+};

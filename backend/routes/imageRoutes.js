@@ -7,5 +7,6 @@ const upload = require("../middlewares/uploadMiddleware"); // import multer midd
 // ใช้ upload.single("image") เพื่อดึงไฟล์จาก field name = "image"
 router.post("/predict", upload.single("image"), auth, imageController.predictImage);
 router.post("/image", upload.single("image"), auth,imageController.uploadImage);
+router.post("/waste-collection",auth,imageController.createWasteCollection);
 
 module.exports = router;

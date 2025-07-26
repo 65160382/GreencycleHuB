@@ -1,6 +1,6 @@
 import React from "react";
 
-const Submitdata = ({ image, weight }) => {
+const Submitdata = ({ image, weight, wasteType }) => {
   // เรียกใช้ api ที่อัพโหลดรูปภาพไปยัง cloudinary
   const handleImagetoCloudinary = async () => {
     try {
@@ -15,16 +15,54 @@ const Submitdata = ({ image, weight }) => {
       });
       if (response.ok) {
         const result = await response.json();
-        console.log("result:", result);
+        console.log("อัพโหลดรูปภาพไป cloudinary สำเร็จ!");
+        submitWasteCollection(result);
       }
     } catch (error) {
       console.error("เกิดข้อผิดพลาดกับเซิร์ฟเวอร์", error);
     }
   };
 
-  // เรียกใช้ api ที่อัพเดตตาราง waste_collection (image -->เป็น public url ใน cloudinary , wasteType , weight , cus_id = ?)
-  // แปลงน้ำหนักจาก string เป็น decimal
-  // const weightDecimal = parseFloat(weight);
+  // เรียกใช้ api ที่อัพเดตตาราง waste_collection image -->เป็น public url ใน cloudinary , wasteType , weight , cus_id = ?
+  const submitWasteCollection = async (result) => {
+    try {
+      // ค่าที่ส่งมามี public_id , secure_url
+      if (!result) {
+        console.log("ไม่ได้มี public_id, secure_url ที่ได้จาก cloudianry");
+      }
+
+      const weightDecimal = parseFloat(weight); // แปลงน้ำหนักจาก string เป็น decimal
+
+      // กำหนดข้อมูลที่จะส่งไว้ใน object
+      const data = {
+        public_id: result.public_id,
+        secure_url: result.secure_url,
+        waste_type: wasteType,
+        weight: weightDecimal,
+      };
+      console.log("recheck", data);
+
+      // http://localhost:3000/api/waste-collection
+      const response = await fetch(
+        "http://localhost:3000/api/waste-collection",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",  
+          },
+          body: JSON.stringify(data), // แปลง data ให้เป็น json แล้วส่ง
+          credentials: "include",
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result);
+      }
+    } catch (error) {
+      console.error("เกิดข้อผิดพลาดกับเซิร์ฟเวอร์", error);
+    }
+  };
 
   return (
     <div className="flex justify-center items-cemter m-2.5 p-2.5">
