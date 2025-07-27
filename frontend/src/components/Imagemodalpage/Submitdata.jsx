@@ -1,6 +1,6 @@
-import React from "react";
-
-const Submitdata = ({ image, weight, wasteType }) => {
+// import React from "react";
+import { toast } from "react-toastify";
+const Submitdata = ({ image, weight, wasteType, onSuccess }) => {
   // เรียกใช้ api ที่อัพโหลดรูปภาพไปยัง cloudinary
   const handleImagetoCloudinary = async () => {
     try {
@@ -48,7 +48,7 @@ const Submitdata = ({ image, weight, wasteType }) => {
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",  
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(data), // แปลง data ให้เป็น json แล้วส่ง
           credentials: "include",
@@ -58,9 +58,13 @@ const Submitdata = ({ image, weight, wasteType }) => {
       if (response.ok) {
         const result = await response.json();
         console.log(result);
+        // ปิด modal
+        onSuccess();
+        toast.success("บันทึกข้อมูลสำเร็จ!");
       }
     } catch (error) {
       console.error("เกิดข้อผิดพลาดกับเซิร์ฟเวอร์", error);
+      toast.error("เกิดข้อผิดพลาด!");
     }
   };
 

@@ -8,15 +8,17 @@ import { useEffect, useState } from "react";
 const Imagemodal = ({ isOpen, onClose }) => {
   const [image, setImage] = useState(null);
   const [wasteType, setWasteType] = useState("");
-  const [weight,setWeight] = useState("");
+  const [weight, setWeight] = useState("");
 
   // สร้าง state สำหรับเก็บผลลัพธ์การวิเคราะห์ประเภทขยะ
   const [predictResult, setPredictResult] = useState(null);
 
   useEffect(() => {
     if (!isOpen) {
-      deleteFileSelect(); // ลบรูปเมื่อปิด modal
-      setWasteType(""); // ล้างค่าผลลัพธ์ที่ predict มา
+      deleteFileSelect(); // เคลียร์รูป
+      setWasteType(""); // ล้างประเภท
+      setPredictResult(null); // reset ผลลัพธ์
+      setWeight(""); // reset น้ำหนัก
     }
   }, [isOpen]);
 
@@ -31,7 +33,7 @@ const Imagemodal = ({ isOpen, onClose }) => {
 
   const deleteFileSelect = async () => {
     setImage(null);
-    setWeight(""); 
+    setWeight("");
     setPredictResult(null); // ล้างผลลัพธ์การวิเคราะห์เมื่อมีการลบรูป
     console.log("ลบภาพที่เลือกแล้ว!");
   };
@@ -172,7 +174,12 @@ const Imagemodal = ({ isOpen, onClose }) => {
             </div>
 
             {/* ปุ่มสำหรับบันทึกข้อมูลขยะที่ผู้ใช้กรอกน้ำหนักแล้ว */}
-            <Submitdata image={image} weight={weight} wasteType={predictResult.label} />
+            <Submitdata
+              image={image}
+              weight={weight}
+              wasteType={predictResult.label}
+              onSuccess={onClose}
+            />
           </>
         )}
       </div>

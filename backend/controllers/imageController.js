@@ -90,7 +90,7 @@ exports.uploadImage = async (req, res) => {
 
     const public_id = result.public_id; // เก็บข้อมูล public_id
     const secure_url = result.secure_url; // เก็บข้อมูล secure_url
-    res.status(200).json({ public_id, secure_url }); // ส่ง public_id , secure_url ไปให้ react
+    res.status(200).json({ message: "บันทึกข้อมูลง Cloudinary เรียบร้อย!",public_id, secure_url }); // ส่ง public_id , secure_url ไปให้ react
   } catch (error) {
     console.error("อัปโหลดไม่สำเร็จ:", error);
     res.status(500).json({ message: "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์" });
@@ -105,7 +105,7 @@ exports.createWasteCollection = async (req, res) => {
 
     // รับค่า cus_id จาก token/session
     const cusId = req.user.cus_id;
-    console.log("cusid",cusId)
+    // console.log("cusid",cusId)
 
     // ค้นหา id ประเภทขยะจากชื่อที่ได้รับมา
     const [recycleTypeRow] = await RecycleType.getrecycleTypeByName(waste_type);

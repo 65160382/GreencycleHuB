@@ -3,7 +3,7 @@ const Navlinks = () => {
   return (
     <nav className="absolute left-1/2 transform -translate-x-1/2 flex gap-8">
       <Link
-        to="#"
+        to={"/home"}
         className="text-gray-700 hover:text-green-600 transition-colors font-medium"
       >
         หน้าหลัก
