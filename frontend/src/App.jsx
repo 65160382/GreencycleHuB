@@ -5,7 +5,7 @@ import Guest from "./pages/Guest";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
-import Imagemodal from "./components/Imagemodalpage/Imagemodal";
+import Reserve from "./pages/Reserve";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -38,6 +38,7 @@ function App() {
       console.error("เกิดข้อผิดพลาดกับเซิรฟ์เวอร์!", error);
     }
   };
+  
   return (
     <BrowserRouter>
       <Routes>
@@ -48,6 +49,7 @@ function App() {
         />
         <Route path="/register" element={<Register />} />
         <Route path="/home" element={<Home isLoggedIn={isLoggedIn} />} />
+        <Route path="/reserve" element={<Reserve isLoggedIn={isLoggedIn} />}/>
         {/* <Route path="/image-processing" element={<Imagemodal setIsOpen={true}/>} /> */}
       </Routes>
       {/* ตั้งค่า toastcotainer สำหรับการแจ้งเตือน */}

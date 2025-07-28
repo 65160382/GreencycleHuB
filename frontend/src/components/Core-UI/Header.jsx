@@ -5,8 +5,7 @@ import Navlinks from "./Navlinks";
 
 export default function Header({ isLoggedIn }) {
   return (
-    <header className="flex justify-between items-center p-5 w-auto bg-white border-b border-gray-200
-">
+    <header className="flex justify-between items-center p-5 w-auto bg-white border-b border-gray-200">
       {/* Logo - อยู่ซ้ายเสมอ */}
       <nav className="logo">
         <h1 className="text-2xl font-bold">GreencycleHuB</h1>
