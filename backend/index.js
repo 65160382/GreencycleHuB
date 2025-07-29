@@ -10,6 +10,8 @@ const port = process.env.PORT;
 
 const authRoutes = require("./routes/authRoutes");
 const imageRoutes = require("./routes/imageRoutes");
+const wasteRoutes = require("./routes/wasteRoutes");
+const addressRoutes = require("./routes/addressRoutes");
 
 app.use(cors({
   origin: 'http://localhost:5173', // ระบุ origin เฉพาะ แทน '*'
@@ -21,6 +23,8 @@ app.use(bodyParser.json());
 
 app.use("/api", authRoutes);
 app.use("/api",imageRoutes);
+app.use("/api",wasteRoutes);
+app.use("/api",addressRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello Piyawat Seepattha");

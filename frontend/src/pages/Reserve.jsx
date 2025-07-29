@@ -12,12 +12,13 @@ const Reserve = ({ isLoggedIn }) => {
 
       {/* content div */}
       <div className="flex flex-col px-10 py-4  ">
-
         {/* ปุ่มย้อนกลับ + หัวข้อ + progress bar  */}
         <div className="p-2.5">
           <section className="flex  m-2.5  font-medium">
-            <ChevronLeft className="cursor-pointer"/>
-            <p className="hover:text-green-600 transition-colors cursor-pointer">กลับสู่หน้าหลัก</p>
+            <ChevronLeft className="cursor-pointer" />
+            <p className="hover:text-green-600 transition-colors cursor-pointer">
+              กลับสู่หน้าหลัก
+            </p>
           </section>
           <h1 className="font-bold m-2.5">จองคิวรับซื้อขยะ</h1>
           <section className="flex flex-col m-2.5 text-base">
@@ -36,12 +37,16 @@ const Reserve = ({ isLoggedIn }) => {
 
         {/* step 2 เลือกวันที่และรอบที่ต้องการจอง */}
         <StepComponent stepNumber={2} title={"เลือกวันที่และรอบที่ต้องการจอง"}>
-          <DateComponent/>
+          <DateComponent />
         </StepComponent>
 
         {/* step 3 เลือกประเภทของขยะรีไซเคิลที่ต้องการขาย */}
-        <StepComponent stepNumber={3} title={"เลือกประเภทของขยะรีไซเคิลที่ต้องการขาย"}>
+        <StepComponent
+          stepNumber={3}
+          title={"เลือกประเภทของขยะรีไซเคิลที่ต้องการขาย"}
+        >
           <label>ประเภทของขยะ</label>
+          <img src="" alt=""></img>
           {/* ประเภทของขยะ ที่ดึงมากจาก table waste_collection */}
           <label>จำนวนปริมาณขยะที่สะสม</label>
           {/* จำนวนปริมาณขยะที่สะสม ที่ดึงมาจาก table waste_collection */}

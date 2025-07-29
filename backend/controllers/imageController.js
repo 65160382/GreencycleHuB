@@ -90,7 +90,13 @@ exports.uploadImage = async (req, res) => {
 
     const public_id = result.public_id; // เก็บข้อมูล public_id
     const secure_url = result.secure_url; // เก็บข้อมูล secure_url
-    res.status(200).json({ message: "บันทึกข้อมูลง Cloudinary เรียบร้อย!",public_id, secure_url }); // ส่ง public_id , secure_url ไปให้ react
+    res
+      .status(200)
+      .json({
+        message: "บันทึกข้อมูลง Cloudinary เรียบร้อย!",
+        public_id,
+        secure_url,
+      }); // ส่ง public_id , secure_url ไปให้ react
   } catch (error) {
     console.error("อัปโหลดไม่สำเร็จ:", error);
     res.status(500).json({ message: "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์" });
@@ -105,12 +111,11 @@ exports.createWasteCollection = async (req, res) => {
 
     // รับค่า cus_id จาก token/session
     const cusId = req.user.cus_id;
-    // console.log("cusid",cusId)
 
-    // ค้นหา id ประเภทขยะจากชื่อที่ได้รับมา
+    // ค้นหา id ประเภทขยะตามชื่อที่ได้รับมา
     const [recycleTypeRow] = await RecycleType.getrecycleTypeByName(waste_type);
     const { rec_type_id: recycleTypeId } = recycleTypeRow; // destuctering เอา id พร้อมเปลี่ยนชื่อ
-    
+
     // เพิ่มข้อมูลลง table waste_collection
     const result = await WasteCollection.insertWasteCollection(
       public_id,
@@ -124,7 +129,21 @@ exports.createWasteCollection = async (req, res) => {
     }
 
     // res.json({ result });
-    res.status(200).json({ message: "บันทึกข้อมูลสำเร็จ!"})
+    res.status(200).json({ message: "บันทึกข้อมูลสำเร็จ!" });
+  } catch (error) {
+    console.error("อัปโหลดไม่สำเร็จเกิดข้อผิดพลาด!:", error);
+    res.status(500).json({ message: "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์" });
+  }
+};
+
+// ทดสอบยังไม่ได้ใช้จริง
+exports.getRecycleType = async (req, res) => {
+  try {
+    const result = await RecycleType.getRecycleType();
+    console.log(result);
+
+    // const data
+    res.json({ result });
   } catch (error) {
     console.error("อัปโหลดไม่สำเร็จเกิดข้อผิดพลาด!:", error);
     res.status(500).json({ message: "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์" });

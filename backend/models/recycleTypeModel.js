@@ -11,6 +11,16 @@ class recycleType {
       throw error;
     }
   }
+
+  static async getRecycleType(){
+    try {
+      const [result] = await pool.query('SELECT * FROM recycle_type');
+      return result;
+    } catch (error) {
+      console.error("Error query recycle_type table!", error);
+      throw error;
+    }
+  }
 }
 
 module.exports = recycleType;

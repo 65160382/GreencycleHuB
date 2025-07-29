@@ -16,7 +16,7 @@ class Customer {
         try {
             const sql = `SELECT * FROM customers WHERE users_id = ?`;
             const [result] = await pool.query(sql, [uid]);  
-            return result
+            return result;
         } catch (error) {
             console.error(error);
             throw error;

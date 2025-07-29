@@ -1,0 +1,52 @@
+const { Add } = require("@tensorflow/tfjs");
+const pool = require("../config/database");
+
+class Address {
+    // ดึงข้อมูลตาม id ผู้ใช้
+  static async getAddress(cusId) {
+    try {
+      const sql = `SELECT * FROM address WHERE cus_id = ?;`;
+      const [result] = await pool.query(sql, [cusId]);
+      return result;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  // เพิ่มข้อมูลที่อยู่
+  static async createAddress(province, district, subdistrict, road, houseno, postcode, lat, lon, isDefault, cusId) {
+    try {
+      const sql = `INSERT INTO address( add_province, add_district, add_subdistrict, add_road, add_houseno, add_postcode, add_lat, add_lon, add_default, cus_id) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      const result = await pool.query(sql, [province, district, subdistrict, road, houseno, postcode, lat, lon, isDefault, cusId]);
+      return result;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  // อัปเดตที่อยู่
+  static async updateAddress(){
+    try {
+      
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  // ลบที่อยู่
+  static async deleteAddress(add_id){
+    try {
+        const result = await pool.query('DELETE FROM address WHERE add_id = ?',[add_id]);
+        return result;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+  }
+}
+
+module.exports = Address;
