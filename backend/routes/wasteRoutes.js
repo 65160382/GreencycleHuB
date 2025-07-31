@@ -3,6 +3,6 @@ const router = express.Router();
 const { auth } = require("../middlewares/authMiddleware");
 const wasteCollectController = require("../controllers/wasteController");
 
-router.get("/waste-collections", wasteCollectController.getWeightByType);
+router.get("/waste-collections", auth,wasteCollectController.getWeightByType);
 
 module.exports = router;

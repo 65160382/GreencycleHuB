@@ -22,7 +22,8 @@ function App() {
   //http://localhost:3000/api/auth เรียกใช้ api ในการตรวจสอบว่าผู้ใข้ login หรือยัง
   const checkLogin = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/auth", {
+      const apiUrl = import.meta.env.VITE_API_URL; 
+      const response = await fetch(`${apiUrl}/api/auth`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

@@ -13,7 +13,8 @@ const Register = () => {
   // จัดการบันทึกข้อมูลเมื่อส่ง form
   const handleRegister = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/register", {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${apiUrl}/api/register`, {
         method: "POST",
         headers: {
           "Content-type": "application/json",

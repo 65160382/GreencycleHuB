@@ -3,9 +3,40 @@ import Footer from "../components/Core-UI/Footer";
 import StepComponent from "../components/Reservepage/StepComponent";
 import PersonalComponent from "../components/Reservepage/PersonalComponent";
 import DateComponent from "../components/Reservepage/DateComponent";
+import RecycleTypeSelector from "../components/Reservepage/RecycleTypeSelector";
 import { ChevronLeft } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+
 
 const Reserve = ({ isLoggedIn }) => {
+  const [wasteCollections, setWasteCollections] = useState([]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  //ดึงข้อมูลขยะที่ผู้ใช้สะสมเอาไว้มาแสดงผล http://localhost:3000/api/waste-collections
+  const fetchData = async () => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(
+        `${apiUrl}/api/waste-collections`,
+        {
+          method: "GET",
+          credentials: "include", // ส่ง cookies ไปด้วย
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        console.log("data:", data);
+        setWasteCollections(data.result); // destructure จากส่งทั้ง object เป็นส่งค่า array 
+      }
+    } catch (error) {
+      console.error("เกิดข้อผิดพลาด", error);
+    }
+  };
+
   return (
     <div className="bg-[#f3f3f3]">
       <Header isLoggedIn={isLoggedIn} />
@@ -16,9 +47,10 @@ const Reserve = ({ isLoggedIn }) => {
         <div className="p-2.5">
           <section className="flex  m-2.5  font-medium">
             <ChevronLeft className="cursor-pointer" />
-            <p className="hover:text-green-600 transition-colors cursor-pointer">
+            {/* <p className="hover:text-green-600 transition-colors cursor-pointer">
               กลับสู่หน้าหลัก
-            </p>
+            </p> */}
+            <Link to={"/home"} className="hover:text-green-600 transition-colors cursor-pointer" >กลับสู่หน้าหลัก</Link>
           </section>
           <h1 className="font-bold m-2.5">จองคิวรับซื้อขยะ</h1>
           <section className="flex flex-col m-2.5 text-base">
@@ -30,9 +62,12 @@ const Reserve = ({ isLoggedIn }) => {
           </section>
         </div>
 
-        {/* step 1 กรอกข้อมูลส่วนตัว */}
-        <StepComponent stepNumber={1} title={"ข้อมูลส่วนตัว"}>
-          <PersonalComponent />
+        {/* step 1 เลือกประเภทของขยะรีไซเคิลที่ต้องการขาย */}
+        <StepComponent
+          stepNumber={1}
+          title={"เลือกประเภทของขยะรีไซเคิลที่ต้องการขาย"}
+        >
+          <RecycleTypeSelector wasteCollections={wasteCollections} />
         </StepComponent>
 
         {/* step 2 เลือกวันที่และรอบที่ต้องการจอง */}
@@ -40,21 +75,14 @@ const Reserve = ({ isLoggedIn }) => {
           <DateComponent />
         </StepComponent>
 
-        {/* step 3 เลือกประเภทของขยะรีไซเคิลที่ต้องการขาย */}
-        <StepComponent
-          stepNumber={3}
-          title={"เลือกประเภทของขยะรีไซเคิลที่ต้องการขาย"}
-        >
-          <label>ประเภทของขยะ</label>
-          <img src="" alt=""></img>
-          {/* ประเภทของขยะ ที่ดึงมากจาก table waste_collection */}
-          <label>จำนวนปริมาณขยะที่สะสม</label>
-          {/* จำนวนปริมาณขยะที่สะสม ที่ดึงมาจาก table waste_collection */}
-          <label>ราคาต่อกิโลกรัม</label>
-          {/* ราคาต่อกิโลกรัม ที่ดึงมาจาก table recycle_type */}
-          <label>ราคาทั้งหมด</label>
-          <p>""</p>
+        {/* step 3 กรอกข้อมูลส่วนตัว */}
+        <StepComponent stepNumber={3} title={"ข้อมูลส่วนตัว"}>
+          <PersonalComponent />
         </StepComponent>
+
+        
+
+        
 
         {/* step 4 เลือกที่อยู่ */}
         <StepComponent stepNumber={4} title={"เลือกที่อยู่"}>
