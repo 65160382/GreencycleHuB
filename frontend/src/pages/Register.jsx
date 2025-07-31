@@ -1,7 +1,8 @@
 import RegisterForm from "../components/Registerpage/RegisterForm";
 // import "../components/Registerpage/Register.css";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -9,6 +10,7 @@ const Register = () => {
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const navigate = useNavigate();
+  const { setIsLoggedIn, setUser } = useContext(AuthContext);
 
   // จัดการบันทึกข้อมูลเมื่อส่ง form
   const handleRegister = async () => {
@@ -28,8 +30,10 @@ const Register = () => {
         }),
       });
       if (response.ok) {
+        setIsLoggedIn(true);
         const data = await response.json();
         console.log(data);
+        setUser(data.payload);
         navigate("/home");
       }
     } catch (error) {

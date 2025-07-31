@@ -4,9 +4,7 @@ const WasteCollection = require("../models/wasteCollectionModel");
 exports.getWeightByType = async (req, res) => {
     try {
         const cusId = req.user.cus_id;
-        // console.log(cusId)
         const [result] = await WasteCollection.getWasteBytype(cusId);
-        // console.log(result);
         res.json({result});
     } catch (error) {
         console.error("เกิดข้อผิดพลาดไม่สามารถดึงข้อมูลมาแสดงผลได้",error)

@@ -8,31 +8,33 @@ exports.loginUser = async (req, res) => {
     const { email, password } = req.body;
     const [user] = await User.checkEmailQuery(email);
     if (!user) {
-      return res
-        .status(404)
-        .json({ message: { email: "อีเมลของคุณไม่ถูกต้อง!" } });
+      return res.status(404).json({ message: { email: "อีเมลของคุณไม่ถูกต้อง!" } });
     }
 
     const match = await User.checkPassword(password, user);
     if (!match) {
-      return res
-        .status(400)
-        .json({ message: { password: "รหัสผ่านไม่ถูกต้อง" } });
+      return res.status(400).json({ message: { password: "รหัสผ่านไม่ถูกต้อง" } });
     }
-
     //ดึงข้อมูลจาก user พร้อมเปลี่ยนชื่อ users_id --> uid
     const { users_id: uid, users_email, roles_id } = user;
     // ดึงข้อมูล customer ตาม user_id
     const [customer] = await Customer.getCustomer(uid);
 
-    const { cus_id: customerid } = customer;
+    // console.log(customer)
+
+    const { cus_id, cus_fname, cus_lname, cus_phone } = customer;
 
     const payload = {
       id: uid,
       email: users_email,
       role: roles_id,
-      cus_id: customerid, //เก็บค่า cus_id
+      fname: cus_fname,
+      lname: cus_lname,
+      phone: cus_phone,
+      cus_id: cus_id, //เก็บค่า cus_id
     };
+
+    // console.log(payload);
 
     // เรียกใช้ฟังก์ชั่น createToken
     const token = createToken(payload);
@@ -57,9 +59,7 @@ exports.registerUser = async (req, res) => {
     //ตรวจสอบ email ซ้ำหรือไม่
     const check = await User.checkEmailQuery(email);
     if (check.length > 0) {
-      return res
-        .status(409)
-        .json({ message: "อีเมลนี้มีในระบบแล้ว กรุณาใช้อีเมลอื่น!" });
+      return res.status(409).json({ message: "อีเมลนี้มีในระบบแล้ว กรุณาใช้อีเมลอื่น!" });
     }
     // เพิ่มข้อมูลลงตาราง User
     const userid = await User.createUser(email, password);
@@ -78,6 +78,8 @@ exports.registerUser = async (req, res) => {
         id: userid,
         email: email,
         cus_id: cusId,
+        fname: firstname,
+        lname: lastname,
       };
 
       // เรียกใช้ฟังก์ชั่น createToken
@@ -104,5 +106,6 @@ exports.registerUser = async (req, res) => {
 };
 
 exports.checkAuth = async (req, res) => {
-  return res.status(200).json({ user: req.user });
+  const { id, email, role, fname, lname, phone, cus_id } = req.user;
+  return res.status(200).json({ user: { id, email, role, fname, lname, phone, cus_id } });
 };

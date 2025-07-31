@@ -1,9 +1,13 @@
 import Imagemodal from "../Imagemodalpage/Imagemodal";
 import { TbZoomScan } from "react-icons/tb";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AuthContext } from "../../context/AuthContext";
 //    {/* ส่วนของแสดงสไลด์โชว์รูปภาพพร้อมมีข้อความแนะนำ */}
 const Imagenav = () => {
+  const { user } = useContext(AuthContext)
   const [isOpen, setIsOpen] = useState(false);
+
+
   return (
     <div className="relative w-full h-[360px]">
       {/* รูปภาพพื้นหลัง */}
@@ -19,7 +23,7 @@ const Imagenav = () => {
       {/* เนื้อหาวางทับบนรูป */}
       <div className="absolute inset-0 flex flex-col justify-center items-center text-white px-6 text-center">
         <div className="mb-4">
-          <h1 className="text-2xl md:text-3xl font-bold mb-2">สวัสดี คุณ :</h1>
+          <h1 className="text-2xl md:text-3xl font-bold mb-2">สวัสดีคุณ {user.fname}</h1>
           <p className="text-base md:text-lg">
             คุณยังไม่มีจำนวนขยะสะสมอยู่ในระบบ <br />
             สามารถคลิกที่ปุ่ม "สแกนขยะ" เพื่อเริ่มสะสมขยะเลย

@@ -1,9 +1,10 @@
 import LoginForm from "../components/Loginpage/LoginForm";
-// import "../components/Loginpage/Login.css";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
-const Login = ({ setIsLoggedIn }) => {
+const Login = () => {
+  const { setIsLoggedIn, setUser } = useContext(AuthContext);
   // สร้าง state เพื่อเก็บข้อมูล
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,7 +28,9 @@ const Login = ({ setIsLoggedIn }) => {
         // รอให้ response จาก fetch() ถูกแปลงจาก JSON string เป็น JavaScript object แล้วเก็บไว้ในตัวแปร data”
         const data = await response.json();
         setIsLoggedIn(true); // อัปเดตสถานะทันทีหลัง login
-        navigate("/home", { data });
+        setUser(data.payload);
+        console.log(data);
+        navigate("/home"); 
       } else {
         // handleError();
         // ดึงข้อความ error message ที่ส่งมาจาก api

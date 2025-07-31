@@ -2,8 +2,12 @@ import { Link } from "react-router-dom";
 import { IoSearchOutline } from "react-icons/io5";
 import { IoIosMenu } from "react-icons/io";
 import Navlinks from "./Navlinks";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
-export default function Header({ isLoggedIn }) {
+
+export default function Header() {
+  const { isLoggedIn } = useContext(AuthContext)
   return (
     <header className="flex justify-between items-center p-5 w-auto bg-white border-b border-gray-200">
       {/* Logo - อยู่ซ้ายเสมอ */}

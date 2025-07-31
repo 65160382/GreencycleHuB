@@ -1,6 +1,8 @@
-import React from "react";
+import  { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 const PersonalComponent = () => {
+  const { user } = useContext(AuthContext);
   return (
     <>
       {/* กล่องฟอร์มแบบ responsive */}
@@ -13,7 +15,7 @@ const PersonalComponent = () => {
           {/* ชื่อ-นามสกุล ที่ดึงมากจาก table customer */}
           <input
             type="text"
-            value={" "}
+            value={user.fname}
             className="border border-[#D4D7E3] bg-[#F7FBFF] rounded-lg p-2 w-full md:w-60"
             disabled
           />
