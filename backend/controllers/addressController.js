@@ -1,14 +1,27 @@
 const Address = require("../models/addressModel");
 
 // ดึงข้อมูล address ตาม ผู้ใช้
-exports.getAddress = async (req, res) => {
+exports.getAllAddress = async (req, res) => {
   try {
-    const { cusId } = req.query;
+    // const { cusId } = req.query;
+    const cusId = req.user.cus_id
     const result = await Address.getAddress(cusId);
-    console.log(result);
+    // console.log(result);
     res.status(200).json({ result });
   } catch (error) {
     console.error("เกิดข้อผิดพลาดกับเซิรฟ์เวอร์!", error);
+    res.status(500).json({ message: "เกิดข้อผิดพลาดกับเซิรฟ์เวอร์!" });
+  }
+};
+
+//ดึงข้อมูลเฉพาะค่าที่อยู่เริ่มต้น
+exports.getDefaultAddress = async (req, res) => {
+  try {
+    const cusId = req.user.cus_id;
+    const result = await Address.getDefaultAddress(cusId);
+    res.status(200).json( {result} );
+  } catch (error) {
+    console.error("เกิดข้อผิดพลาดกับเซิรฟ์เวอร์!",error);
     res.status(500).json({ message: "เกิดข้อผิดพลาดกับเซิรฟ์เวอร์!" });
   }
 };

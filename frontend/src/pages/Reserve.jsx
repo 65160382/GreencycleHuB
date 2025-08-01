@@ -4,6 +4,7 @@ import StepComponent from "../components/Reservepage/StepComponent";
 import PersonalComponent from "../components/Reservepage/PersonalComponent";
 import DateComponent from "../components/Reservepage/DateComponent";
 import RecycleTypeSelector from "../components/Reservepage/RecycleTypeSelector";
+import AddressSelector from "../components/Reservepage/AddressSelector";
 import { ChevronLeft } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -11,6 +12,7 @@ import { Link } from "react-router-dom";
 
 const Reserve = ({ isLoggedIn }) => {
   const [wasteCollections, setWasteCollections] = useState([]);
+  // const [address, setAddress] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -29,7 +31,7 @@ const Reserve = ({ isLoggedIn }) => {
       );
       if (response.ok) {
         const data = await response.json();
-        console.log("data:", data);
+        // console.log("data:", data);
         setWasteCollections(data.result); // destructure จากส่งทั้ง object เป็นส่งค่า array 
       }
     } catch (error) {
@@ -80,14 +82,9 @@ const Reserve = ({ isLoggedIn }) => {
           <PersonalComponent />
         </StepComponent>
 
-        
-
-        
-
         {/* step 4 เลือกที่อยู่ */}
         <StepComponent stepNumber={4} title={"เลือกที่อยู่"}>
-          {/* แสดงที่อยู่ในฐานข้อมูลที่ค่า default เป็น true */}
-          <p>" "</p>
+          <AddressSelector/>
         </StepComponent>
 
         {/* ปุ่มยืนยัน */}

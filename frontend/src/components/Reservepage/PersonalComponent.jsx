@@ -1,38 +1,34 @@
-import  { useContext } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
 const PersonalComponent = () => {
   const { user } = useContext(AuthContext);
   return (
     <>
-      {/* กล่องฟอร์มแบบ responsive */}
-      <div className="flex flex-col md:flex-row md:items-center md:space-x-6 space-y-3 md:space-y-0">
+      {/* กล่องข้อมูลลูกค้าแบบ responsive พร้อมจัดระยะห่างให้เหมาะสม */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white p-4 rounded-xl border">
         {/* ฟิลด์ชื่อ - นามสกุล */}
-        <div className="flex flex-col md:flex-row md:items-center">
-          <label className="mr-2.5 font-medium whitespace-nowrap">
+        <div>
+          <label className="block text-sm text-gray-600 mb-1">
             ชื่อ - นามสกุล
           </label>
-          {/* ชื่อ-นามสกุล ที่ดึงมากจาก table customer */}
-          <input
-            type="text"
-            value={user.fname}
-            className="border border-[#D4D7E3] bg-[#F7FBFF] rounded-lg p-2 w-full md:w-60"
-            disabled
-          />
+          <p className="text-gray-800 font-medium">
+            {user.fname} {user.lname}
+          </p>
         </div>
 
         {/* ฟิลด์เบอร์โทร */}
-        <div className="flex flex-col md:flex-row md:items-center">
-          <label className="mr-2.5 font-medium whitespace-nowrap">
+        <div>
+          <label className="block text-sm text-gray-600 mb-1">
             เบอร์โทรศัพท์
           </label>
-          {/* เบอร์โทรศัพท์ ที่ดึงมาจาก table customer */}
-          <input
-            type="text"
-            value={" "}
-            className="border border-[#D4D7E3] bg-[#F7FBFF] rounded-lg p-2 w-full md:w-60"
-            disabled
-          />
+          <p className="text-gray-800 font-medium">{user.phone}</p>
+        </div>
+
+        {/* ฟิลด์อีเมล */}
+        <div>
+          <label className="block text-sm text-gray-600 mb-1">อีเมล</label>
+          <p className="text-gray-800 font-medium">{user.email}</p>
         </div>
       </div>
     </>

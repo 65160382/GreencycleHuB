@@ -2,7 +2,7 @@ const { Add } = require("@tensorflow/tfjs");
 const pool = require("../config/database");
 
 class Address {
-    // ดึงข้อมูลตาม id ผู้ใช้
+    // ดึงข้อมูลที่อยู่ทั้งหมดตาม id ผู้ใช้
   static async getAddress(cusId) {
     try {
       const sql = `SELECT * FROM address WHERE cus_id = ?;`;
@@ -13,6 +13,19 @@ class Address {
       throw error;
     }
   }
+
+  // ดึงข้อมูลทื่อยู่เฉพาะค่า default
+  static async getDefaultAddress(cusId){
+    try {
+      const sql  = `SELECT * FROM address WHERE cus_id = ? AND add_default = true`;
+      const [result] = await pool.query(sql,[cusId]);
+      return result;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+  
 
   // เพิ่มข้อมูลที่อยู่
   static async createAddress(province, district, subdistrict, road, houseno, postcode, lat, lon, isDefault, cusId) {
