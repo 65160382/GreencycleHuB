@@ -7,7 +7,6 @@ const Imagenav = () => {
   const { user } = useContext(AuthContext)
   const [isOpen, setIsOpen] = useState(false);
 
-
   return (
     <div className="relative w-full h-[360px]">
       {/* รูปภาพพื้นหลัง */}

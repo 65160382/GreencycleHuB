@@ -1,28 +1,27 @@
 import { Plus } from "lucide-react";
 import { useState, useEffect } from "react";
+import AddressModal from "./AddressModal";
 
 const AddressSelector = () => {
-  const [address, setAddress] = useState([]);
+  const [address, setAddress] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+
   useEffect(() => {
     fetchData();
   }, []);
 
-  // http://localhost:3000/api/addresses
+  // http://localhost:3000/api/addresses/default
   const fetchData = async () => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL;
-      const response = await fetch(`${apiUrl}/api/addresses`, {
+      const response = await fetch(`${apiUrl}/api/addresses/default`, {
         method: "GET",
         credentials: "include",
       });
       if (response.ok) {
-        const data = await response.json();
-        // fliter ข้อมูลใน array เพื่อหาข้อมูลที่อยู่เริ่มต้นด้วย find
-        const defaultAddress = data.result.find(
-          (item) => item.add_default === 1
-        );
-        // console.log("ทดลองใช้ filter:",defaultAddress)
-        setAddress(defaultAddress);
+        const data = await response.json(); // ค่าที่ได้ผลลัพธ์จะเป็นอาเรยย์ของที่อยู่
+        // console.log("test",data.result[0])
+        setAddress(data.result[0]);
       }
     } catch (error) {
       console.error("เกิดข้อผิดลพลาดกับเซิรฟ์เวอร์", error);
@@ -59,10 +58,12 @@ const AddressSelector = () => {
               <button
                 type="button"
                 className="px-4 py-1.5 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded transition"
+                onClick={() => setIsOpen(true)}
               >
                 แก้ไข
               </button>
             </div>
+            
           </div>
 
           {/* ป้ายค่าเริ่มต้น */}
@@ -79,6 +80,7 @@ const AddressSelector = () => {
           <span className="text-sm font-medium">เพิ่มที่อยู่</span>
         </button>
       )}
+      <AddressModal isOpen={isOpen} onClose={() => setIsOpen(false)} onUpdate={()=> fetchData()} />
     </>
   );
 };

@@ -63,8 +63,16 @@ exports.createAddress = async (req, res) => {
 };
 
 //แก้ไขข้อมูลที่อยู่
-exports.updateAddress = async (req, res) => {
+exports.updateDeafultAddress = async (req, res) => {
   try {
+    const cusId = req.user.cus_id;
+    const addId  = req.params.id;
+    const result = await Address.updateDefaultAddress(cusId, addId);
+    if(result){
+      res.status(200).json({ message: "อัปเดตที่อยู่เริ่มต้นสำเร็จ!"});
+    }else{
+      res.status(400).json({ message: "เกิดข้อผิดพลาดไม่สามารถอัปเดตที่อยู่ได้"});
+    }
   } catch (error) {
     console.error("เกิดข้อผิดพลาดกับเซิรฟ์เวอร์!", error);
     res.status(500).json({ message: "เกิดข้อผิดพลาดกับเซิรฟ์เวอร์!" });

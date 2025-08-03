@@ -16,7 +16,7 @@ exports.createToken = (payload) => {
 exports.auth = async (req, res, next) => {
   try {
     // const token = req.headers["authtoken"]; // token ที่ต้องส่งให้ Front-end
-    const token = req.cookies.token; // ตรวจสอบ token ใน cookies
+    const token = req.cookies.token ; // ตรวจสอบ token ใน cookies
     if (!token) {
       return res.status(401).json({ message: "ไม่มี Token!" });
     }
