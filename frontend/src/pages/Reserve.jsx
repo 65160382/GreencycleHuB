@@ -15,11 +15,11 @@ const Reserve = ({ isLoggedIn }) => {
   // const [address, setAddress] = useState("");
 
   useEffect(() => {
-    fetchData();
+    fetchWasteCollection();
   }, []);
 
   //ดึงข้อมูลขยะที่ผู้ใช้สะสมเอาไว้มาแสดงผล http://localhost:3000/api/waste-collections
-  const fetchData = async () => {
+  const fetchWasteCollection = async () => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL;
       const response = await fetch(
@@ -35,9 +35,17 @@ const Reserve = ({ isLoggedIn }) => {
         setWasteCollections(data.result); // destructure จากส่งทั้ง object เป็นส่งค่า array 
       }
     } catch (error) {
-      console.error("เกิดข้อผิดพลาด", error);
+      console.error("เกิดข้อผิดพลาดกับเซิรฟ์เวอร์!", error);
     }
   };
+
+  const handleSubmit = async () => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL;
+    } catch (error) {
+      console.error("เกิดข้อผิดพลาดกับเซิรฟ์เวอร์!",error)
+    }
+  }
 
   return (
     <div className="bg-[#f3f3f3]">
@@ -49,9 +57,6 @@ const Reserve = ({ isLoggedIn }) => {
         <div className="p-2.5">
           <section className="flex  m-2.5  font-medium">
             <ChevronLeft className="cursor-pointer" />
-            {/* <p className="hover:text-green-600 transition-colors cursor-pointer">
-              กลับสู่หน้าหลัก
-            </p> */}
             <Link to={"/home"} className="hover:text-green-600 transition-colors cursor-pointer" >กลับสู่หน้าหลัก</Link>
           </section>
           <h1 className="font-bold m-2.5">จองคิวรับซื้อขยะ</h1>
@@ -92,6 +97,7 @@ const Reserve = ({ isLoggedIn }) => {
           <button
             className="w-[110px] px-4 py-2.5 bg-[#B9FF66] text-black font-medium rounded-2xl shadow-md hover:bg-[#a7f054] focus:outline-none focus:ring-2 focus:ring-[#B9FF66]/60 transition-all duration-200"
             type="submit"
+            onClick={handleSubmit}
           >
             ยืนยัน
           </button>

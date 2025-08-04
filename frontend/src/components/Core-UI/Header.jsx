@@ -2,12 +2,13 @@ import { Link } from "react-router-dom";
 import { IoSearchOutline } from "react-icons/io5";
 import { IoIosMenu } from "react-icons/io";
 import Navlinks from "./Navlinks";
-import { useContext } from "react";
+import SlideBar from "./SlideBar";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
-
 
 export default function Header() {
   const { isLoggedIn } = useContext(AuthContext)
+  const [ isSlidebarOpen , setIsSlidebarOpen ] = useState(false);
   return (
     <header className="flex justify-between items-center p-5 w-auto bg-white border-b border-gray-200">
       {/* Logo - อยู่ซ้ายเสมอ */}
@@ -17,18 +18,22 @@ export default function Header() {
 
       {/* Navigation Links - เมื่อ login แล้วจะอยู่ตรงกลาง */}
       {isLoggedIn && (
-        <Navlinks/>
+        <Navlinks />
       )}
 
       {/* Right Section - Buttons หรือ User Menu */}
       <nav className="nav-links">
         {isLoggedIn ? (
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            {/* <button className="flex flex-row p-2 text-gray-600 ">
+              <IoSearchOutline  className="w-6 h-6"/> 
+               <CircleUserRound className="border  rounded-full w-6 h-6"/>
+              <ChevronDown className="w-3 h-auto"/>
+            </button> */}
+
+
             <button className="p-2 text-gray-600 hover:text-gray-800">
-              <IoSearchOutline  className="w-6 h-6"/>
-            </button>
-            <button className="p-2 text-gray-600 hover:text-gray-800">
-              <IoIosMenu className="w-7 h-7"/>
+              <IoIosMenu className="w-7 h-7 " onClick={()=> setIsSlidebarOpen(true)}/>
             </button>
           </div>
         ) : (
@@ -46,6 +51,8 @@ export default function Header() {
           </div>
         )}
       </nav>
+
+      <SlideBar isOpen={isSlidebarOpen} onClose={()=> setIsSlidebarOpen(false)} />
     </header>
   );
 }

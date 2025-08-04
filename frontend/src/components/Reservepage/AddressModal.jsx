@@ -21,12 +21,12 @@ const AddressModal = ({ isOpen, onClose, onUpdate }) => {
 
   useEffect(() => {
     if (isOpen) {
-      fetchData(); // ดึงข้อมูลเฉพาะเมื่อ Modal เปิด
+      fetchAllAddress(); // ดึงข้อมูลเฉพาะเมื่อ Modal เปิด
     }
   }, [isOpen]);
 
   //http://localhost:3000/api/addresses
-  const fetchData = async () => {
+  const fetchAllAddress = async () => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL;
       const response = await fetch(`${apiUrl}/api/addresses`, {
@@ -50,7 +50,7 @@ const AddressModal = ({ isOpen, onClose, onUpdate }) => {
         console.error("ไม่มี id ของ address ที่เลือก");
         return;
       }
-      console.log("id ที่เลือกคือ", id);
+      // console.log("id ที่เลือกคือ", id);
       setSelectedDefaultId(id);
       const apiUrl = import.meta.env.VITE_API_URL;
       const response = await fetch(`${apiUrl}/api/addresses/${id}/default`, {
@@ -60,7 +60,7 @@ const AddressModal = ({ isOpen, onClose, onUpdate }) => {
       if (response.ok) {
         const result = await response.json();
         console.log("result:", result);
-        fetchData() //เรียก api ดึงข้อมูลที่อยู่ใหม่
+        fetchAllAddress() //เรียก api ดึงข้อมูลที่อยู่ใหม่
         onUpdate(); //อัปเดตที่อยู่เริ่มต้นที่ parent component โดยการเรียกใช้ fetchData() ใน AddressSelctor.jsx
       }
     } catch (error) {
@@ -162,13 +162,13 @@ const AddressModal = ({ isOpen, onClose, onUpdate }) => {
                     <div className="flex justify-end gap-2 mt-4">
                       <button
                         type="button"
-                        className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-100"
+                        className="px-3 py-1 text-sm bg-[#04AA6D] text-white rounded-md hover:bg-[#1e8d64]"
                       >
                         แก้ไข
                       </button>
                       <button
                         type="button"
-                        className="px-3 py-1 text-sm border border-red-300 text-red-500 rounded-md hover:bg-red-50"
+                        className="px-3 py-1 text-sm bg-[#f44336] text-white rounded-md hover:bg-[#e43f33]"
                       >
                         ลบ
                       </button>

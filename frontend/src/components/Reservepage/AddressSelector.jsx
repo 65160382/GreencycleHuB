@@ -7,11 +7,11 @@ const AddressSelector = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    fetchData();
+    fetchDefaultAddrerss();
   }, []);
 
   // http://localhost:3000/api/addresses/default
-  const fetchData = async () => {
+  const fetchDefaultAddrerss = async () => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL;
       const response = await fetch(`${apiUrl}/api/addresses/default`, {
@@ -80,7 +80,7 @@ const AddressSelector = () => {
           <span className="text-sm font-medium">เพิ่มที่อยู่</span>
         </button>
       )}
-      <AddressModal isOpen={isOpen} onClose={() => setIsOpen(false)} onUpdate={()=> fetchData()} />
+      <AddressModal isOpen={isOpen} onClose={() => setIsOpen(false)} onUpdate={()=> fetchDefaultAddrerss()} />
     </>
   );
 };

@@ -12,6 +12,7 @@ const authRoutes = require("./routes/authRoutes");
 const imageRoutes = require("./routes/imageRoutes");
 const wasteRoutes = require("./routes/wasteRoutes");
 const addressRoutes = require("./routes/addressRoutes");
+const reserveRoutes = require("./routes/reserveRoutes");
 
 app.use(cors({
   origin: 'http://localhost:5173', // ระบุ origin เฉพาะ แทน '*'
@@ -25,6 +26,8 @@ app.use("/api", authRoutes);
 app.use("/api",imageRoutes);
 app.use("/api",wasteRoutes);
 app.use("/api",addressRoutes);
+app.use("/api",reserveRoutes);
+
 
 app.get("/", (req, res) => {
   res.send("Hello Piyawat Seepattha");

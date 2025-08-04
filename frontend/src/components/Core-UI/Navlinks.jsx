@@ -4,7 +4,7 @@ const Navlinks = () => {
   const baseClass = "text-gray-700 hover:text-green-600 transition-colors font-medium";
 
   return (
-    <nav className="absolute left-1/2 transform -translate-x-1/2 flex gap-8">
+    <nav className="hidden lg:flex absolute left-1/2 transform -translate-x-1/2 gap-8  ">
       <Link to="/home" className={baseClass}>
         หน้าหลัก
       </Link>
