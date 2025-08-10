@@ -6,6 +6,7 @@ import Register from "./pages/Register";
 import Home from "./pages/Home";
 import Reserve from "./pages/Reserve";
 import { AuthProvider } from "./context/AuthProvider";
+import { ReserveProvider } from "./context/ReserveProvider";
 
 function App() {
   return (
@@ -16,7 +17,14 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/reserve" element={<Reserve />} />
+          <Route
+            path="/reserve"
+            element={
+              <ReserveProvider>
+                <Reserve />
+              </ReserveProvider>
+            }
+          />
           {/* <Route path="/image-processing" element={<Imagemodal setIsOpen={true}/>} /> */}
         </Routes>
         {/* ตั้งค่า toastcotainer สำหรับการแจ้งเตือน */}

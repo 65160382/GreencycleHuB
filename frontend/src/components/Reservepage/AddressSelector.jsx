@@ -1,17 +1,24 @@
 import { Plus } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect,useContext } from "react";
 import AddressModal from "./AddressModal";
+import { ReserveContext } from "../../context/ReserveContext";
 
 const AddressSelector = () => {
   const [address, setAddress] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  const {selectedAddress, setselectedAddress} = useContext(ReserveContext);
 
   useEffect(() => {
-    fetchDefaultAddrerss();
+    fetchDefaultAddress();
   }, []);
 
+  useEffect(() => {
+  // รันทุกครั้งที่ selectedAddress เปลี่ยน
+  console.log("Context Address :", selectedAddress);
+  }, [selectedAddress]);
+
   // http://localhost:3000/api/addresses/default
-  const fetchDefaultAddrerss = async () => {
+  const fetchDefaultAddress = async () => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL;
       const response = await fetch(`${apiUrl}/api/addresses/default`, {
@@ -22,6 +29,7 @@ const AddressSelector = () => {
         const data = await response.json(); // ค่าที่ได้ผลลัพธ์จะเป็นอาเรยย์ของที่อยู่
         // console.log("test",data.result[0])
         setAddress(data.result[0]);
+        setselectedAddress(data.result[0]); //เก็บลง context ด้วย
       }
     } catch (error) {
       console.error("เกิดข้อผิดลพลาดกับเซิรฟ์เวอร์", error);
@@ -80,7 +88,7 @@ const AddressSelector = () => {
           <span className="text-sm font-medium">เพิ่มที่อยู่</span>
         </button>
       )}
-      <AddressModal isOpen={isOpen} onClose={() => setIsOpen(false)} onUpdate={()=> fetchDefaultAddrerss()} />
+      <AddressModal isOpen={isOpen} onClose={() => setIsOpen(false)} onUpdate={fetchDefaultAddress} />
     </>
   );
 };

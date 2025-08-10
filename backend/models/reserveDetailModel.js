@@ -1,10 +1,10 @@
 const pool = require("../config/database");
 
 class ReserveDetail {
-  static async insertReserveDetail() {
+  static async insertReserveDetail(values) {
     try {
-      const sql = ``;
-      const result = await pool.query(sql, []);
+      const sql = `INSERT INTO reserve_detail (res_id, waste_collect_id) VALUES ?`;
+      const result = await pool.query(sql, [values]);
       return result;
     } catch (error) {
       console.error("Error query ReserveDetail Table!");

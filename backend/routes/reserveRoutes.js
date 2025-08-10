@@ -3,6 +3,6 @@ const router = express.Router();
 const { auth } = require("../middlewares/authMiddleware");
 const ReserveController = require("../controllers/reserveController");
 
-router.post("/reserve", ReserveController.createReserve);
+router.post("/reserve", auth,ReserveController.createReserve);
 
 module.exports = router;

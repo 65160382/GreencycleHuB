@@ -1,14 +1,18 @@
 const Reserve = require("../models/reserveModal");
 const ReserveDetail = require("../models/reserveDetailModel");
+const WasteCollection = require("../models/wasteCollectionModel");
 
 exports.createReserve = async (req, res) => {
   try {
     const cusId = req.user.cus_id;
-    const { bookingDate, timeslot, amount, addrId} = req.body;
+    const { bookingDate, timeslot, amount, addrId, recTypeId} = req.body;
 
-    if(! bookingDate || !timeslot || !amount || !addrId){
-        
-    } 
+    // ตรวจสอบ input ทีละฟิลด์
+    if (!bookingDate) return res.status(500).json({ message: { error: "ไม่ได้เลือกวันที่จอง" }});
+    if (!timeslot) return res.status(500).json({ message: { error: "ไม่ได้เลือกรอบที่จอง" }});
+    if (!amount) return res.status(500).json({ message: { error: "ไม่มีข้อมูลจำนวนเงินทั้งหมด" }});
+    if (!addrId) return res.status(500).json({ message: { error: "ไม่มีข้อมูลที่อยู่" }});
+    if (!recTypeId) return res.status(500).json({ message: { error: "ไม่มีประเภทขยะ" }});
 
     //create res_code หรือหมายเลขคำสั่งซื้อ
     const now = new Date();
@@ -20,15 +24,27 @@ exports.createReserve = async (req, res) => {
     // insert reserve table!
     const resId = await Reserve.insertReserve(resCode,bookingDate,timeslot,amount,cusId,addrId);
     if(!resId){
-        res.status(500).json({ message: "เกิดข้อผิดพลาดไม่มี reserveId!"})
+      return res.status(500).json({ message: "เกิดข้อผิดพลาดไม่มี reserveId!"});
     }
+    // console.log("reserveId:",resId)
+
     //insert reservedetail table!
+    // ค้นหาตาม id ของประเภทขยะเพื่อหาขยะแต่ละประเภทที่สะสมไว้ในแต่ละครั้ง
+    const wasteRows = await WasteCollection.findWasteCollectionById(recTypeId,cusId);
+    // console.log("result:",wasteId);
+
+    const values = wasteRows.map(row => [resId, row.waste_collect_id]);
+    const result = await ReserveDetail.insertReserveDetail(values);
+    
+    if(result){
+      return res.status(200).json({ message: "บันทึกข้อมูลการจองสำเร็จ!"});
+    }else{
+      return res.status(500).json({ message: "เกิดข้อผิดพลาดไม่สามารถอัปโหลดข้อมูลได้"});
+    }
 
     // return result
   } catch (error) {
     console.error("เกิดข้อผิดพลาดไม่สามารถเพิ่มข้อมูลลงฐานข้อมูลได้", error);
-    res
-      .status(500)
-      .json({ message: "เกิดข้อผิดพลาดไม่สามารถเพิ่มข้อมูลลงฐานข้อมูลได้" });
+    res.status(500).json({ message: "เกิดข้อผิดพลาดไม่สามารถเพิ่มข้อมูลลงฐานข้อมูลได้" });
   }
 };

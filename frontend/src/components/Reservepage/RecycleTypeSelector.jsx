@@ -1,6 +1,30 @@
-import React from "react";
+import { useContext,useEffect } from "react";
+import { ReserveContext } from "../../context/ReserveContext";
 
 const RecycleTypeSelector = ({ wasteCollections }) => {
+  const { selectedWaste, setSelectedWaste } = useContext(ReserveContext);
+
+  useEffect(()=>{
+    console.log("value selectedwaste is:",selectedWaste)
+  },[selectedWaste])
+
+  const handleCheckboxChange = (item, checked) => {
+    try {
+      if (checked) {
+        // เพิ่มข้อมูลเข้า array
+        setSelectedWaste((prev) => [...prev, item]);
+        // console.log("value is:",selectedWaste)
+      } else {
+        // ลบข้อมูลออกจาก array
+        setSelectedWaste((prev) =>
+          prev.filter((w) => w.rec_type_id !== item.rec_type_id)
+        );
+      }
+    } catch (error) {
+      console.error("เกิดข้อผิดพลาดกับเซิรฟ์เวอร์", error);
+    }
+  };
+
   return (
     <>
       <div className="overflow-x-auto rounded-lg">
@@ -15,15 +39,21 @@ const RecycleTypeSelector = ({ wasteCollections }) => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {wasteCollections.map((item, index) => (
+            {wasteCollections.map((item) => (
               <tr
-                key={index}
+                key={item.rec_type_id}
                 className="text-center hover:bg-gray-50 transition-colors duration-200"
               >
                 <td className="py-2 px-3">
                   <input
                     type="checkbox"
                     value={item.rec_type_id}
+                    checked={selectedWaste.some(
+                      (w) => w.rec_type_id === item.rec_type_id
+                    )}
+                    onChange={(e) =>
+                      handleCheckboxChange(item, e.target.checked)
+                    }
                     className="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500"
                   />
                 </td>

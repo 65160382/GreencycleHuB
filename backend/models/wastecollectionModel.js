@@ -53,6 +53,18 @@ class WasteCollection {
       throw error;
     }
   }
+
+  static async findWasteCollectionById(rectypeId, cusId){
+    try {
+      const sql = `SELECT waste_collect_id FROM waste_collection WHERE rec_type_id = ? AND waste_collect_sold = false AND cus_id = ?;`;
+      const [result] = await pool.query(sql,[rectypeId,cusId]);
+      return result;
+    } catch (error) {
+      console.error("Error query WasteCollection table!",error);
+      throw error;
+    }
+
+  }
 }
 
 module.exports = WasteCollection;

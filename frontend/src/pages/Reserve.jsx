@@ -5,6 +5,7 @@ import PersonalComponent from "../components/Reservepage/PersonalComponent";
 import DateComponent from "../components/Reservepage/DateComponent";
 import RecycleTypeSelector from "../components/Reservepage/RecycleTypeSelector";
 import AddressSelector from "../components/Reservepage/AddressSelector";
+import ConfirmModal from "../components/Reservepage/ConfirmModal";
 import { ChevronLeft } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -12,6 +13,7 @@ import { Link } from "react-router-dom";
 
 const Reserve = ({ isLoggedIn }) => {
   const [wasteCollections, setWasteCollections] = useState([]);
+  const [isOpen, setIsOpen] = useState(false); 
   // const [address, setAddress] = useState("");
 
   useEffect(() => {
@@ -38,14 +40,6 @@ const Reserve = ({ isLoggedIn }) => {
       console.error("เกิดข้อผิดพลาดกับเซิรฟ์เวอร์!", error);
     }
   };
-
-  const handleSubmit = async () => {
-    try {
-      const apiUrl = import.meta.env.VITE_API_URL;
-    } catch (error) {
-      console.error("เกิดข้อผิดพลาดกับเซิรฟ์เวอร์!",error)
-    }
-  }
 
   return (
     <div className="bg-[#f3f3f3]">
@@ -95,16 +89,17 @@ const Reserve = ({ isLoggedIn }) => {
         {/* ปุ่มยืนยัน */}
         <div className="flex justify-center m-2.5 p-2.5">
           <button
-            className="w-[110px] px-4 py-2.5 bg-[#B9FF66] text-black font-medium rounded-2xl shadow-md hover:bg-[#a7f054] focus:outline-none focus:ring-2 focus:ring-[#B9FF66]/60 transition-all duration-200"
+            className="w-[110px] px-4 py-2.5 bg-[#B9FF66] text-black font-medium rounded-lg shadow-md hover:bg-[#a7f054] focus:outline-none focus:ring-2 focus:ring-[#B9FF66]/60 transition-all duration-200"
             type="submit"
-            onClick={handleSubmit}
+            onClick={()=> setIsOpen(true)}
           >
-            ยืนยัน
+            ถัดไป
           </button>
         </div>
       </div>
 
       <Footer />
+      <ConfirmModal isOpen={isOpen} onClose={()=> setIsOpen(false)} />
     </div>
   );
 };
