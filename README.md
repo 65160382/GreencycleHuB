@@ -1,20 +1,59 @@
-# ♻️ GreencycleHub
+<h1 align="center">GREENCYCLEHUB</h1>
 
-**GreencycleHub** — เว็บแอปสำหรับจองคิวรับซื้อขายขยะรีไซเคิล  
+<p align="center"><strong>Transforming Waste into a Greener Future</strong></p>
+
+<p align="center">
+  <img alt="last commit" src="https://img.shields.io/github/last-commit/your-org/greencyclehub?style=flat-square&label=last%20commit">
+  <img alt="language" src="https://img.shields.io/github/languages/top/your-org/greencyclehub?style=flat-square&label=javascript">
+  <img alt="languages count" src="https://img.shields.io/github/languages/count/your-org/greencyclehub?style=flat-square&label=languages">
+</p>
+
+<p align="center"><em>Built with the tools and technologies:</em></p>
+
+<p align="center">
+  <!-- core -->
+  <img src="https://img.shields.io/badge/Express-000000?style=flat-square&logo=express&logoColor=white" />
+  <img src="https://img.shields.io/badge/JSON-000?style=flat-square&logo=json&logoColor=white" />
+  <img src="https://img.shields.io/badge/Markdown-000?style=flat-square&logo=markdown&logoColor=white" />
+  <img src="https://img.shields.io/badge/npm-CB0000?style=flat-square&logo=npm&logoColor=white" />
+  <img src="https://img.shields.io/badge/Autoprefixer-DD3735?style=flat-square&logo=autoprefixer&logoColor=white" />
+  <img src="https://img.shields.io/badge/PostCSS-DD3A0A?style=flat-square&logo=postcss&logoColor=white" />
+  <img src="https://img.shields.io/badge/.ENV-404D59?style=flat-square" />
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=000" />
+  <!-- dev -->
+  <img src="https://img.shields.io/badge/Nodemon-76D04B?style=flat-square&logo=nodemon&logoColor=white" />
+  <img src="https://img.shields.io/badge/React-0A7EA4?style=flat-square&logo=react&logoColor=white" />
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white" />
+  <img src="https://img.shields.io/badge/Cloudinary-3448C5?style=flat-square&logo=cloudinary&logoColor=white" />
+  <img src="https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white" />
+  <img src="https://img.shields.io/badge/ESLint-4B32C3?style=flat-square&logo=eslint&logoColor=white" />
+  <img src="https://img.shields.io/badge/Canvas-EF4444?style=flat-square" />
+</p>
 
 ---
 
-### Feature
+## สารบัญ
+- [ภาพรวม](#ภาพรวม)
+- [คุณสมบัติเด่น](#คุณสมบัติเด่น)
+- [สถาปัตยกรรม/เทคโนโลยี](#สถาปัตยกรรมเทคโนโลยี)
 
-- **AI แยกประเภทขยะจากภาพที่อัปโหลด**
-- **บันทึกน้ำหนักขยะสะสม**
-- **จองคิวรับซื้อขยะออนไลน์**
-- **ติดตามรถรับขยะเรียลไทม์**
 
----
-<h3 align="left">Languages and Tools:</h3>
-<p align="left"> <a href="https://www.docker.com/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/docker/docker-original-wordmark.svg" alt="docker" width="40" height="40"/> </a> <a href="https://expressjs.com" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/express/express-original-wordmark.svg" alt="express" width="40" height="40"/> </a> <a href="https://www.figma.com/" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/figma/figma-icon.svg" alt="figma" width="40" height="40"/> </a> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg" alt="javascript" width="40" height="40"/> </a> <a href="https://mariadb.org/" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/mariadb/mariadb-icon.svg" alt="mariadb" width="40" height="40"/> </a> <a href="https://www.mysql.com/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mysql/mysql-original-wordmark.svg" alt="mysql" width="40" height="40"/> </a> <a href="https://nodejs.org" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original-wordmark.svg" alt="nodejs" width="40" height="40"/> </a> <a href="https://postman.com" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/getpostman/getpostman-icon.svg" alt="postman" width="40" height="40"/> </a> <a href="https://reactjs.org/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original-wordmark.svg" alt="react" width="40" height="40"/> </a> <a href="https://tailwindcss.com/" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/tailwindcss/tailwindcss-icon.svg" alt="tailwind" width="40" height="40"/> </a> <a href="https://www.tensorflow.org" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/tensorflow/tensorflow-icon.svg" alt="tensorflow" width="40" height="40"/> </a> </p>
-React · Node.js · Express · MySQL · TensorFlow · Docker
+## ภาพรวม
+GreenCycleHub คือระบบจัดการขยะรีไซเคิล ช่วยให้ผู้ใช้จองนัดรับซื้อ/รับขยะ ได้ผ่านระบบ
+- Frontend: React + Vite (ESLint, PostCSS, Autoprefixer)
+- Backend: Node.js + Express
+- Media: Cloudinary
+- DevOps: Docker (เลือกใช้ได้), .env สำหรับ config
 
----
+## คุณสมบัติเด่น
+ 
+
+
+## สถาปัตยกรรม/เทคโนโลยี
+- **Frontend**: React, Vite, ESLint  
+- **Styles**: PostCSS, Autoprefixer  
+- **Backend**: Express (REST API, JWT/Session—ตามการใช้งาน)  
+- **Storage/Media**: Cloudinary (image CDN/transform)  
+- **Dev**: Nodemon, Docker (optional), .env config  
+
 
