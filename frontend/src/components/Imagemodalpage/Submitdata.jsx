@@ -4,6 +4,7 @@ import Loading from "../Core-UI/Loading";
 
 const Submitdata = ({ image, weight, wasteType, onSuccess }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const apiUrl = import.meta.env.VITE_API_URL; // URL ของ  API
 
   // เรียกใช้ api ที่อัพโหลดรูปภาพไปยัง cloudinary
   const handleImagetoCloudinary = async () => {
@@ -13,7 +14,7 @@ const Submitdata = ({ image, weight, wasteType, onSuccess }) => {
       formData.append("image", image.file); //แปลง image เป็น object
 
       // http://localhost:3000/api/image
-      const response = await fetch("http://localhost:3000/api/image", {
+      const response = await fetch(`${apiUrl}/api/image`, {
         method: "POST",
         body: formData,
         credentials: "include",
@@ -53,7 +54,7 @@ const Submitdata = ({ image, weight, wasteType, onSuccess }) => {
 
       // http://localhost:3000/api/waste-collection
       const response = await fetch(
-        "http://localhost:3000/api/waste-collection",
+        `${apiUrl}/api/waste-collection`,
         {
           method: "POST",
           headers: {

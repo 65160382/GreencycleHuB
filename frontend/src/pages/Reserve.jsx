@@ -6,15 +6,15 @@ import DateComponent from "../components/Reservepage/DateComponent";
 import RecycleTypeSelector from "../components/Reservepage/RecycleTypeSelector";
 import AddressSelector from "../components/Reservepage/AddressSelector";
 import ConfirmModal from "../components/Reservepage/ConfirmModal";
+import { ReserveContext } from "../context/ReserveContext";
 import { ChevronLeft } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
-
 
 const Reserve = ({ isLoggedIn }) => {
   const [wasteCollections, setWasteCollections] = useState([]);
-  const [isOpen, setIsOpen] = useState(false); 
-  // const [address, setAddress] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const { selectedWaste, selectedDate } = useContext(ReserveContext);
 
   useEffect(() => {
     fetchWasteCollection();
@@ -24,17 +24,14 @@ const Reserve = ({ isLoggedIn }) => {
   const fetchWasteCollection = async () => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL;
-      const response = await fetch(
-        `${apiUrl}/api/waste-collections`,
-        {
-          method: "GET",
-          credentials: "include", // ส่ง cookies ไปด้วย
-        }
-      );
+      const response = await fetch(`${apiUrl}/api/waste-collections`, {
+        method: "GET",
+        credentials: "include", // ส่ง cookies ไปด้วย
+      });
       if (response.ok) {
         const data = await response.json();
         // console.log("data:", data);
-        setWasteCollections(data.result); // destructure จากส่งทั้ง object เป็นส่งค่า array 
+        setWasteCollections(data.result); // destructure จากส่งทั้ง object เป็นส่งค่า array
       }
     } catch (error) {
       console.error("เกิดข้อผิดพลาดกับเซิรฟ์เวอร์!", error);
@@ -51,7 +48,12 @@ const Reserve = ({ isLoggedIn }) => {
         <div className="p-2.5">
           <section className="flex  m-2.5  font-medium">
             <ChevronLeft className="cursor-pointer" />
-            <Link to={"/home"} className="hover:text-green-600 transition-colors cursor-pointer" >กลับสู่หน้าหลัก</Link>
+            <Link
+              to={"/home"}
+              className="hover:text-green-600 transition-colors cursor-pointer"
+            >
+              กลับสู่หน้าหลัก
+            </Link>
           </section>
           <h1 className="font-bold m-2.5">จองคิวรับซื้อขยะ</h1>
           <section className="flex flex-col m-2.5 text-base">
@@ -83,23 +85,32 @@ const Reserve = ({ isLoggedIn }) => {
 
         {/* step 4 เลือกที่อยู่ */}
         <StepComponent stepNumber={4} title={"เลือกที่อยู่"}>
-          <AddressSelector/>
+          <AddressSelector />
         </StepComponent>
 
         {/* ปุ่มยืนยัน */}
         <div className="flex justify-center m-2.5 p-2.5">
-          <button
-            className="w-[110px] px-4 py-2.5 bg-[#B9FF66] text-black font-medium rounded-lg shadow-md hover:bg-[#a7f054] focus:outline-none focus:ring-2 focus:ring-[#B9FF66]/60 transition-all duration-200"
-            type="submit"
-            onClick={()=> setIsOpen(true)}
-          >
-            ถัดไป
-          </button>
+          { selectedWaste && selectedDate ? (
+            <button
+              className="w-[110px] px-4 py-2.5 bg-[#B9FF66] text-black font-medium rounded-lg shadow-md hover:bg-[#a7f054] focus:outline-none focus:ring-2 focus:ring-[#B9FF66]/60 transition-all duration-200"
+              type="submit"
+              onClick={() => setIsOpen(true)}
+            >
+              ถัดไป
+            </button>
+          ) : (
+            <button
+              className="w-[110px] px-4 py-2.5 bg-[#f3f3f3] text-black font-medium rounded-lg shadow-md"
+              disabled
+            >
+              ถัดไป
+            </button>
+          )}
         </div>
       </div>
 
       <Footer />
-      <ConfirmModal isOpen={isOpen} onClose={()=> setIsOpen(false)} />
+      <ConfirmModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </div>
   );
 };

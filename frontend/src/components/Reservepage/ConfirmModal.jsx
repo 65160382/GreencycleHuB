@@ -2,7 +2,7 @@ import { IoCloseCircle } from "react-icons/io5";
 import { AnimatePresence, motion } from "framer-motion";
 import { ReserveContext } from "../../context/ReserveContext";
 import { AuthContext } from "../../context/AuthContext";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 
 const backdropVariants = {
   hidden: { opacity: 0 },
@@ -21,6 +21,69 @@ const ComfirmModal = ({ isOpen, onClose }) => {
   const { selectedDate } = useContext(ReserveContext);
   const { user } = useContext(AuthContext);
   const { selectedAddress } = useContext(ReserveContext);
+  const [totalWeight, setTotalWeight] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  useEffect(() => {
+    try {
+      sumWeightAndPrice(selectedWaste);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [selectedWaste]);
+
+  // ฟังก์ชั่นสำหรับคำนวณผลรวมของราคาและน้ำหนักของขยะทุกประเภทที่จะขาย
+  const sumWeightAndPrice = (items) => {
+    try {
+      const weightSum = items.reduce(
+        (sum, it) => sum + Number(it.total_weight || 0),
+        0
+      );
+      const priceSum = items.reduce(
+        (sum, it) => sum + Number(it.total_price || 0),
+        0
+      );
+      setTotalWeight(weightSum);
+      setTotalPrice(priceSum);
+    } catch (error) {
+      console.error("เกิดข้อผิดพลาดไม่สามารถคำนวณได้", error);
+    }
+  };
+
+  // ฟังก์ชั่นสำหรับยืนยันการจอง
+  const handleConfirm = async () => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL;
+
+      const data = {
+        bookingDate: selectedDate?.date,
+        timeslot: selectedDate?.timeslot,
+        amount: totalPrice,
+        addrId: selectedAddress?.add_id,
+        recTypeIds: selectedWaste.map((item) => item.rec_type_id),
+      };
+      console.log("Data to submit:", data);
+      const response = await fetch(`${apiUrl}/api/reserve`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // ส่ง cookies ไปด้วย
+        body: JSON.stringify(data),
+      });
+      if (response.ok) {
+        const result = await response.json();
+        console.log("การจองสำเร็จ:", result);
+        onClose(); // ปิด modal หลังจากยืนยัน
+        
+      }else{
+        const errorData = await response.json();
+        console.error("เกิดข้อผิดพลาดในการจอง:", errorData.message);
+      }
+    } catch (error) {
+      console.error("เกิดข้อผิดพลาดในการจอง:", error);
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -71,19 +134,19 @@ const ComfirmModal = ({ isOpen, onClose }) => {
                       <span className="text-gray-900">
                         {selectedDate?.date || "— ยังไม่เลือก —"}
                         {selectedDate?.timeslot
-                          ? ` • รอบ ${selectedDate.timeslot}`
+                          ? ` รอบ ${selectedDate.timeslot}`
                           : ""}
                       </span>
                     </div>
-                    <div>
+                    <div className="flex flex-row gap-2">
                       <span className="text-gray-500">ผู้ติดต่อ: </span>
                       <span className="text-gray-900">
                         {user?.fname
                           ? `${user.fname} ${user?.lname || ""}`
                           : "—"}
-                        {user?.phone ? ` • ${user.phone}` : ""}
-                        {user?.email ? ` • ${user.email}` : ""}
                       </span>
+                      <span className="text-gray-500">เบอร์โทรศัพท์: </span>
+                      {user?.phone ? `${user.phone}` : ""}
                     </div>
                     <div className="text-gray-900">
                       <div className="text-gray-500">ที่อยู่รับขยะ:</div>
@@ -106,7 +169,7 @@ const ComfirmModal = ({ isOpen, onClose }) => {
                               ? `เขต/อำเภอ ${selectedAddress.add_district}`
                               : ""}
                             {selectedAddress?.add_province
-                              ? ` • จังหวัด ${selectedAddress.add_province}`
+                              ? ` จังหวัด ${selectedAddress.add_province}`
                               : ""}
                           </div>
                           <div>
@@ -121,6 +184,7 @@ const ComfirmModal = ({ isOpen, onClose }) => {
                     </div>
                   </div>
                 </section>
+
                 {/* รายการขยะ */}
                 <section className="mt-5 border rounded-xl overflow-hidden ">
                   <div className="px-4 py-3 bg-gray-50 font-semibold">
@@ -153,6 +217,16 @@ const ComfirmModal = ({ isOpen, onClose }) => {
                           </div>
                         </div>
                       ))}
+                      <div className="grid grid-cols-12 gap-2 px-4 py-2 text-sm text-gray-900">
+                        <div className="col-span-5">รวม</div>
+                        <div className="col-span-2 text-right">
+                          {parseFloat(totalWeight).toFixed(2)} กิโลกรัม
+                        </div>
+                        <div className="col-span-2 text-right"></div>
+                        <div className="col-span-3 text-right">
+                          {parseFloat(totalPrice).toFixed(2)} บาท
+                        </div>
+                      </div>
                     </div>
                   ) : (
                     <div className="px-4 py-6 text-sm text-gray-400">
@@ -163,7 +237,9 @@ const ComfirmModal = ({ isOpen, onClose }) => {
               </div>
 
               <div className="flex items-center justify-center m-2.5">
-                <button className="w-[150px] px-4 py-2.5 bg-[#B9FF66] text-black font-medium rounded-lg shadow-sm hover:bg-[#a7f054] focus:outline-none focus:ring-2 focus:ring-[#B9FF66]/60 transition-all duration-200">ยืนยันการจอง</button>
+                <button onClick={handleConfirm} className="w-[150px] px-4 py-2.5 bg-[#B9FF66] text-black font-medium rounded-lg shadow-sm hover:bg-[#a7f054] focus:outline-none focus:ring-2 focus:ring-[#B9FF66]/60 transition-all duration-200">
+                  ยืนยันการจอง
+                </button>
               </div>
             </div>
           </motion.div>

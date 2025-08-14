@@ -56,7 +56,7 @@ class WasteCollection {
 
   static async findWasteCollectionById(rectypeId, cusId){
     try {
-      const sql = `SELECT waste_collect_id FROM waste_collection WHERE rec_type_id = ? AND waste_collect_sold = false AND cus_id = ?;`;
+      const sql = `SELECT waste_collect_id FROM waste_collection WHERE rec_type_id IN (?) AND waste_collect_sold = false AND cus_id = ?;`;
       const [result] = await pool.query(sql,[rectypeId,cusId]);
       return result;
     } catch (error) {

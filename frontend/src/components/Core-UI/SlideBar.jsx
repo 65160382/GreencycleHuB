@@ -40,8 +40,9 @@ const Sidebar = ({ isOpen, onClose }) => {
           <Link to="#" className="text-gray-700 hover:text-green-600 transittion-all duration-300 hover:translate-x-2">
             ติดตามสถานะ
           </Link>
-          {/* <Link to="#" className="text-gray-700 hover:text-green-600 transittion-all duration-300 hover:translate-x-2">โปรไฟล์</Link> */}
-          {/* <Link to="#" className="text-gray-700 hover:text-green-600 transittion-all duration-300 hover:translate-x-2">ออกจากระบบ</Link> */}
+          <Link to="#" className="text-gray-700 hover:text-green-600 transittion-all duration-300 hover:translate-x-2">ประวัติการสแกนขยะ</Link>
+          <Link to="#" className="text-gray-700 hover:text-green-600 transittion-all duration-300 hover:translate-x-2">โปรไฟล์</Link>
+          <Link to="#" className="text-gray-700 hover:text-green-600 transittion-all duration-300 hover:translate-x-2">ออกจากระบบ</Link>
 
         </nav>
 
