@@ -3,6 +3,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ReserveContext } from "../../context/ReserveContext";
 import { AuthContext } from "../../context/AuthContext";
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Loading from "../Core-UI/Loading";
 
 const backdropVariants = {
   hidden: { opacity: 0 },
@@ -23,6 +25,9 @@ const ComfirmModal = ({ isOpen, onClose }) => {
   const { selectedAddress } = useContext(ReserveContext);
   const [totalWeight, setTotalWeight] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     try {
@@ -53,16 +58,20 @@ const ComfirmModal = ({ isOpen, onClose }) => {
   // ฟังก์ชั่นสำหรับยืนยันการจอง
   const handleConfirm = async () => {
     try {
+      setIsLoading(true);
       const apiUrl = import.meta.env.VITE_API_URL;
 
       const data = {
         bookingDate: selectedDate?.date,
         timeslot: selectedDate?.timeslot,
         amount: totalPrice,
+        weight: totalWeight,
         addrId: selectedAddress?.add_id,
         recTypeIds: selectedWaste.map((item) => item.rec_type_id),
       };
       console.log("Data to submit:", data);
+
+      // http://localhost:3000/api/reserve
       const response = await fetch(`${apiUrl}/api/reserve`, {
         method: "POST",
         headers: {
@@ -71,24 +80,29 @@ const ComfirmModal = ({ isOpen, onClose }) => {
         credentials: "include", // ส่ง cookies ไปด้วย
         body: JSON.stringify(data),
       });
+
       if (response.ok) {
         const result = await response.json();
         console.log("การจองสำเร็จ:", result);
+        setIsLoading(false);
         onClose(); // ปิด modal หลังจากยืนยัน
-        
+        navigate("/booking-success/${result.resId}");
       }else{
         const errorData = await response.json();
+        setIsLoading(false);
         console.error("เกิดข้อผิดพลาดในการจอง:", errorData.message);
       }
     } catch (error) {
+      setIsLoading(false);
       console.error("เกิดข้อผิดพลาดในการจอง:", error);
     }
   };
 
   return (
     <AnimatePresence>
+      {/* { isLoading && <Loading/>} */}
       {isOpen && (
-        <>
+        <>  
           {/* Backdrop */}
           <motion.div
             className="fixed inset-0 z-50 bg-black"

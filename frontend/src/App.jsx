@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import Reserve from "./pages/Reserve";
 import { AuthProvider } from "./context/AuthProvider";
 import { ReserveProvider } from "./context/ReserveProvider";
+import BookingSuccess from "./pages/BookingSuccess";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
               </ReserveProvider>
             }
           />
+          <Route path="/booking-success/:resId" element={<BookingSuccess/>} />
           {/* <Route path="/image-processing" element={<Imagemodal setIsOpen={true}/>} /> */}
         </Routes>
         {/* ตั้งค่า toastcotainer สำหรับการแจ้งเตือน */}

@@ -1,17 +1,49 @@
-const pool  = require("../config/database");
+const pool = require("../config/database");
 
-class Reserve{
-    static async insertReserve(resCode,bookingDate,timeslot,amount,cusId,addrId){
-        try {
-            const sql = `INSERT INTO reserve( res_status, res_code, res_booking_date, res_time_slot, res_amount, res_create_at, cus_id, add_id) 
-            VALUES (?, ?, ?, ?, ?, NOW(), ?, ?)`;
-            const [result] = await pool.query(sql,['ยืนยันการจอง',resCode,bookingDate,timeslot,amount,cusId,addrId]);
-            return result.insertId; // ส่งค่า id ของ reserve กลับ
-        } catch (error) {
-            console.error("Error query Reserve table!",error)
-            throw error;
-        }
+class Reserve {
+  // เพิ่มข้อมูลลง table reserve
+  static async insertReserve(resCode,bookingDate,timeslot,amount,weight,cusId,addrId) {
+    try {
+      const sql = `INSERT INTO reserve(res_status, res_code, res_booking_date, res_time_slot, res_amount, res_weight, res_create_at, cus_id, add_id) 
+      VALUES (?, ?, ?, ?, ?, ?, NOW(), ?, ?)`;
+      const [result] = await pool.query(sql, ["ยืนยันการจอง",resCode,bookingDate,timeslot,amount,weight,cusId,addrId]);
+      return result.insertId; // ส่งค่า id ของ reserve กลับ
+    } catch (error) {
+      console.error("Error query Reserve table!", error);
+      throw error;
     }
+  }
+
+  // ดึงข้อมูลการจองจาก table reserve
+  static async getReserveById(cusId,reserveId) {
+    try {
+      const sql = `SELECT
+  r.res_code,
+  c.cus_fname,
+  c.cus_lname,
+  c.cus_phone,
+  r.res_booking_date,
+  r.res_time_slot,
+  r.res_amount,
+  r.res_weight,
+  a.add_province,
+  a.add_district,
+  a.add_subdistrict,
+  a.add_road,
+  a.add_houseno,
+  a.add_postcode
+FROM reserve AS r
+JOIN customers AS c   ON c.cus_id = r.cus_id
+JOIN address AS a   ON a.add_id = r.add_id
+WHERE r.cus_id = ?
+  AND r.res_id = ?;`;
+      const [result] = await pool.query(sql, [cusId,reserveId]);
+      return result[0];
+    } catch (error) {
+      console.error("Error query Reserve table!", error);
+      throw error;
+    }
+  }
 }
 
 module.exports = Reserve;

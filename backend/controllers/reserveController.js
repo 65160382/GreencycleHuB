@@ -11,16 +11,17 @@ const createReserveCode = () => {
   return resCode;
 };
 
-
+// ฟังก์ชั่นสำหรับสร้างการจอง
 exports.createReserve = async (req, res) => {
   try {
     const cusId = req.user.cus_id;
-    const { bookingDate, timeslot, amount, addrId, recTypeIds} = req.body;
+    const { bookingDate, timeslot, amount, weight, addrId, recTypeIds} = req.body;
 
     // ตรวจสอบ input ทีละฟิลด์
     if (!bookingDate) return res.status(400).json({ message: { error: "ไม่ได้เลือกวันที่จอง" }});
     if (!timeslot) return res.status(400).json({ message: { error: "ไม่ได้เลือกรอบที่จอง" }});
     if (amount == null) return res.status(400).json({ message: { error: "ไม่มีข้อมูลจำนวนเงินทั้งหมด" }});
+    if (weight == null) return res.status(400).json({ message: { error: "ไม่มีข้อมูลจำนวนน้ำหนักทั้งหมด" }});
     if (!addrId) return res.status(400).json({ message: { error: "ไม่มีข้อมูลที่อยู่" }});
     if (!recTypeIds) return res.status(400).json({ message: { error: "ไม่มีประเภทขยะ" }});
 
@@ -29,7 +30,7 @@ exports.createReserve = async (req, res) => {
     // console.log("test resCode:",resCode);
     
     // insert reserve table!
-    const resId = await Reserve.insertReserve(resCode,bookingDate,timeslot,amount,cusId,addrId);
+    const resId = await Reserve.insertReserve(resCode,bookingDate,timeslot,amount,weight,cusId,addrId);
     if(!resId){
       return res.status(400).json({ message: "เกิดข้อผิดพลาดไม่มี reserveId!"});
     }
@@ -45,7 +46,7 @@ exports.createReserve = async (req, res) => {
     const result = await ReserveDetail.insertReserveDetail(values);
     
     if(result){
-      return res.status(200).json({ message: "บันทึกข้อมูลการจองสำเร็จ!"});
+      return res.status(200).json({ message: "บันทึกข้อมูลการจองสำเร็จ!", resId: resId});
     }else{
       return res.status(500).json({ message: "เกิดข้อผิดพลาดไม่สามารถอัปโหลดข้อมูลได้"});
     }
@@ -56,3 +57,18 @@ exports.createReserve = async (req, res) => {
     res.status(500).json({ message: "เกิดข้อผิดพลาดไม่สามารถเพิ่มข้อมูลลงฐานข้อมูลได้" });
   }
 };
+
+exports.getReserveById = async (req,res) =>{
+  try {
+    const resId = req.params.id;
+    const cusId = req.user.cus_id;
+    const result = await Reserve.getReserveById(cusId,resId);
+    if(result){
+      res.status(200).json({result});
+    }else{
+      res.status(404).json({message: "ไม่พบข้อมูลการจอง!"});
+    }
+  } catch (error) {
+    console.error("เกิดข้อผิดพลาดในการดึงข้อมูลการจอง", error);
+  }
+}
