@@ -1,27 +1,22 @@
 import Header from "../components/Core-UI/Header";
 import Footer from "../components/Core-UI/Footer";
-import { data, Link, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useEffect,useState } from "react";
 
 const BookingSuccess = () => {
-  const booking = {
-    items: [
-      { name: "Plastic PET", qty: 2.7, unit: "กก.", price: 11, total: 29.7 },
-      { name: "Bottle Glass", qty: 2.7, unit: "กก.", price: 11, total: 59.4 },
-    ],
-  };
-
+  // useParams() → ดึงค่า params ที่ส่งมาจาก URL
   const { resId } = useParams();
-  const [bookings, setBookig] = useState({});
+  const [reserve, setReserve] = useState({});
+  const [details, setDetails] = useState([]);
+
   const address = {
-    addressLine1:` ${bookings.add_province}  ${bookings.add_district}  ${bookings.add_subdistrict} `,
-    addressLine2:`${bookings.add_houseno} ${bookings.add_road} ${bookings.add_postcode}`,
+    addressLine1:` ${reserve.add_province}  ${reserve.add_district}  ${reserve.add_subdistrict} `,
+    addressLine2:`${reserve.add_houseno} ${reserve.add_road} ${reserve.add_postcode}`,
   }
 
   useEffect(()=> {
     getBookingData();
   },[])
-
   
   const getBookingData = async () => {
     try {
@@ -33,8 +28,9 @@ const BookingSuccess = () => {
 
       if(response.ok){
         const data = await response.json();
-        console.log("Booking Data: ",data.result);
-        setBookig(data.result);
+        // console.log("Booking Data: ",data.result);
+        setReserve(data.result.reserveResult);
+        setDetails(data.result.reserveDetailResult);
       }
     } catch (error) {
       console.error("เกิดข้อผิดพลาดกับเซิรฟ์เวอร์",error)
@@ -43,7 +39,7 @@ const BookingSuccess = () => {
 
   // ฟังก์ชั่นสำหรับจัดรูปแบบวันที่ toLocaleDateString()
   const formatDateString = () => {
-  const date = bookings.res_booking_date;
+  const date = reserve.res_booking_date;
   if (!date) return "ไม่มีข้อมูลวันที่จอง";
   
   // ถ้าใช้ "th-TH" → จะได้เป็น 15/08/2568 (พ.ศ.)
@@ -60,7 +56,7 @@ const BookingSuccess = () => {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-neutral-100 flex items-start sm:items-center justify-center p-4">
+      <main className="min-h-screen bg-neutral-100 flex items-start justify-center p-4 pt-12">
         <section className="w-full max-w-xl">
           
           {/* success badge – gradient + ring + glow */}
@@ -98,19 +94,19 @@ const BookingSuccess = () => {
                 หมายเลขการจอง
               </span>
               <span className="text-right text-neutral-700 break-words">
-                {bookings.res_code}
+                {reserve.res_code}
               </span>
 
               <span className="font-semibold text-neutral-800">ชื่อ</span>
               <span className="text-right text-neutral-700 break-words">
-                {bookings.cus_fname} {bookings.cus_lname}
+                {reserve.cus_fname} {reserve.cus_lname}
               </span>
 
               <span className="font-semibold text-neutral-800">
                 เบอร์โทรศัพท์
               </span>
               <span className="text-right text-neutral-700 break-words">
-                {bookings.cus_phone}
+                {reserve.cus_phone}
               </span>
 
               <span className="font-semibold text-neutral-800">ที่อยู่</span>
@@ -125,7 +121,7 @@ const BookingSuccess = () => {
 
               <span className="font-semibold text-neutral-800">รอบที่จอง</span>
               <span className="text-right text-neutral-700 break-words">
-                {bookings.res_time_slot}
+                {reserve.res_time_slot}
               </span>
             </div>
 
@@ -147,19 +143,19 @@ const BookingSuccess = () => {
                   </tr>
                 </thead>
                 <tbody className="[&>tr:not(:last-child)]:border-b [&>tr:not(:last-child)]:border-neutral-200">
-                  {booking.items.map((it, i) => (
+                  {details.map((item, i) => (
                     <tr key={i}>
-                      <td className="py-2">{it.name}</td>
-                      <td className="py-2">{it.qty}</td>
-                      <td className="py-2">{it.price} บาท</td>
-                      <td className="py-2">{it.total} บาท</td>
+                      <td className="py-2">{item.rec_type_name}</td>
+                      <td className="py-2">{parseFloat(item.total_weight).toFixed(2)}</td>
+                      <td className="py-2">{parseFloat(item.rec_type_price).toFixed(2)} บาท</td>
+                      <td className="py-2">{parseFloat(item.total_price).toFixed(2)} บาท</td>
                     </tr>
                   ))}
                   <tr>
                     <td className="py-2 font-semibold">รวม</td>
-                    <td className="py-2 font-semibold">{bookings.res_weight} กก.</td>
+                    <td className="py-2 font-semibold">{reserve.res_weight} กก.</td>
                     <td className="py-2"></td>
-                    <td className="py-2 font-semibold">{bookings.res_amount} บาท</td>
+                    <td className="py-2 font-semibold">{reserve.res_amount} บาท</td>
                   </tr>
                 </tbody>
               </table>
@@ -168,13 +164,14 @@ const BookingSuccess = () => {
             {/* actions */}
             <div className="mt-6 text-center  sm:flex-row sm:justify-between">
               <span className="">
-                ไปที่หน้า
-                <Link
-                  to={"#"}
-                  className="pl-2  text-[#349A2D] font-semibold hover:underline"
-                >
-                  ติดตามสถานะ
+                กลับไปที่หน้า
+                <Link to={"/home"} className="pl-2 text-[#349A2D] font-semibold hover:underline">
+                  หน้าหลัก
                 </Link>
+                
+                {/* <Link to={"#"} className="pl-2  text-[#349A2D] font-semibold hover:underline">
+                  ติดตามสถานะ
+                </Link> */}
               </span>
             </div>
           </div>

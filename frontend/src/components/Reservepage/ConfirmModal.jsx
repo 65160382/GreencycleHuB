@@ -19,10 +19,8 @@ const modalVariants = {
 };
 
 const ComfirmModal = ({ isOpen, onClose }) => {
-  const { selectedWaste } = useContext(ReserveContext);
-  const { selectedDate } = useContext(ReserveContext);
+  const { selectedWaste, selectedDate, selectedAddress } = useContext(ReserveContext);
   const { user } = useContext(AuthContext);
-  const { selectedAddress } = useContext(ReserveContext);
   const [totalWeight, setTotalWeight] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -69,7 +67,7 @@ const ComfirmModal = ({ isOpen, onClose }) => {
         addrId: selectedAddress?.add_id,
         recTypeIds: selectedWaste.map((item) => item.rec_type_id),
       };
-      console.log("Data to submit:", data);
+      // console.log("Data to submit:", data);
 
       // http://localhost:3000/api/reserve
       const response = await fetch(`${apiUrl}/api/reserve`, {
@@ -83,26 +81,34 @@ const ComfirmModal = ({ isOpen, onClose }) => {
 
       if (response.ok) {
         const result = await response.json();
-        console.log("การจองสำเร็จ:", result);
+        // console.log("การจองสำเร็จ:", result);
         setIsLoading(false);
         onClose(); // ปิด modal หลังจากยืนยัน
-        navigate("/booking-success/${result.resId}");
+        navigate(`/booking-success/${result.resId}`); // นำทางไปยังหน้าสำเร็จ
       }else{
         const errorData = await response.json();
-        setIsLoading(false);
+        // setIsLoading(false);
         console.error("เกิดข้อผิดพลาดในการจอง:", errorData.message);
       }
     } catch (error) {
-      setIsLoading(false);
       console.error("เกิดข้อผิดพลาดในการจอง:", error);
+    } finally{
+      setIsLoading(false);
+      onClose(); // ปิด modal ไม่ว่าจะสำเร็จหรือไม่ก็ตาม
     }
   };
 
   return (
     <AnimatePresence>
-      {/* { isLoading && <Loading/>} */}
       {isOpen && (
         <>  
+          {/* 1) Loading Overlay (ทับทั้งโมดัล) */}
+          {isLoading && (
+            <div className="fixed inset-0 z-[70] bg-black/40 backdrop-blur-sm flex items-center justify-center">
+              <Loading />
+            </div>
+          )}
+
           {/* Backdrop */}
           <motion.div
             className="fixed inset-0 z-50 bg-black"
@@ -251,7 +257,7 @@ const ComfirmModal = ({ isOpen, onClose }) => {
               </div>
 
               <div className="flex items-center justify-center m-2.5">
-                <button onClick={handleConfirm} className="w-[150px] px-4 py-2.5 bg-[#B9FF66] text-black font-medium rounded-lg shadow-sm hover:bg-[#a7f054] focus:outline-none focus:ring-2 focus:ring-[#B9FF66]/60 transition-all duration-200">
+                <button onClick={handleConfirm} disabled={isLoading} className="w-[150px] px-4 py-2.5 bg-[#B9FF66] text-black font-medium rounded-lg shadow-sm hover:bg-[#a7f054] focus:outline-none focus:ring-2 focus:ring-[#B9FF66]/60 transition-all duration-200">
                   ยืนยันการจอง
                 </button>
               </div>

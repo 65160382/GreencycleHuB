@@ -62,11 +62,21 @@ exports.getReserveById = async (req,res) =>{
   try {
     const resId = req.params.id;
     const cusId = req.user.cus_id;
-    const result = await Reserve.getReserveById(cusId,resId);
-    if(result){
-      res.status(200).json({result});
+
+    // ตรวจสอบว่ามีการส่ง resId มาหรือไม่
+    if (!resId) {
+      return res.status(400).json({ message: "ไม่มีข้อมูลรหัสการจอง" });
+    }
+
+    // Promise.all() ใช้สำหรับรอผลลัพธ์จากทั้งสองโมเดล
+    const [reserveResult, reserveDetailResult] = await Promise.all([Reserve.getReserveById(cusId, resId), ReserveDetail.getReserveDetailById(resId)]);
+    // destructure ผลลัพธ์จากทั้งสองโมเดล
+    const result = { reserveResult, reserveDetailResult }; 
+
+    if(reserveResult && reserveDetailResult){
+      res.status(200).json({ result });
     }else{
-      res.status(404).json({message: "ไม่พบข้อมูลการจอง!"});
+      res.status(404).json({ message: "ไม่พบข้อมูลการจอง!" });
     }
   } catch (error) {
     console.error("เกิดข้อผิดพลาดในการดึงข้อมูลการจอง", error);
