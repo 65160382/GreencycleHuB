@@ -53,7 +53,7 @@ const Imagemodal = ({ isOpen, onClose }) => {
     setImage(null);
     setWeight("");
     setPredictResult(null); // ล้างผลลัพธ์การวิเคราะห์เมื่อมีการลบรูป
-    console.log("ลบภาพที่เลือกแล้ว!");
+    // console.log("ลบภาพที่เลือกแล้ว!");
   };
 
   return (

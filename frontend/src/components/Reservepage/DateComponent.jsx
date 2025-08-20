@@ -3,9 +3,9 @@ import { ReserveContext } from "../../context/ReserveContext";
 
 const DateComponent = () => {
   const { selectedDate, setSelectedDate } = useContext(ReserveContext);
-  useEffect(() => {
-    console.log("ทดสอบแสดงผลค่าวันที่ที่เลือก:", selectedDate);
-  }, [selectedDate]);
+  // useEffect(() => {
+  //   console.log("ทดสอบแสดงผลค่าวันที่ที่เลือก:", selectedDate);
+  // }, [selectedDate]);
   return (
     <>
       <div className="flex flex-col gap-2">

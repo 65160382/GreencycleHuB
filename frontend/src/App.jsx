@@ -8,6 +8,7 @@ import Reserve from "./pages/Reserve";
 import { AuthProvider } from "./context/AuthProvider";
 import { ReserveProvider } from "./context/ReserveProvider";
 import BookingSuccess from "./pages/BookingSuccess";
+import Status from "./pages/Status";
 
 function App() {
   return (
@@ -18,15 +19,9 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/home" element={<Home />} />
-          <Route
-            path="/reserve"
-            element={
-              <ReserveProvider>
-                <Reserve />
-              </ReserveProvider>
-            }
-          />
+          <Route path="/reserve" element={<ReserveProvider> <Reserve /> </ReserveProvider>}/>
           <Route path="/booking-success/:resId" element={<BookingSuccess/>} />
+          <Route path="/status" element={<Status/>}/>
           {/* <Route path="/image-processing" element={<Imagemodal setIsOpen={true}/>} /> */}
         </Routes>
         {/* ตั้งค่า toastcotainer สำหรับการแจ้งเตือน */}

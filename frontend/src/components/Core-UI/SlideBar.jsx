@@ -1,8 +1,29 @@
 // Sidebar.jsx
 import { Link } from "react-router-dom";
 import { IoClose } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
+
+  // ฟังก์ชั่นสำหรับออกจากระบบ http://localhost:3000/api/auth/logout
+  const handlelogout = async () => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${apiUrl}/api/logout`,{
+        method:"POST",
+        credentials: "include", // เพื่อให้ cookie ถูกส่งไปกับคำขอ
+      })
+      if(response.ok){
+        const result = await response.json();
+        console.log(result.message);
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error("เกิดข้อผิดพลาดในการออกจากระบบ:", error);
+    }
+  }
+
   return (
     <>
       {isOpen && (
@@ -37,12 +58,12 @@ const Sidebar = ({ isOpen, onClose }) => {
           <Link to="/reserve" className="text-gray-700 hover:text-green-600 transittion-all duration-300 hover:translate-x-2">
             จองคิวรับซื้อขยะ
           </Link>
-          <Link to="#" className="text-gray-700 hover:text-green-600 transittion-all duration-300 hover:translate-x-2">
-            ติดตามสถานะ
+          <Link to="/status" className="text-gray-700 hover:text-green-600 transittion-all duration-300 hover:translate-x-2">
+            รายการจองของฉัน
           </Link>
           <Link to="#" className="text-gray-700 hover:text-green-600 transittion-all duration-300 hover:translate-x-2">ประวัติการสแกนขยะ</Link>
           <Link to="#" className="text-gray-700 hover:text-green-600 transittion-all duration-300 hover:translate-x-2">โปรไฟล์</Link>
-          <Link to="#" className="text-gray-700 hover:text-green-600 transittion-all duration-300 hover:translate-x-2">ออกจากระบบ</Link>
+          <Link to="/logout" onClick={handlelogout} className="text-gray-700 hover:text-green-600 transittion-all duration-300 hover:translate-x-2">ออกจากระบบ</Link>
 
         </nav>
 

@@ -4,9 +4,9 @@ import { ReserveContext } from "../../context/ReserveContext";
 const RecycleTypeSelector = ({ wasteCollections }) => {
   const { selectedWaste, setSelectedWaste } = useContext(ReserveContext);
 
-  useEffect(()=>{
-    console.log("value selectedwaste is:",selectedWaste)
-  },[selectedWaste])
+  // useEffect(()=>{
+  //   console.log("value selectedwaste is:",selectedWaste)
+  // },[selectedWaste])
 
   const handleCheckboxChange = (item, checked) => {
     try {

@@ -12,10 +12,10 @@ const AddressSelector = () => {
     fetchDefaultAddress();
   }, []);
 
-  useEffect(() => {
-  // รันทุกครั้งที่ selectedAddress เปลี่ยน
-  console.log("Context Address :", selectedAddress);
-  }, [selectedAddress]);
+  // useEffect(() => {
+  // // รันทุกครั้งที่ selectedAddress เปลี่ยน
+  // console.log("Context Address :", selectedAddress);
+  // }, [selectedAddress]);
 
   // http://localhost:3000/api/addresses/default
   const fetchDefaultAddress = async () => {

@@ -109,3 +109,13 @@ exports.checkAuth = async (req, res) => {
   const { id, email, role, fname, lname, phone, cus_id } = req.user;
   return res.status(200).json({ user: { id, email, role, fname, lname, phone, cus_id } });
 };
+
+exports.logoutUser = async (req,res) => {
+  try {
+    res.clearCookie("token");
+    return res.status(200).json({ message: "ออกจากระบบสำเร็จ!" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์" });
+  }
+}

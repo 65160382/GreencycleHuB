@@ -14,8 +14,8 @@ const Navlinks = () => {
       <Link to="/reserve" className={baseClass}>
         จองคิวรับซื้อขยะ
       </Link>
-      <Link to="#" className={baseClass}>
-        ติดตามสถานะ
+      <Link to="/status" className={baseClass}>
+        รายการจองของฉัน
       </Link>
     </nav>
   );

@@ -11,7 +11,7 @@ import { ChevronLeft } from "lucide-react";
 import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 
-const Reserve = ({ isLoggedIn }) => {
+const Reserve = () => {
   const [wasteCollections, setWasteCollections] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const { selectedWaste, selectedDate } = useContext(ReserveContext);
@@ -40,7 +40,7 @@ const Reserve = ({ isLoggedIn }) => {
 
   return (
     <div className="bg-[#f3f3f3]">
-      <Header isLoggedIn={isLoggedIn} />
+      <Header />
 
       {/* content div */}
       <div className="flex flex-col px-10 py-4  ">
