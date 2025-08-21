@@ -20,8 +20,7 @@ class Reserve {
       const sql = `SELECT
   r.res_code,
   c.cus_fname,
-  c.cus_lname,
-  c.cus_phone,
+  CONCAT(c.cus_fname,' ',c.cus_lname) AS customername,
   r.res_booking_date,
   r.res_time_slot,
   r.res_amount,
@@ -44,6 +43,30 @@ WHERE r.cus_id = ?
       throw error;
     }
   }
+
+  static async getAllReserves(cusId){
+    try {
+      const sql = `SELECT 
+                    r.res_id,
+                    r.res_code,
+                    r.res_booking_date,
+                    r.res_time_slot,
+                    r.res_status,
+                    r.res_amount,
+                CONCAT(c.cus_fname,' ',c.cus_lname) AS customers_name
+                FROM reserve AS r
+                JOIN customers AS c ON c.cus_id = r.cus_id 
+                WHERE r.cus_id = 2 
+                ORDER BY r.res_create_at DESC;`;
+      const [result] = await pool.query(sql, [cusId]);
+      return result;
+    } catch (error) {
+      console.error("Error query Reserve table!", error);
+      throw error;
+    }
+  }
+
+
 }
 
 module.exports = Reserve;

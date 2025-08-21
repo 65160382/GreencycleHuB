@@ -1,6 +1,5 @@
-import React from "react";
 
-const TableReserve = () => {
+const TableReserve = ( { details, reserve }) => {
   return (
     <div className="overflow-hidden">
       <table className="w-full text-sm">
@@ -19,22 +18,21 @@ const TableReserve = () => {
         </thead>
         {/* map ค่าที่ได้จาก database มาใส่ */}
         <tbody className="divide-y divide-gray-100">
-          {/* {items.map((it) => ( */}
-          <tr key={""}>
+          {details.map((item) => (
+          <tr key={item.rec_type_id}>
             <td className="px-4 py-3">
               <div className="h-10 w-10 rounded-md bg-gray-100 grid place-items-center">
-                {/* placeholder for icon */}
-                {/* <span className="text-xs text-gray-500">♻️</span> */}
+                <img src={item.rec_type_public_id} alt="recyletype"></img>
               </div>
             </td>
-            <td className="px-2 py-3 text-gray-800">{""}</td>
-            <td className="px-2 py-3 text-gray-700">น้ำหนัก {""} กิโลกรัม</td>
-            <td className="px-2 py-3 text-gray-700">{""} บาท</td>
+            <td className="px-2 py-3 text-gray-800">{item.rec_type_name}</td>
+            <td className="px-2 py-3 text-gray-700"> {item.total_weight} กิโลกรัม</td>
+            <td className="px-2 py-3 text-gray-700">{item.rec_type_price} บาท</td>
             <td className="px-4 py-3 text-right font-medium text-gray-900">
-              {""} บาท
+              {parseFloat(item.total_price).toFixed(2)} บาท
             </td>
           </tr>
-          {/* ))} */}
+           ))} 
         </tbody>
         {/* ส่วนสรุปน้ำหนักและราคารวม */}
         <tfoot>
@@ -47,10 +45,10 @@ const TableReserve = () => {
               รวม
             </td>
             <td className="px-2 py-3 font-medium text-gray-700">
-              {/* {totals.kg.toFixed(1)} กิโลกรัม */}
+              {parseFloat(reserve.res_weight).toFixed(2)} กิโลกรัม
             </td>
             <td className="px-4 py-3 text-right font-bold">
-              {/* {totals.amount.toFixed(1)} บาท */}
+              {parseFloat(reserve.res_amount).toFixed(2)} บาท
             </td>
           </tr>
         </tfoot>

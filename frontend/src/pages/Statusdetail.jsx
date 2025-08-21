@@ -1,9 +1,11 @@
 import Header from "../components/Core-UI/Header";
 import Footer from "../components/Core-UI/Footer";
-import { ChevronLeft,MapPinCheck } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ChevronLeft, MapPinCheck,MapPin } from "lucide-react";
+import { Link, useParams } from "react-router-dom";
 import ProgessBar from "../components/Statuspage/ProgessBar";
 import TableReserve from "../components/Statuspage/TableReserve";
+import { Breadcrumb } from "../components/Core-UI/Breadcrumb";
+import { useEffect, useState } from "react";
 
 const Statusdetail = () => {
   // const steps = [
@@ -14,15 +16,45 @@ const Statusdetail = () => {
   //   { label: "เสร็จสิ้น", note: "" }
   // ];
 
+  const { resId } = useParams();
+  const [reserve, setReserve] = useState({});
+  const [details, setDetails] = useState([]);
 
-//   const getData = () => {
-//     try {
-//       const apiUrl = import.meta.env.VITE_API_URL;
+  useEffect(() => {
+    fetchReservations();
+  }, []);
 
-//     } catch (error) {
-//       console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);
-//     }
-//   }
+  const fetchReservations = async () => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const respone = await fetch(`${apiUrl}/api/reserve/${resId}`, {
+        method: "GET",
+        credentials: "include", // ส่ง cookies ไปด้วย
+      });
+      if (respone.ok) {
+        const data = await respone.json();
+        // console.log("Reservations:", data.result);
+        setReserve(data.result.reserveResult);
+        setDetails(data.result.reserveDetailResult);
+      }
+    } catch (error) {
+      console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);
+    }
+  };
+
+  // ฟังก์ชั่นสำหรับจัดรูปแบบวันที่ toLocaleDateString()
+  const formatDateString = (date) => {
+    // const date = reserve.res_booking_date;
+    if (!date) return "ไม่มีข้อมูลวันที่จอง";
+
+    // ถ้าใช้ "th-TH" → จะได้เป็น 15/08/2568 (พ.ศ.)
+    const formattedDate = new Date(date).toLocaleDateString("th-TH", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+    return formattedDate;
+  };
 
   return (
     <div className="bg-[#f3f3f3]">
@@ -33,12 +65,13 @@ const Statusdetail = () => {
         <section className="flex m-2.5 font-medium">
           <ChevronLeft className="cursor-pointer" />
           <Link
-            to={"/home"}
+            to={"/status"}
             className="hover:text-green-600 transition-colors cursor-pointer"
           >
-            กลับสู่หน้าหลัก
+            ย้อนกลับ
           </Link>
         </section>
+        {/* <Breadcrumb/> */}
 
         {/* header */}
         <div className="rounded-md shadow-sm bg-gradient-to-r from-[#B9FF66] to-[#5AF3A7] p-4 my-4 mx-auto w-full max-w-5xl">
@@ -51,14 +84,19 @@ const Statusdetail = () => {
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 px-5 py-4">
             <div className="space-y-1">
               <div className="text-base font-semibold ">
-                หมายเลขการจอง{" "}
-                <span className="font-semibold text-gray-900"></span>
+                หมายเลขการจอง{" "} 
+                <span className="font-semibold text-gray-900">
+                  {reserve.res_code}
+                </span>
               </div>
               <div className="text-sm ">
-                ชื่อผู้จอง <span className="font-medium text-gray-900"></span>
+                ชื่อผู้จอง <span className="font-medium text-gray-900">{reserve.customername}</span>
               </div>
-              <div className="text-sm ">วันที่ทำรายการ: </div>
-              <div className="text-sm ">วันนัดรับ: </div>
+              {/* <div className="text-sm ">วันที่ทำรายการ: {} </div> */}
+              <div className="text-sm ">
+                วันนัดรับ: {formatDateString(reserve.res_booking_date)} รอบ{" "}
+                {reserve.res_time_slot}
+              </div>
             </div>
             {/* ปุ่มแสดงแผนที่ */}
             <button
@@ -79,32 +117,45 @@ const Statusdetail = () => {
           </div>
 
           {/* รายการขยะการที่จอง */}
-          <TableReserve/>
+          <TableReserve details={details} reserve={reserve}/>
 
-          {/* address */}
-          <div className="">
-            {/* header */}
-            <div className="font-semibold text-gray-800 px-5 py-2">
-              ที่อยู่สำหรับรับขยะ
+          {/* Address Card */}
+          <div className="mx-5 my-3 rounded-md border border-gray-200 bg-white shadow-sm">
+            {/* Header */}
+            <div className="flex items-center px-2.5 py-2 gap-2 border-b border-gray-200">
+              <div className="rounded-full bg-emerald-100 p-2 text-emerald-700">
+                <MapPin className="h-4 w-4" />
+              </div>
+              <h3 className="text-sm font-semibold text-gray-800">
+                ที่อยู่สำหรับรับขยะ
+              </h3>
             </div>
-            {/* address detail */}
-            <div className="px-5 py-2">
-              <p>test</p>
-              <p>test</p>
-              <p>test</p>
+
+            {/* Body */}
+            <div className="px-4 py-3 text-sm text-gray-700 space-y-1">
+              <p>
+                {reserve.add_province} {reserve.add_district}{" "}
+                {reserve.add_subdistrict}
+              </p>
+              <p>
+                {reserve.add_houseno} {reserve.add_road} {reserve.add_postcode}
+              </p>
             </div>
           </div>
 
+
           {/* actions */}
           <div className="flex items-center justify-center py-5">
-            <button className="border rounded-lg p-2.5 bg-[#EA4335]" type="button">
+            <button
+              className="border rounded-lg p-2.5 bg-[#EA4335]"
+              type="button"
+            >
               <span className="px-4 py-2 text-sm font-semibold text-white ">
                 ยกเลิกการจอง
               </span>
             </button>
           </div>
 
-          
         </div>
       </div>
       <Footer />

@@ -16,7 +16,8 @@ class ReserveDetail {
     try {
       const sql = `SELECT 
         wc.rec_type_id, 
-        rt.rec_type_name, 
+        rt.rec_type_name,
+        rt.rec_type_public_id, 
         SUM(wc.waste_collect_quantity) AS total_weight, 
         rt.rec_type_price,
         SUM(wc.waste_collect_quantity * rt.rec_type_price) AS total_price

@@ -81,4 +81,19 @@ exports.getReserveById = async (req,res) =>{
   } catch (error) {
     console.error("เกิดข้อผิดพลาดในการดึงข้อมูลการจอง", error);
   }
+};
+
+exports.getAllReserves = async (req, res) => {
+  try {
+    const cusId = req.user.cus_id;
+    const result = await Reserve.getAllReserves(cusId);
+    if(result.length > 0){
+      return res.status(200).json({ result});
+    }else{
+      return res.status(404).json({ message: "ไม่พบข้อมูลการจอง!"});
+    }
+  } catch (error) {
+    console.error("เกิดข้อผิดพลาดในการดึงข้อมูลการจองทั้งหมด", error);
+    res.status(500).json({ message: "เกิดข้อผิดพลาดไม่สามารถดึงข้อมูลการจองทั้งหมดได้" });
+  }
 }
