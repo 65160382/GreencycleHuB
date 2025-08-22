@@ -1,58 +1,81 @@
-
-const TableReserve = ( { details, reserve }) => {
+const TableReserve = ({ details , reserve  }) => {
   return (
-    <div className="overflow-hidden">
-      <table className="w-full text-sm">
-        <thead className="bg-gray-50 text-gray-600">
-          <tr>
-            <th className="px-4 py-3 text-left font-semibold w-16">&nbsp;</th>
-            <th className="px-2 py-3 text-left font-semibold">
-              ประเภทขยะรีไซเคิล
-            </th>
-            <th className="px-2 py-3 text-left font-semibold">
-              จำนวน(กิโลกรัม)
-            </th>
-            <th className="px-2 py-3 text-left font-semibold">ราคาต่อหน่วย</th>
-            <th className="px-4 py-3 text-right font-semibold">ราคารวม</th>
-          </tr>
-        </thead>
-        {/* map ค่าที่ได้จาก database มาใส่ */}
-        <tbody className="divide-y divide-gray-100">
-          {details.map((item) => (
-          <tr key={item.rec_type_id}>
-            <td className="px-4 py-3">
-              <div className="h-10 w-10 rounded-md bg-gray-100 grid place-items-center">
-                <img src={item.rec_type_public_id} alt="recyletype"></img>
-              </div>
-            </td>
-            <td className="px-2 py-3 text-gray-800">{item.rec_type_name}</td>
-            <td className="px-2 py-3 text-gray-700"> {item.total_weight} กิโลกรัม</td>
-            <td className="px-2 py-3 text-gray-700">{item.rec_type_price} บาท</td>
-            <td className="px-4 py-3 text-right font-medium text-gray-900">
-              {parseFloat(item.total_price).toFixed(2)} บาท
-            </td>
-          </tr>
-           ))} 
-        </tbody>
-        {/* ส่วนสรุปน้ำหนักและราคารวม */}
-        <tfoot>
-          <tr className="border-gray-200 bg-gray-50">
-            <td className="px-4 py-3" />
-            <td
-              className="px-2 py-3 text-right font-medium text-gray-700"
-              colSpan={2}
-            >
-              รวม
-            </td>
-            <td className="px-2 py-3 font-medium text-gray-700">
-              {parseFloat(reserve.res_weight).toFixed(2)} กิโลกรัม
-            </td>
-            <td className="px-4 py-3 text-right font-bold">
-              {parseFloat(reserve.res_amount).toFixed(2)} บาท
-            </td>
-          </tr>
-        </tfoot>
-      </table>
+    <div className="rounded-md overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          {/* Head */}
+          <thead className="bg-gray-50 text-gray-700">
+            <tr>
+              {/* คอลัมน์รวม: รูป + ชื่อ */}
+              <th className="px-3 py-3 text-left">ประเภทขยะรีไซเคิล</th>
+              <th className="px-3 py-3 text-right">จำนวน (กก.)</th>
+              <th className="px-3 py-3 text-right">ราคาต่อหน่วย</th>
+              <th className="px-4 py-3 text-right">ราคารวม</th>
+            </tr>
+          </thead>
+
+          {/* Body */}
+          <tbody className="divide-y divide-gray-100">
+            {details.map((item) => (
+              <tr key={item.rec_type_id} className="hover:bg-gray-50/70">
+                {/* รูป + ชื่อ (คอลัมน์เดียว) */}
+                <td className="px-3 py-3 text-gray-800">
+                  <div className="flex items-center gap-3 min-w-[180px]">
+                    <div className="h-10 w-10 rounded-md bg-gray-100 flex items-center justify-center overflow-hidden">
+                      {item.rec_type_public_id ? (
+                        <img
+                          src={item.rec_type_public_id}
+                          alt={item.rec_type_name || "recycle"}
+                          className="block max-h-9 max-w-9 object-contain"
+                        />
+                      ) : (
+                        <span className="text-[10px] text-gray-400">N/A</span>
+                      )}
+                    </div>
+                    <span className="leading-tight">{item.rec_type_name || "-"}</span>
+                  </div>
+                </td>
+
+                <td className="px-3 py-3 text-right text-gray-700">
+                  {Number(item.total_weight).toFixed(2)}
+                </td>
+
+                <td className="px-3 py-3 text-right text-gray-700">
+                  {Number(item.rec_type_price).toFixed(2)} บาท
+                </td>
+
+                <td className="px-4 py-3 text-right font-medium text-gray-900">
+                  {Number(item.total_price).toFixed(2)} บาท
+                </td>
+              </tr>
+            ))}
+
+            {details.length === 0 && (
+              <tr>
+                <td colSpan={4} className="px-4 py-6 text-center text-gray-500">
+                  ไม่มีรายการ
+                </td>
+              </tr>
+            )}
+          </tbody>
+
+          {/* Foot (summary) */}
+          <tfoot>
+            <tr className="bg-gray-50">
+              {/* รวมให้ชิดขวาใต้คอลัมน์ชื่อ+จำนวน */}
+              <td className="px-3 py-3 text-right font-medium text-gray-700" colSpan={2}>
+                รวม
+              </td>
+              <td className="px-3 py-3 text-right font-medium text-gray-700">
+                {Number(reserve.res_weight).toFixed(2)} กิโลกรัม
+              </td>
+              <td className="px-4 py-3 text-right font-bold">
+                {Number(reserve.res_amount).toFixed(2)} บาท
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
     </div>
   );
 };

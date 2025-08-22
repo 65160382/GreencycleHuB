@@ -3,6 +3,7 @@ import Footer from "../components/Core-UI/Footer";
 import { Link,useNavigate } from "react-router-dom";
 import { ChevronLeft,Search } from "lucide-react";
 import { useState,useEffect } from "react";
+import { Breadcrumb } from "../components/Core-UI/Breadcrumb";
 
 
 const Status = () => {
@@ -55,11 +56,11 @@ const Status = () => {
       <div className="flex flex-col px-10 py-4">
         {/* ปุ่มกลับสู่หน้าหลัก */}
         <section className="flex m-2.5 font-medium py-2.5">
-          <ChevronLeft className="cursor-pointer" />
-          <Link to={"/home"} className="hover:text-green-600 transition-colors cursor-pointer">กลับสู่หน้าหลัก</Link>
+          {/* <ChevronLeft className="cursor-pointer" />
+          <Link to={"/home"} className="hover:text-green-600 transition-colors cursor-pointer">กลับสู่หน้าหลัก</Link> */}
+          <Breadcrumb/>
         </section>
-
-        {/* header */}
+        
         <div className="min-h-screen bg-gray-50 p-4 rounded-md shadow-sm">
           {/* Tabs */}
           <div className="flex border-b mb-4">
@@ -98,8 +99,10 @@ const Status = () => {
                 className="flex items-start gap-4 rounded-md border bg-white p-4 shadow-sm"
               >
                 {/* Placeholder image */}
-                <div className="h-20 w-20 rounded-md bg-gray-200" />
-
+                <img 
+                className="h-20 w-20 rounded-md object-cover"
+                src="https://i0.wp.com/discoverandshare.org/wp-content/uploads/2025/07/da62b-recycling_sign_green.png?fit=1024%2C1024&ssl=1" alt="recycle-logo">
+                </img>
                 <div className="flex-1 text-sm">
                   <p className="font-semibold text-gray-800">
                     หมายเลขการจอง {item.res_code}

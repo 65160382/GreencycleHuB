@@ -7,6 +7,7 @@ import RecycleTypeSelector from "../components/Reservepage/RecycleTypeSelector";
 import AddressSelector from "../components/Reservepage/AddressSelector";
 import ConfirmModal from "../components/Reservepage/ConfirmModal";
 import { ReserveContext } from "../context/ReserveContext";
+import { Breadcrumb } from "../components/Core-UI/Breadcrumb";
 import { ChevronLeft } from "lucide-react";
 import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
@@ -47,13 +48,14 @@ const Reserve = () => {
         {/* ปุ่มย้อนกลับ + หัวข้อ + progress bar  */}
         <div className="p-2.5">
           <section className="flex  m-2.5  font-medium">
-            <ChevronLeft className="cursor-pointer" />
+            {/* <ChevronLeft className="cursor-pointer" />
             <Link
               to={"/home"}
               className="hover:text-green-600 transition-colors cursor-pointer"
             >
               กลับสู่หน้าหลัก
-            </Link>
+            </Link> */}
+            <Breadcrumb />
           </section>
           <h1 className="font-bold m-2.5">จองคิวรับซื้อขยะ</h1>
           <section className="flex flex-col m-2.5 text-base">

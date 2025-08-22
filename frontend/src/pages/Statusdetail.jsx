@@ -1,21 +1,14 @@
 import Header from "../components/Core-UI/Header";
 import Footer from "../components/Core-UI/Footer";
-import { ChevronLeft, MapPinCheck,MapPin } from "lucide-react";
+import { ChevronLeft, MapPinCheck, MapPin } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
-import ProgessBar from "../components/Statuspage/ProgessBar";
+import ProgressBar from "../components/Statuspage/ProgressBar";
 import TableReserve from "../components/Statuspage/TableReserve";
 import { Breadcrumb } from "../components/Core-UI/Breadcrumb";
 import { useEffect, useState } from "react";
 
 const Statusdetail = () => {
-  // const steps = [
-  //   { label: "จองสำเร็จ", note: "26-06-2025 12:15" },
-  //   { label: "รอดำเนินการ", note: "" },
-  //   { label: "กำลังดำเนินการ", note: "" },
-  //   { label: "ถึงจุดหมาย", note: "" },
-  //   { label: "เสร็จสิ้น", note: "" }
-  // ];
-
+  
   const { resId } = useParams();
   const [reserve, setReserve] = useState({});
   const [details, setDetails] = useState([]);
@@ -62,7 +55,7 @@ const Statusdetail = () => {
       {/* Content div */}
       <div className="flex flex-col px-10 py-4">
         {/* ปุ่มกลับสู่หน้าหลัก */}
-        <section className="flex m-2.5 font-medium">
+        {/* <section className="flex m-2.5 font-medium">
           <ChevronLeft className="cursor-pointer" />
           <Link
             to={"/status"}
@@ -70,8 +63,8 @@ const Statusdetail = () => {
           >
             ย้อนกลับ
           </Link>
-        </section>
-        {/* <Breadcrumb/> */}
+        </section> */}
+        <Breadcrumb/>
 
         {/* header */}
         <div className="rounded-md shadow-sm bg-gradient-to-r from-[#B9FF66] to-[#5AF3A7] p-4 my-4 mx-auto w-full max-w-5xl">
@@ -84,13 +77,16 @@ const Statusdetail = () => {
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 px-5 py-4">
             <div className="space-y-1">
               <div className="text-base font-semibold ">
-                หมายเลขการจอง{" "} 
+                หมายเลขการจอง{" "}
                 <span className="font-semibold text-gray-900">
                   {reserve.res_code}
                 </span>
               </div>
               <div className="text-sm ">
-                ชื่อผู้จอง <span className="font-medium text-gray-900">{reserve.customername}</span>
+                ชื่อผู้จอง{" "}
+                <span className="font-medium text-gray-900">
+                  {reserve.customername}
+                </span>
               </div>
               {/* <div className="text-sm ">วันที่ทำรายการ: {} </div> */}
               <div className="text-sm ">
@@ -109,15 +105,10 @@ const Statusdetail = () => {
           </div>
 
           {/* status reserve */}
-          <div className="px-5 py-6">
-            <div className="text-sm font-medium text-gray-800">สถานะการจอง</div>
-            {/* <div className='w-full px-6 items-center justify-center'> */}
-            {/* <ProgessBar steps={steps} current={2}></ProgessBar> */}
-            {/* </div> */}
-          </div>
+          <ProgressBar currentStep={1} />
 
           {/* รายการขยะการที่จอง */}
-          <TableReserve details={details} reserve={reserve}/>
+          <TableReserve details={details} reserve={reserve} />
 
           {/* Address Card */}
           <div className="mx-5 my-3 rounded-md border border-gray-200 bg-white shadow-sm">
@@ -143,7 +134,6 @@ const Statusdetail = () => {
             </div>
           </div>
 
-
           {/* actions */}
           <div className="flex items-center justify-center py-5">
             <button
@@ -155,7 +145,6 @@ const Statusdetail = () => {
               </span>
             </button>
           </div>
-
         </div>
       </div>
       <Footer />
