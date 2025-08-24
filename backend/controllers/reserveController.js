@@ -83,17 +83,49 @@ exports.getReserveById = async (req,res) =>{
   }
 };
 
-exports.getAllReserves = async (req, res) => {
+// exports.getAllReserves = async (req, res) => {
+//   try {
+//     const cusId = req.user.cus_id;
+//     const result = await Reserve.getAllReserves(cusId);
+//     if(result.length > 0){
+//       return res.status(200).json({ result});
+//     }else{
+//       return res.status(404).json({ message: "ไม่พบข้อมูลการจอง!"});
+//     }
+//   } catch (error) {
+//     console.error("เกิดข้อผิดพลาดในการดึงข้อมูลการจองทั้งหมด", error);
+//     res.status(500).json({ message: "เกิดข้อผิดพลาดไม่สามารถดึงข้อมูลการจองทั้งหมดได้" });
+//   }
+// }
+
+exports.getReserves = async (req, res) => {
   try {
     const cusId = req.user.cus_id;
-    const result = await Reserve.getAllReserves(cusId);
-    if(result.length > 0){
-      return res.status(200).json({ result});
-    }else{
-      return res.status(404).json({ message: "ไม่พบข้อมูลการจอง!"});
-    }
+    const { status,start,end } = req.query; 
+
+    const result = await Reserve.getReserves(cusId, status || null,start,end);
+    return res.status(200).json({ result }); // ว่าง = []
   } catch (error) {
     console.error("เกิดข้อผิดพลาดในการดึงข้อมูลการจองทั้งหมด", error);
-    res.status(500).json({ message: "เกิดข้อผิดพลาดไม่สามารถดึงข้อมูลการจองทั้งหมดได้" });
+    return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
+
+
+// exports.getReserveStatus = async (req,res) => {
+//   try {
+//     const cusId = req.user.cus_id;
+//     const status = req.query.status;
+//     if(!status){
+//       return res.status(400).json({ message: "ไม่มีสถานะการจอง"});
+//     }
+//     const result = await Reserve.queryReserveStatus(cusId,status);
+//     if(result && result.length){
+//       res.status(200).json({result});
+//     }else{
+//       res.status(404).json({message: "ไม่พบข้อมูลสถานะที่เลือก"})
+//     }
+//   } catch (error) {
+//     console.error("เกิดข้อผิดพลาดในการค้นหาข้อมูล",error);
+//   }
+// };

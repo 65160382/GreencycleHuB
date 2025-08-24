@@ -54,16 +54,6 @@ const Statusdetail = () => {
       <Header />
       {/* Content div */}
       <div className="flex flex-col px-10 py-4">
-        {/* ปุ่มกลับสู่หน้าหลัก */}
-        {/* <section className="flex m-2.5 font-medium">
-          <ChevronLeft className="cursor-pointer" />
-          <Link
-            to={"/status"}
-            className="hover:text-green-600 transition-colors cursor-pointer"
-          >
-            ย้อนกลับ
-          </Link>
-        </section> */}
         <Breadcrumb/>
 
         {/* header */}

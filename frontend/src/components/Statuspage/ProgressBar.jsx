@@ -17,7 +17,7 @@ export default function ProgressBar({ currentStep }) {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto py-5">
+    <div className="w-full max-w-4xl mx-auto p-4">
       <h2 className="text-base font-semibold text-gray-800 mb-7 ">สถานะการจอง</h2>
       
       <div className="flex flex-col space-y-4">

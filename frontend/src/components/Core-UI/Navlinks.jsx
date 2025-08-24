@@ -8,9 +8,9 @@ const Navlinks = () => {
       <Link to="/home" className={baseClass}>
         หน้าหลัก
       </Link>
-      <Link to="#" className={baseClass}>
+      {/* <Link to="#" className={baseClass}>
         สแกนขยะ
-      </Link>
+      </Link> */}
       <Link to="/reserve" className={baseClass}>
         จองคิวรับซื้อขยะ
       </Link>

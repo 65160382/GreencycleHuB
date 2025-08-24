@@ -1,27 +1,46 @@
 import Header from "../components/Core-UI/Header";
 import Footer from "../components/Core-UI/Footer";
-import { Link,useNavigate } from "react-router-dom";
-import { ChevronLeft,Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Search } from "lucide-react";
 import { useState,useEffect } from "react";
 import { Breadcrumb } from "../components/Core-UI/Breadcrumb";
+import DateRangePicker from "../components/Statuspage/DateRangePicker";
 
+const STATUS_MAP = {
+  "ทั้งหมด": null,
+  "รอดำเนินการ": "pending",
+  "กำลังดำเนินการ": "picking_up",
+  "สำเร็จ": "completed",
+  "ยกเลิกแล้ว": "canceled",
+};
 
 const Status = () => {
+  const apiUrl = import.meta.env.VITE_API_URL;
   const [activeTab, setActiveTab] = useState("ทั้งหมด");
-  const [search, setSearch] = useState("");
   const [reservations, setReservations] = useState([]);
-  const tabs = ["ทั้งหมด", "รอตรวจสอบ", "สำเร็จ", "ยกเลิกแล้ว"];
+  const tabs = ["ทั้งหมด", "รอดำเนินการ","กำลังดำเนินการ", "สำเร็จ", "ยกเลิกแล้ว"];
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const navigate = useNavigate();
 
   useEffect(()=> {
-    fetchReservations();
-  },[])
+    const statusEn = STATUS_MAP[activeTab]; // map ไทย -> อังกฤษ (หรือ null)
+    fetchReservations(statusEn);
+  },[activeTab, startDate, endDate])
+
 
   // http://localhost:3000/reserve
-  const fetchReservations = async () => {
+  const fetchReservations = async (status) => {
     try {
-      const apiUrl = import.meta.env.VITE_API_URL;
-      const response = await fetch(`${apiUrl}/api/reserve`,{
+      const query = new URLSearchParams();
+
+      if(status) query.set("status",status);
+      if(startDate) query.set("start",formatDatetoYMD(startDate));
+      if(endDate) query.set("end",formatDatetoYMD(endDate));
+
+      const url = `${apiUrl}/api/reserve${query.toString() ? `?${query.toString()}` : ""}`;
+
+      const response = await fetch(url,{
         method: "GET",
         credentials:"include", // ส่ง cookies ไปด้วย
       });
@@ -32,6 +51,7 @@ const Status = () => {
       }
     } catch (error) {
       console.error("Error fetching reservations:", error);
+      setReservations([]); // ป้องกันค้างค่าเก่า
     }
   };
 
@@ -49,15 +69,19 @@ const Status = () => {
     return formattedDate;
   };
 
+  const formatDatetoYMD = (dateStr) => {
+    if(!dateStr) return undefined;
+    const date = new Date(dateStr);
+    return date.toISOString().split("T")[0];
+  };
+
+
   return (
     <div className="bg-[#f3f3f3]">
       <Header />
       {/* Content div */}
       <div className="flex flex-col px-10 py-4">
-        {/* ปุ่มกลับสู่หน้าหลัก */}
         <section className="flex m-2.5 font-medium py-2.5">
-          {/* <ChevronLeft className="cursor-pointer" />
-          <Link to={"/home"} className="hover:text-green-600 transition-colors cursor-pointer">กลับสู่หน้าหลัก</Link> */}
           <Breadcrumb/>
         </section>
         
@@ -79,16 +103,9 @@ const Status = () => {
             ))}
           </div>
 
-          {/* Search */}
+          {/* filterDate */}
           <div className="mb-4 relative">
-            <Search className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-4" />
-            <input
-              type="text"
-              placeholder="ค้นหา"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-md border border-gray-300 p-2 pl-8 text-sm focus:border-green-500 focus:ring-green-500"
-            />
+            <DateRangePicker startDate={startDate}  setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate}/>
           </div>
 
           {/* List */}
@@ -126,6 +143,13 @@ const Status = () => {
                 </button>
               </div>
             ))}
+
+            {/* กรณีไม่มีรายการ */}
+            {reservations.length === 0 && (
+              <div className="text-sm text-gray-500 p-4 border rounded bg-white">
+                ไม่พบรายการในสถานะ “{activeTab}”
+              </div>
+            )}
           </div>
         </div>
       </div>
