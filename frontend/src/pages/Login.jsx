@@ -2,6 +2,7 @@ import LoginForm from "../components/Loginpage/LoginForm";
 import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import { User } from "lucide-react";
 
 const Login = () => {
   const { setIsLoggedIn, setUser } = useContext(AuthContext);
@@ -30,13 +31,19 @@ const Login = () => {
         setIsLoggedIn(true); // อัปเดตสถานะทันทีหลัง login
         setUser(data.payload);
         console.log(data);
-        navigate("/home"); 
+        // navigate("/home"); 
       } else {
         // handleError();
         // ดึงข้อความ error message ที่ส่งมาจาก api
         const errorData = await response.json();
         console.log(errorData.message);
         setError(errorData.message);
+      }
+                      
+      if(User.role=="admin"){
+        navigate("/admin")
+      }else{
+        navigate("/home")
       }
     } catch (error) {
       console.error("เกิดข้อผิดพลาด", error);

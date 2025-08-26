@@ -1,4 +1,4 @@
-import "./Typewaste.css"; 
+// import "./Typewaste.css"; 
 
 function Typewastenav() {
   const wastedata = [
@@ -11,7 +11,7 @@ function Typewastenav() {
 
   return (
     <div className="type-recycle">
-      <h1>ประเภทของขยะรีไซเคิล</h1>
+      <h1 className="text-base">ประเภทของขยะรีไซเคิล</h1>
       <div className="type-grid">
         {wastedata.map((item) => (
           <div className="type-card" key={item.id}>

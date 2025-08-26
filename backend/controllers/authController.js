@@ -16,7 +16,7 @@ exports.loginUser = async (req, res) => {
       return res.status(400).json({ message: { password: "รหัสผ่านไม่ถูกต้อง" } });
     }
     //ดึงข้อมูลจาก user พร้อมเปลี่ยนชื่อ users_id --> uid
-    const { users_id: uid, users_email, roles_id } = user;
+    const { users_id: uid, users_email, roles_name } = user;
     // ดึงข้อมูล customer ตาม user_id
     const [customer] = await Customer.getCustomer(uid);
 
@@ -27,7 +27,7 @@ exports.loginUser = async (req, res) => {
     const payload = {
       id: uid,
       email: users_email,
-      role: roles_id,
+      role: roles_name,
       fname: cus_fname,
       lname: cus_lname,
       phone: cus_phone,
@@ -65,12 +65,12 @@ exports.registerUser = async (req, res) => {
     const userid = await User.createUser(email, password);
 
     // เพิ่มข้อมูลลงตาราง Customer
-    const cusId = await Customer.createCustomer(
-      firstname,
-      lastname,
-      email,
-      userid
-    );
+    const cusId = await Customer.createCustomer(firstname,lastname,email,userid);
+
+    // ดึงข้อมูล user เพื่อนำข้อมูลไปเก็บไว้ใน payload 
+    const rolename  = await User.getRolename(userid);
+
+    console.log("test role user:",rolename);
 
     // ส่งค่า customerid ไป ใส่ไว้ใน token เมื่อผู้ใช้สมัครสมาชิก
     if (cusId) {
@@ -80,6 +80,7 @@ exports.registerUser = async (req, res) => {
         cus_id: cusId,
         fname: firstname,
         lname: lastname,
+        role: rolename,
       };
 
       // เรียกใช้ฟังก์ชั่น createToken

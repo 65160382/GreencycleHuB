@@ -49,7 +49,7 @@ const DateRangePicker = ({startDate, setStartDate, endDate, setEndDate}) => {
     // แปลงวันที่เป็นรูปแบบ string "YYYY-MM-DD"
     const dateString = selectedDate.toISOString().split('T')[0];
     // const dateString = toYMDLocal(selectedDate);
-    console.log("test:",dateString);
+    // console.log("test:",dateString);
     
     // ถ้ากำลังเลือกวันเริ่มต้น หรือยังไม่มีวันเริ่มต้น
     if (selectingStart || !startDate) {

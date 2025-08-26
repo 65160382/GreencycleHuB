@@ -30,3 +30,20 @@ exports.auth = async (req, res, next) => {
     return res.status(500).json({ message: "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์" });
   }
 };
+
+exports.checkAdmin = async (req, res, next) => {
+  try {
+    if(!req.user){
+      return res.status(401).json({message: "ผู้ใช้ยังไม่เข้าสู่ระบบ"});
+    }
+
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ message: "คุณไม่มีสิทธิ์เข้าถึง (Admin เท่านั้น)" });
+    }
+
+    next();
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "เกิดข้อผิดพลาดจากเซิร์ฟเวอ"})
+  }
+}

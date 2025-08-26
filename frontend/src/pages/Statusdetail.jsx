@@ -12,10 +12,28 @@ const Statusdetail = () => {
   const { resId } = useParams();
   const [reserve, setReserve] = useState({});
   const [details, setDetails] = useState([]);
+  const [ step, setStep ] = useState('');
+
+  const status_MAP = {
+    "confirmed": "0",
+    "pending": "1",
+    "picking_up": "2",
+    "arrived": "3",
+    "completed": "5",
+  }
 
   useEffect(() => {
     fetchReservations();
   }, []);
+
+  // ตรวจสอบ state reserve แล้วทำการ map status เป็นตัวเลขที่กำหนดไว้เพื่อส่งให้ component progressbar
+  useEffect(() => {
+    if(reserve.res_status){
+      const stepNumber  = status_MAP[reserve.res_status];
+      setStep(stepNumber); 
+      console.log(step);
+    }
+  },[reserve])
 
   const fetchReservations = async () => {
     try {
@@ -30,6 +48,9 @@ const Statusdetail = () => {
         setReserve(data.result.reserveResult);
         setDetails(data.result.reserveDetailResult);
       }
+      if(reserve.res_status){
+          console.log(reserve.res_status);
+        }
     } catch (error) {
       console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);
     }
@@ -95,7 +116,7 @@ const Statusdetail = () => {
           </div>
 
           {/* status reserve */}
-          <ProgressBar currentStep={1} />
+          <ProgressBar currentStep={parseInt(step)} />
 
           {/* รายการขยะการที่จอง */}
           <TableReserve details={details} reserve={reserve} />

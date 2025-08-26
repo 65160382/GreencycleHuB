@@ -19,7 +19,7 @@ class Reserve {
     try {
       const sql = `SELECT
   r.res_code,
-  c.cus_fname,
+  r.res_status,
   CONCAT(c.cus_fname,' ',c.cus_lname) AS customername,
   r.res_booking_date,
   r.res_time_slot,

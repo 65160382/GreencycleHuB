@@ -2,9 +2,9 @@ const pool = require("../config/database");
 const bcrypt = require("bcryptjs");
 
 class User {
-  static async checkPassword(password,userPass) {
+  static async checkPassword(password, userPass) {
     try {
-      const match = bcrypt.compareSync(password,userPass.users_password);
+      const match = bcrypt.compareSync(password, userPass.users_password);
       return match;
     } catch (err) {
       console.error("Error check password:", err);
@@ -15,7 +15,10 @@ class User {
   static async checkEmailQuery(email) {
     try {
       const [check] = await pool.query(
-        "SELECT * FROM users WHERE users_email = ?",
+        `SELECT u.users_id, u.users_email, u.users_password, r.roles_name
+        FROM users AS u
+        JOIN roles AS r ON u.roles_id = r.roles_id
+        WHERE u.users_email = ? `,
         [email]
       );
       return check;
@@ -40,6 +43,17 @@ class User {
     } catch (err) {
       console.error("Error execute user!", err);
       throw err;
+    }
+  }
+
+  static async getRolename(uId){
+    try {
+      const sql = `SELECT r.roles_name FROM users AS u JOIN roles AS r ON u.roles_id = r.roles_id WHERE users_id = ?;`;
+      const [result] = await pool.query(sql,[uId]);
+      return result;
+    } catch (error) {
+      console.error("Error query user table!",error);
+      throw error;
     }
   }
 }
