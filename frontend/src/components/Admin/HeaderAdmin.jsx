@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Menu, Search } from "lucide-react";
-import UserDropdown from "../Admin/UserDropdown"; // ✅ import UserDropdown
+import UserDropdown from "../Admin/UserDropdown"; 
 
 const HeaderAdmin = ({ onToggleSidebar }) => {
   const inputRef = useRef(null);
@@ -30,7 +30,7 @@ const HeaderAdmin = ({ onToggleSidebar }) => {
         </button>
 
         {/* Search Bar */}
-        <div className="pl-2.5 relative hidden md:block w-1/3">
+        {/* <div className="pl-2.5 relative hidden md:block w-1/3">
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
             <Search size={18} className="" />
           </span>
@@ -40,7 +40,7 @@ const HeaderAdmin = ({ onToggleSidebar }) => {
             placeholder="Search..."
             className="pl-10 pr-4 py-2 w-full rounded border text-sm border-gray-300 focus:outline-none focus:ring focus:ring-blue-100"
           />
-        </div>
+        </div> */}
 
         {/* User Dropdown */}
         <UserDropdown />

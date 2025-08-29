@@ -2,7 +2,6 @@ import LoginForm from "../components/Loginpage/LoginForm";
 import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import { User } from "lucide-react";
 
 const Login = () => {
   const { setIsLoggedIn, setUser } = useContext(AuthContext);
@@ -13,9 +12,10 @@ const Login = () => {
   // เรียกใช้ hook navigate สำหรับเปลี่ยนการแสดงผลของหน้าจอ
   const navigate = useNavigate();
 
+
   const handleLogin = async () => {
     try {
-      const apiUrl = import.meta.env.VITE_API_URL; 
+      const apiUrl = import.meta.env.VITE_API_URL;
       const response = await fetch(`${apiUrl}/api/login`, {
         method: "POST",
         headers: {
@@ -30,20 +30,19 @@ const Login = () => {
         const data = await response.json();
         setIsLoggedIn(true); // อัปเดตสถานะทันทีหลัง login
         setUser(data.payload);
-        console.log(data);
-        // navigate("/home"); 
+
+        if (data.payload.role == "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/home");
+        }
+        // console.log(data);
       } else {
-        // handleError();
         // ดึงข้อความ error message ที่ส่งมาจาก api
         const errorData = await response.json();
         console.log(errorData.message);
         setError(errorData.message);
-      }
-                      
-      if(User.role=="admin"){
-        navigate("/admin")
-      }else{
-        navigate("/home")
+        navigate("/login");
       }
     } catch (error) {
       console.error("เกิดข้อผิดพลาด", error);
@@ -69,7 +68,9 @@ const Login = () => {
         />
         <div className="flex justify-center mt-5 gap-2 text-sm">
           <p>หากยังไม่มีบัญชี </p>
-          <Link to={"/register"} className="text-blue-500 hover:underline">ลงทะเบียนเข้าสู่ระบบ</Link>
+          <Link to={"/register"} className="text-blue-500 hover:underline">
+            ลงทะเบียนเข้าสู่ระบบ
+          </Link>
         </div>
       </div>
       <div className="hidden md:flex justify-center items-center p-2">

@@ -4,7 +4,8 @@ const bcrypt = require("bcryptjs");
 class User {
   static async checkPassword(password, userPass) {
     try {
-      const match = bcrypt.compareSync(password, userPass.users_password);
+      // console.log("model test",password,userPass);
+      const match = bcrypt.compareSync(password, userPass);
       return match;
     } catch (err) {
       console.error("Error check password:", err);

@@ -6,35 +6,52 @@ require("dotenv").config();
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
+    // console.log("email",email);
+    // console.log("password",password);
     const [user] = await User.checkEmailQuery(email);
+    // console.log("ข้อมูลในตาราง user",user);
     if (!user) {
-      return res.status(404).json({ message: { email: "อีเมลของคุณไม่ถูกต้อง!" } });
+      return res
+        .status(404)
+        .json({ message: { email: "อีเมลของคุณไม่ถูกต้อง!" } });
     }
 
-    const match = await User.checkPassword(password, user);
+    const match = await User.checkPassword(password, user.users_password);
+    // console.log("รหัสถูกต้องหรือไม่",match)
     if (!match) {
-      return res.status(400).json({ message: { password: "รหัสผ่านไม่ถูกต้อง" } });
+      return res
+        .status(400)
+        .json({ message: { password: "รหัสผ่านไม่ถูกต้อง" } });
     }
     //ดึงข้อมูลจาก user พร้อมเปลี่ยนชื่อ users_id --> uid
     const { users_id: uid, users_email, roles_name } = user;
-    // ดึงข้อมูล customer ตาม user_id
-    const [customer] = await Customer.getCustomer(uid);
 
-    // console.log(customer)
-
-    const { cus_id, cus_fname, cus_lname, cus_phone } = customer;
-
-    const payload = {
+    // เก็บ payload แค่นี้ก่อนในกรณีที่เป็น role อื่น
+    let payload = {
       id: uid,
       email: users_email,
       role: roles_name,
-      fname: cus_fname,
-      lname: cus_lname,
-      phone: cus_phone,
-      cus_id: cus_id, //เก็บค่า cus_id
     };
 
-    // console.log(payload);
+    // console.log("payload ก่อนเพิ่ม",payload);
+
+    // ถ้า Role เป็น customer เก็บข้อมูลเพิ่ม
+    if (roles_name === "customer") {
+      // ดึงข้อมูล customer ตาม user_id
+      const [customer] = await Customer.getCustomer(uid);
+      // console.log("debug customer:", customer);
+      const { cus_id, cus_fname, cus_lname, cus_phone } = customer;
+
+      payload = {
+        ...payload, //รวมข้อมูลของเดิม
+        fname: cus_fname,
+        lname: cus_lname,
+        phone: cus_phone,
+        cus_id: cus_id, //เก็บค่า cus_id
+      };
+    };
+
+    // console.log("Payload ก่อนเก็บลง token!",payload);
 
     // เรียกใช้ฟังก์ชั่น createToken
     const token = createToken(payload);
@@ -59,18 +76,25 @@ exports.registerUser = async (req, res) => {
     //ตรวจสอบ email ซ้ำหรือไม่
     const check = await User.checkEmailQuery(email);
     if (check.length > 0) {
-      return res.status(409).json({ message: "อีเมลนี้มีในระบบแล้ว กรุณาใช้อีเมลอื่น!" });
+      return res
+        .status(409)
+        .json({ message: "อีเมลนี้มีในระบบแล้ว กรุณาใช้อีเมลอื่น!" });
     }
     // เพิ่มข้อมูลลงตาราง User
     const userid = await User.createUser(email, password);
 
     // เพิ่มข้อมูลลงตาราง Customer
-    const cusId = await Customer.createCustomer(firstname,lastname,email,userid);
+    const cusId = await Customer.createCustomer(
+      firstname,
+      lastname,
+      email,
+      userid
+    );
 
-    // ดึงข้อมูล user เพื่อนำข้อมูลไปเก็บไว้ใน payload 
-    const rolename  = await User.getRolename(userid);
+    // ดึงข้อมูล user เพื่อนำข้อมูลไปเก็บไว้ใน payload
+    const rolename = await User.getRolename(userid);
 
-    console.log("test role user:",rolename);
+    console.log("test role user:", rolename);
 
     // ส่งค่า customerid ไป ใส่ไว้ใน token เมื่อผู้ใช้สมัครสมาชิก
     if (cusId) {
@@ -108,10 +132,12 @@ exports.registerUser = async (req, res) => {
 
 exports.checkAuth = async (req, res) => {
   const { id, email, role, fname, lname, phone, cus_id } = req.user;
-  return res.status(200).json({ user: { id, email, role, fname, lname, phone, cus_id } });
+  return res
+    .status(200)
+    .json({ user: { id, email, role, fname, lname, phone, cus_id } });
 };
 
-exports.logoutUser = async (req,res) => {
+exports.logoutUser = async (req, res) => {
   try {
     res.clearCookie("token");
     return res.status(200).json({ message: "ออกจากระบบสำเร็จ!" });
@@ -119,4 +145,4 @@ exports.logoutUser = async (req,res) => {
     console.error(error);
     res.status(500).json({ message: "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์" });
   }
-}
+};

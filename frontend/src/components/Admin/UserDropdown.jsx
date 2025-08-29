@@ -1,8 +1,12 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
+  const { setUser, setIsLoggedIn } = useContext(AuthContext);
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const navigate = useNavigate();
 
   function toggleDropdown() {
     setIsOpen(!isOpen);
@@ -11,6 +15,25 @@ export default function UserDropdown() {
   function closeDropdown() {
     setIsOpen(false);
   }
+
+  // http://localhost:3000/api/auth/logout
+  const handlelogout = async () => {
+    try {
+        const response = await fetch(`${apiUrl}/api/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+      if(response.ok){
+        setUser(""); // ล้างค่า Context
+        setIsLoggedIn(false);
+        const result = await response.json();
+        console.log(result.message);
+        navigate("/login");
+      }
+    } catch (error) {
+      console.log("เกิดข้อผิดพลาดในการจัดการเซิรฟ์เวอร์!", error);
+    }
+  };
 
   return (
     <div className="relative ml-auto">
@@ -84,7 +107,8 @@ export default function UserDropdown() {
           </ul>
 
           <Link
-            to="/signin"
+            to="/logout"
+            onClick={handlelogout}
             className="block px-3 py-2 rounded-md text-sm text-red-500 hover:bg-gray-100"
           >
             Sign out

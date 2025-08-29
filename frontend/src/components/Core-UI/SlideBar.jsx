@@ -1,10 +1,12 @@
 // Sidebar.jsx
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import { IoClose } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
+import { useContext } from "react";
 
 const Sidebar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
+  const { setUser, setIsLoggedIn } = useContext(AuthContext);
 
   // ฟังก์ชั่นสำหรับออกจากระบบ http://localhost:3000/api/auth/logout
   const handlelogout = async () => {
@@ -15,6 +17,8 @@ const Sidebar = ({ isOpen, onClose }) => {
         credentials: "include", // เพื่อให้ cookie ถูกส่งไปกับคำขอ
       })
       if(response.ok){
+        setUser(""); // ล้างค่า Context
+        setIsLoggedIn(false);
         const result = await response.json();
         console.log(result.message);
         navigate("/login");

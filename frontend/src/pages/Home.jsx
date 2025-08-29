@@ -4,6 +4,7 @@ import Imagenav from "../components/Homepage/Imagenav";
 import Typewastenav from "../components/Homepage/typewastenav";
 import Amountnav from "../components/Homepage/Amountnav";
 
+import DashboardSection from "../components/Homepage/DashboardSection";
 export default function Home() {
 
   return (
@@ -15,8 +16,11 @@ export default function Home() {
       {/* <Typewastenav /> */}
       {/* ส่วนแสดงจำนวนขยะที่สะสมไว้ในระบบผ่านการแสกน */}
       {/* <Amountnav /> */}
+      {/*  */}
+      <DashboardSection/>
 
-      {/* <Footer waste={waste} /> */}
+      <Footer/>
+
     </div>
   );
 }
