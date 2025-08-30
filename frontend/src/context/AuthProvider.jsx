@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 export  const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(""); // เก็บข้อมูล user เช่น req.user
   const [isLoggedIn, setIsLoggedIn] = useState(false); // สถานะ login
+  const [isAuthChecked, setIsAuthChecked] = useState(false); //เช็คเสร็จแล้วหรือยัง
+
 
   useEffect(() => {
     checkLogin();
@@ -28,17 +30,20 @@ export  const AuthProvider = ({ children }) => {
       if (response.ok) {
         const data = await response.json();
         setIsLoggedIn(true);
-        setUser(data.user)
+        setUser(data.user);
       } else {
         setIsLoggedIn(false);
+        // setUser(null);
       }
     } catch (error) {
       console.error("เกิดข้อผิดพลาดกับเซิรฟ์เวอร์!", error);
+    } finally{
+      setIsAuthChecked(true);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, isLoggedIn, setIsLoggedIn }}>
+    <AuthContext.Provider value={{ user, setUser, isLoggedIn, setIsLoggedIn, isAuthChecked }}>
       {children}
     </AuthContext.Provider>
   );

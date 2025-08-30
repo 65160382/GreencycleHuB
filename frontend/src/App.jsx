@@ -12,6 +12,7 @@ import Status from "./pages/Status";
 import Statusdetail from "./pages/Statusdetail";
 import Admin from "./pages/Admin";
 import Booking from "./components/Admin/Booking";
+import AdminRoute from "./routes/AdminRoute";
 
 function App() {
   return (
@@ -22,18 +23,40 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/reserve" element={<ReserveProvider> <Reserve /> </ReserveProvider>}/>
-          <Route path="/booking-success/:resId" element={<BookingSuccess/>} />
-          <Route path="/status" element={<Status/>}/>
-          <Route path="/status/:resId" element={<Statusdetail/>}/>
-          <Route path="/admin" element={<Admin/>}/>
-          <Route path="/admin/booking" element={<Booking/>}/>
+          <Route
+            path="/reserve"
+            element={
+              <ReserveProvider>
+                <Reserve />
+              </ReserveProvider>
+            }
+          />
+          <Route path="/booking-success/:resId" element={<BookingSuccess />} />
+          <Route path="/status" element={<Status />} />
+          <Route path="/status/:resId" element={<Statusdetail />} />
+          {/* Admin Route */}
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <Admin />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/booking"
+            element={
+              <AdminRoute>
+                <Booking />
+              </AdminRoute>
+            }
+          />
           {/* <Route path="/image-processing" element={<Imagemodal setIsOpen={true}/>} /> */}
         </Routes>
         {/* ตั้งค่า toastcotainer สำหรับการแจ้งเตือน */}
         <ToastContainer
           position="top-right"
-          autoClose={5000}
+          autoClose={4000}
           hideProgressBar={false}
           newestOnTop
           closeOnClick

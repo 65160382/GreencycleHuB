@@ -83,26 +83,27 @@ exports.getReserveById = async (req,res) =>{
   }
 };
 
-// exports.getAllReserves = async (req, res) => {
-//   try {
-//     const cusId = req.user.cus_id;
-//     const result = await Reserve.getAllReserves(cusId);
-//     if(result.length > 0){
-//       return res.status(200).json({ result});
-//     }else{
-//       return res.status(404).json({ message: "ไม่พบข้อมูลการจอง!"});
-//     }
-//   } catch (error) {
-//     console.error("เกิดข้อผิดพลาดในการดึงข้อมูลการจองทั้งหมด", error);
-//     res.status(500).json({ message: "เกิดข้อผิดพลาดไม่สามารถดึงข้อมูลการจองทั้งหมดได้" });
-//   }
-// }
+// ดึงรายการจองทั้งหมดมาแสดงผลฝั่ง admin
+exports.getAllReserves = async (req, res) => {
+  try {
+    // Promise.all() ใช้สำหรับรอผลลัพธ์จากทั้งสองโมเดล
+    const [result,status] = await Promise.all([Reserve.getAllReserves(),Reserve.getAllStatus()])
+    if(status && result.length > 0){
+      return res.status(200).json({ result, status});
+    }else{
+      return res.status(404).json({ message: "ไม่พบข้อมูลการจอง!"});
+    }
+  } catch (error) {
+    console.error("เกิดข้อผิดพลาดในการดึงข้อมูลการจองทั้งหมด", error);
+    res.status(500).json({ message: "เกิดข้อผิดพลาดไม่สามารถดึงข้อมูลการจองทั้งหมดได้" });
+  }
+}
 
+// ดึงข้อมูลรายการจองของตัวลูกค้า
 exports.getReserves = async (req, res) => {
   try {
     const cusId = req.user.cus_id;
     const { status,start,end } = req.query; 
-
     const result = await Reserve.getReserves(cusId, status || null,start,end);
     return res.status(200).json({ result }); // ว่าง = []
   } catch (error) {
