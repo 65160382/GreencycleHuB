@@ -61,6 +61,7 @@ WHERE r.cus_id = ?
     }
   }
 
+  // ลูกค้าดึงข้อมูลการจองของตัวเอง
   static async getReserves(cusId, status = null, start = null, end = null) {
     try {
       let sql = `
@@ -99,9 +100,9 @@ WHERE r.cus_id = ?
     }
   }
 
-  static async getAllReserves() {
+  static async getAllReserves(status = null) {
     try {
-      const sql = `SELECT
+      let sql = `SELECT
                       r.res_code,
                       r.res_booking_date,
                       r.res_time_slot,
@@ -109,11 +110,21 @@ WHERE r.cus_id = ?
                       CONCAT_WS(' ', c.cus_fname, c.cus_lname) AS customers_name,
                       CONCAT_WS(' ', a.add_province, a.add_district, a.add_subdistrict, a.add_postcode) AS addressLine1,
                       CONCAT_WS(' ', a.add_houseno, a.add_road) AS addressLine2
-                  FROM reserve AS r
-                  JOIN customers AS c ON r.cus_id = c.cus_id
-                  JOIN address   AS a ON r.add_id = a.add_id
-                  ORDER BY r.res_create_at DESC, r.res_code DESC;`;
-      const [result] = await pool.query(sql);
+                FROM reserve AS r
+                JOIN customers  AS c ON r.cus_id = c.cus_id
+                JOIN address    AS a ON r.add_id = a.add_id `;
+
+      const params = [];
+
+      if(status){
+        sql += ` WHERE r.res_status = ? `;
+        params.push(status)
+      }
+
+      // console.log("After push",params)
+
+      sql += ` ORDER BY r.res_create_at DESC; `;
+      const [result] = await pool.query(sql,params);
       return result;
     } catch (error) {
       console.error("Error query Reserve Table!", error);

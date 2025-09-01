@@ -4,7 +4,7 @@ import { AuthContext } from "../../context/AuthContext";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
-  const { setUser, setIsLoggedIn } = useContext(AuthContext);
+  const { user, setUser, setIsLoggedIn } = useContext(AuthContext);
   const apiUrl = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
 
@@ -45,7 +45,7 @@ export default function UserDropdown() {
           <img src="/profile.png" alt="User" />
         </span>
 
-        <span className="block mr-1 font-medium text-sm">สุดหล่อ</span>
+        <span className="block mr-1 font-medium text-sm">admin</span>
         <svg
           className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
             isOpen ? "rotate-180" : ""
@@ -69,10 +69,10 @@ export default function UserDropdown() {
         <div className="absolute right-0 mt-2 w-[260px] rounded-xl border border-gray-200 bg-white p-3 shadow-lg z-50">
           <div className="mb-2">
             <span className="block font-medium text-gray-700 text-sm">
-              สุดหล่อ บ่อดิน
+              admin
             </span>
             <span className="block text-xs text-gray-500">
-              sudlow@gmail.com
+              {user.email}
             </span>
           </div>
 

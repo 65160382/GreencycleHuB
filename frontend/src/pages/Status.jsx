@@ -1,7 +1,6 @@
 import Header from "../components/Core-UI/Header";
 import Footer from "../components/Core-UI/Footer";
 import { useNavigate } from "react-router-dom";
-import { Search } from "lucide-react";
 import { useState,useEffect } from "react";
 import { Breadcrumb } from "../components/Core-UI/Breadcrumb";
 import DateRangePicker from "../components/Statuspage/DateRangePicker";

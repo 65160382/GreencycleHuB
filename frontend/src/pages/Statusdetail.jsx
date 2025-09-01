@@ -1,7 +1,7 @@
 import Header from "../components/Core-UI/Header";
 import Footer from "../components/Core-UI/Footer";
-import { ChevronLeft, MapPinCheck, MapPin } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
+import { MapPinCheck, MapPin } from "lucide-react";
+import { useParams } from "react-router-dom";
 import ProgressBar from "../components/Statuspage/ProgressBar";
 import TableReserve from "../components/Statuspage/TableReserve";
 import { Breadcrumb } from "../components/Core-UI/Breadcrumb";

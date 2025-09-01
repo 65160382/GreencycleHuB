@@ -8,6 +8,7 @@ router.get("/reserve/:id", auth, ReserveController.getReserveById);
 // router.get("/reserve",auth,ReserveController.getAllReserves);
 // get Reserve + fillter
 router.get("/reserve",auth,ReserveController.getReserves);
+
 router.get("/admin/reserve",auth,checkAdmin,ReserveController.getAllReserves);
 // router.get("/reserve/",auth,ReserveController.getReserveStatus);
 

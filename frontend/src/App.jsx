@@ -11,7 +11,8 @@ import BookingSuccess from "./pages/BookingSuccess";
 import Status from "./pages/Status";
 import Statusdetail from "./pages/Statusdetail";
 import Admin from "./pages/Admin";
-import Booking from "./components/Admin/Booking";
+// import BookingAdmin from "./components/Admin/Booking";
+import BookingAdmin from "./pages/BookingAdmin";
 import AdminRoute from "./routes/AdminRoute";
 
 function App() {
@@ -47,7 +48,7 @@ function App() {
             path="/admin/booking"
             element={
               <AdminRoute>
-                <Booking />
+                <BookingAdmin />
               </AdminRoute>
             }
           />
