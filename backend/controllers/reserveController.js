@@ -61,7 +61,7 @@ exports.createReserve = async (req, res) => {
 exports.getReserveById = async (req,res) =>{
   try {
     const resId = req.params.id;
-    const cusId = req.user.cus_id;
+    // const cusId = req.user.cus_id;
 
     // ตรวจสอบว่ามีการส่ง resId มาหรือไม่
     if (!resId) {
@@ -69,7 +69,7 @@ exports.getReserveById = async (req,res) =>{
     }
 
     // Promise.all() ใช้สำหรับรอผลลัพธ์จากทั้งสองโมเดล
-    const [reserveResult, reserveDetailResult] = await Promise.all([Reserve.getReserveById(cusId, resId), ReserveDetail.getReserveDetailById(resId)]);
+    const [reserveResult, reserveDetailResult] = await Promise.all([Reserve.getReserveById(resId), ReserveDetail.getReserveDetailById(resId)]);
     // destructure ผลลัพธ์จากทั้งสองโมเดล
     const result = { reserveResult, reserveDetailResult }; 
 

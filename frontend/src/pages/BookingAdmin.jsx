@@ -4,6 +4,7 @@ import HeaderAdmin from "../components/Admin/HeaderAdmin";
 import BookingSummaryCard from "../components/Admin/BookingSummaryCard";
 import ReserveCard from "../components/Admin/ReserveCard";
 import { Search } from "lucide-react";
+import { Plus } from 'lucide-react';
 
 const BookingAdmin = () => {
   const apiUrl = import.meta.env.VITE_API_URL;
@@ -31,8 +32,9 @@ const BookingAdmin = () => {
     try {
       const query = new URLSearchParams();
       if (status) query.set("status", status);
-      const url = `${apiUrl}/api/admin/reserve${query.toString() ? `?${query.toString()}` : ""}`;
-
+      const url = `${apiUrl}/api/admin/reserve${
+        query.toString() ? `?${query.toString()}` : ""
+      }`;
 
       // console.log("fetching from:", url);
 
@@ -42,7 +44,7 @@ const BookingAdmin = () => {
       });
       if (res.ok) {
         const data = await res.json();
-        console.log("debug data:", data);
+        // console.log("debug data:", data);
         // เก็บรายการจองทั้งหมด
         setReserves(data.result);
 
@@ -95,29 +97,15 @@ const BookingAdmin = () => {
                   ))}
                 </div>
 
-                {/* Search bar */}
-                <div className="flex items-center gap-2 w-full md:w-auto">
-                  <div className="relative w-full max-w-sm">
-                    <span className="absolute inset-y-0 left-3 flex items-center text-gray-400">
-                      <Search size={18} />
-                    </span>
-                    <input
-                      type="text"
-                      placeholder="Search"
-                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 
-                    placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 
-                      transition"
-                    />
+                {/* สร้างตาราง timetable */}
+                <div className="flex items-center justify-end w-full md:w-auto">
+                  <div className="flex flex-row items-center border rounded-md p-2 gap-2">
+                  <Plus size={20}/>
+                  <button>สร้างรอบรถ</button>
                   </div>
-                  <button
-                    type="button"
-                    className="bg-emerald-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-emerald-700 
-                    transition shadow-sm"
-                  >
-                    Search
-                  </button>
                 </div>
               </div>
+              
               {/* main */}
               <div className="flex flex-col mt-4 gap-4">
                 {/* card */}

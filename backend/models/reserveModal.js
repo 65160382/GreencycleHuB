@@ -32,12 +32,13 @@ class Reserve {
   }
 
   // ดึงข้อมูลการจองจาก table reserve
-  static async getReserveById(cusId, reserveId) {
+  static async getReserveById(reserveId) {
     try {
       const sql = `SELECT
   r.res_code,
   r.res_status,
   CONCAT(c.cus_fname,' ',c.cus_lname) AS customername,
+  c.cus_email,
   r.res_booking_date,
   r.res_time_slot,
   r.res_amount,
@@ -51,9 +52,9 @@ class Reserve {
 FROM reserve AS r
 JOIN customers AS c   ON c.cus_id = r.cus_id
 JOIN address AS a   ON a.add_id = r.add_id
-WHERE r.cus_id = ?
-  AND r.res_id = ?;`;
-      const [result] = await pool.query(sql, [cusId, reserveId]);
+WHERE r.res_id = ?;`;
+  // AND r.res_id = ?;`;
+      const [result] = await pool.query(sql, [reserveId]);
       return result[0];
     } catch (error) {
       console.error("Error query Reserve table!", error);
@@ -103,13 +104,16 @@ WHERE r.cus_id = ?
   static async getAllReserves(status = null) {
     try {
       let sql = `SELECT
+                      r.res_id,
                       r.res_code,
                       r.res_booking_date,
                       r.res_time_slot,
                       r.res_status,
                       CONCAT_WS(' ', c.cus_fname, c.cus_lname) AS customers_name,
                       CONCAT_WS(' ', a.add_province, a.add_district, a.add_subdistrict, a.add_postcode) AS addressLine1,
-                      CONCAT_WS(' ', a.add_houseno, a.add_road) AS addressLine2
+                      CONCAT_WS(' ', a.add_houseno, a.add_road) AS addressLine2,
+                      a.add_lat,
+                      a.add_lon
                 FROM reserve AS r
                 JOIN customers  AS c ON r.cus_id = c.cus_id
                 JOIN address    AS a ON r.add_id = a.add_id `;
