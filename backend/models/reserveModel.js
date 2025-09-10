@@ -53,7 +53,7 @@ FROM reserve AS r
 JOIN customers AS c   ON c.cus_id = r.cus_id
 JOIN address AS a   ON a.add_id = r.add_id
 WHERE r.res_id = ?;`;
-  // AND r.res_id = ?;`;
+      // AND r.res_id = ?;`;
       const [result] = await pool.query(sql, [reserveId]);
       return result[0];
     } catch (error) {
@@ -120,15 +120,15 @@ WHERE r.res_id = ?;`;
 
       const params = [];
 
-      if(status){
+      if (status) {
         sql += ` WHERE r.res_status = ? `;
-        params.push(status)
+        params.push(status);
       }
 
       // console.log("After push",params)
 
       sql += ` ORDER BY r.res_create_at DESC; `;
-      const [result] = await pool.query(sql,params);
+      const [result] = await pool.query(sql, params);
       return result;
     } catch (error) {
       console.error("Error query Reserve Table!", error);
@@ -141,9 +141,26 @@ WHERE r.res_id = ?;`;
       const [result] = await pool.query(
         "SELECT r.res_status, COUNT(*) AS total FROM reserve AS r GROUP BY r.res_status;"
       );
-      return result
+      return result;
     } catch (error) {
       console.error("Error query Reserve Table!", error);
+      throw error;
+    }
+  }
+
+  // ใช้ Promise.all() แล้ว loop update ทีละรายการ
+  static async updateReserve(updateArray) {
+    const sql = `UPDATE reserve SET res_status = ?, res_update_at = NOW() WHERE res_id = ?`;
+
+    try {
+      // สร้าง array ของ promises
+      const promises = updateArray.map(([status, id]) =>
+        pool.query(sql, [status, id])
+      );
+      await Promise.all(promises);
+      return true;
+    } catch (error) {
+      console.error("Error updating reserve table!", error);
       throw error;
     }
   }

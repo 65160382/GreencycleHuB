@@ -6,6 +6,7 @@ import ProgressBar from "../components/Statuspage/ProgressBar";
 import TableReserve from "../components/Statuspage/TableReserve";
 import { Breadcrumb } from "../components/Core-UI/Breadcrumb";
 import { useEffect, useState } from "react";
+import { formatDateString } from "../utils/formateDateUtils";
 
 const Statusdetail = () => {
   
@@ -54,20 +55,6 @@ const Statusdetail = () => {
     } catch (error) {
       console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);
     }
-  };
-
-  // ฟังก์ชั่นสำหรับจัดรูปแบบวันที่ toLocaleDateString()
-  const formatDateString = (date) => {
-    // const date = reserve.res_booking_date;
-    if (!date) return "ไม่มีข้อมูลวันที่จอง";
-
-    // ถ้าใช้ "th-TH" → จะได้เป็น 15/08/2568 (พ.ศ.)
-    const formattedDate = new Date(date).toLocaleDateString("th-TH", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-    return formattedDate;
   };
 
   return (

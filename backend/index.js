@@ -14,6 +14,8 @@ const wasteRoutes = require("./routes/wasteRoutes");
 const addressRoutes = require("./routes/addressRoutes");
 const reserveRoutes = require("./routes/reserveRoutes");
 const mapRoutes = require("./routes/mapRoutes");
+const driverRoutes = require("./routes/driverRoutes");
+const timetableRoutes = require("./routes/timetableRoutes");
 
 app.use(cors({
   origin: 'http://localhost:5173', // ระบุ origin เฉพาะ แทน '*'
@@ -23,12 +25,14 @@ app.use(cors({
 app.use(cookieParser());
 app.use(bodyParser.json());
 
-app.use("/api", authRoutes);
+app.use("/api",authRoutes);
 app.use("/api",imageRoutes);
 app.use("/api",wasteRoutes);
 app.use("/api",addressRoutes);
 app.use("/api",reserveRoutes);
 app.use("/api",mapRoutes);
+app.use("/api",driverRoutes);
+app.use("/api",timetableRoutes);
 
 
 app.get("/", (req, res) => {

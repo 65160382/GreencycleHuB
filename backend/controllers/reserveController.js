@@ -1,4 +1,4 @@
-const Reserve = require("../models/reserveModal");
+const Reserve = require("../models/reserveModel");
 const ReserveDetail = require("../models/reserveDetailModel");
 const WasteCollection = require("../models/wasteCollectionModel");
 
@@ -108,6 +108,11 @@ exports.getReserves = async (req, res) => {
     console.error("เกิดข้อผิดพลาดในการดึงข้อมูลการจองทั้งหมด", error);
     return res.status(500).json({ message: "Internal server error" });
   }
+};
+
+//อัปเดตสถานะการจอง
+exports.updateReserves = async(req,res) => {
+
 };
 
 

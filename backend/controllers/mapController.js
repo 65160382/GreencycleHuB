@@ -1,1 +1,1 @@
-const Reserve = require("../models/reserveModal");
+const Reserve = require("../models/reserveModel");
