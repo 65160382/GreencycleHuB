@@ -15,7 +15,7 @@ class Reserve {
       const sql = `INSERT INTO reserve(res_status, res_code, res_booking_date, res_time_slot, res_amount, res_weight, res_create_at, cus_id, add_id) 
       VALUES (?, ?, ?, ?, ?, ?, NOW(), ?, ?)`;
       const [result] = await pool.query(sql, [
-        "ยืนยันการจอง",
+        "confirmed",
         resCode,
         bookingDate,
         timeslot,
@@ -149,13 +149,13 @@ WHERE r.res_id = ?;`;
   }
 
   // ใช้ Promise.all() แล้ว loop update ทีละรายการ
-  static async updateReserve(updateArray) {
+  static async updateReserve(con,updateArray) {
     const sql = `UPDATE reserve SET res_status = ?, res_update_at = NOW() WHERE res_id = ?`;
 
     try {
       // สร้าง array ของ promises
       const promises = updateArray.map(([status, id]) =>
-        pool.query(sql, [status, id])
+        con.query(sql, [status, id])
       );
       await Promise.all(promises);
       return true;

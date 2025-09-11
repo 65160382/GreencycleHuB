@@ -136,7 +136,7 @@ const BookingAdmin = () => {
                     className="flex items-center bg-blue-500 hover:bg-blue-700 text-white font-medium rounded p-2 gap-2 cursor-pointer "
                   >
                     <Plus size={20} />
-                    <button>สร้างรอบรถ</button>
+                    <button>สร้างรอบรถ {selectedResid.length > 0 ? `(${selectedResid.length})` : " "}</button>
                   </div>
                   {/* Modal หมอยหมายคนขับรถ */}
                   <Modal
