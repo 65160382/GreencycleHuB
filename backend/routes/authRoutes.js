@@ -7,7 +7,7 @@ router.post('/login',authController.loginUser);
 router.post('/register',authController.registerUser);
 // เรียกใช้ Middleware เพื่อตรวจสอบว่าผู้ใช้ login เข้ามาด้วยการตรวจสอบ token
 router.get('/auth',auth,authController.checkAuth)
+router.post('/auth/refresh',authController.refreshAccessToken); // route สำหรับต่ออายุ token
 router.post('/logout', auth,authController.logoutUser);
-
 
 module.exports = router;

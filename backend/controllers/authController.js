@@ -1,6 +1,9 @@
 const User = require("../models/userModel");
 const Customer = require("../models/customerModel");
-const { createToken } = require("../middlewares/authMiddleware");
+const {
+  createToken,
+  createRefreshToken,
+} = require("../middlewares/authMiddleware");
 require("dotenv").config();
 
 exports.loginUser = async (req, res) => {
@@ -49,12 +52,13 @@ exports.loginUser = async (req, res) => {
         phone: cus_phone,
         cus_id: cus_id, //เก็บค่า cus_id
       };
-    };
+    }
 
     // console.log("Payload ก่อนเก็บลง token!",payload);
 
     // เรียกใช้ฟังก์ชั่น createToken
     const token = createToken(payload);
+    const refreshToken = createRefreshToken(payload);
 
     // เก็บ token ลง cookie
     res.cookie("token", token, {
@@ -62,6 +66,14 @@ exports.loginUser = async (req, res) => {
       secure: false,
       samesite: "None", // อนุญาตให้ cookie ข้าม origin ได้ กรณีรันคนละ port
       maxAge: 3000000,
+    });
+
+    // เก็บ refreshtoken ลง cookie
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: false,
+      samesite: "None",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     res.json({ payload }); // ส่ง payload ไปให้ react
@@ -137,9 +149,43 @@ exports.checkAuth = async (req, res) => {
     .json({ user: { id, email, role, fname, lname, phone, cus_id } });
 };
 
+exports.refreshAccessToken = (req, res) => {
+  try {
+    const refreshToken = req.cookies.refreshToken; // ตรวจสอบ refreshToken ใน cookies
+
+    if (!refreshToken) {
+      return res.status(401).json({ message: "ไม่มี Refresh Token" });
+    }
+
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+      if (err)
+        return res.status(403).json({ message: "Refresh Token ไม่ถูกต้อง" });
+
+      // ออก access token ใหม่
+      const newAccessToken = jwt.sign(
+        user,
+        process.env.JWT_SECRET,
+        { expiresIn: process.env.JWT_EXPIRES_IN }
+      );
+
+      res.cookie("token", newAccessToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "None",
+        maxAge: 15 * 60 * 1000,
+      });
+
+      return res.json({ message: "ต่ออายุ token สำเร็จ" });
+    });
+  } catch (error) {
+    console.error("เกิดข้อผิดพลาดไม่สามารถต่ออายุ token ได้!", error);
+  }
+};
+
 exports.logoutUser = async (req, res) => {
   try {
     res.clearCookie("token");
+    res.clearCookie("refreshToken");
     return res.status(200).json({ message: "ออกจากระบบสำเร็จ!" });
   } catch (error) {
     console.error(error);

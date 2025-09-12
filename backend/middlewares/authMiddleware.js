@@ -12,6 +12,16 @@ exports.createToken = (payload) => {
   }
 };
 
+// refreshtoken ต่ออายุ token อัตโนมัติ 
+exports.createRefreshToken = async (payload) => {
+  try {
+    const refreshToken = jwt.sign(payload , process.env.REFRESH_TOKEN_SECRET, {expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN});
+    return refreshToken;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // ตรวจสอบว่ามี token หรือไม่เป็นการตรวจสอบว่าผู้ใช้ login หรือไม่
 exports.auth = async (req, res, next) => {
   try {
@@ -47,3 +57,5 @@ exports.checkAdmin = async (req, res, next) => {
     return res.status(500).json({ message: "เกิดข้อผิดพลาดจากเซิร์ฟเวอ"})
   }
 }
+
+
