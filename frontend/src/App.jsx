@@ -14,6 +14,9 @@ import Admin from "./pages/Admin";
 // import BookingAdmin from "./components/Admin/Booking";
 import BookingAdmin from "./pages/BookingAdmin";
 import AdminRoute from "./routes/AdminRoute";
+import DriverRoute from "./routes/DriverRoute";
+import MainDriver from "./pages/MainDriver";
+import MytaskDriver from "./pages/MytaskDriver";
 
 function App() {
   return (
@@ -50,6 +53,22 @@ function App() {
               <AdminRoute>
                 <BookingAdmin />
               </AdminRoute>
+            }
+          />
+          <Route
+            path="/driver"
+            element={
+              <DriverRoute>
+                <MainDriver />
+              </DriverRoute>
+            }
+          />
+          <Route
+            path="/driver/tasks"
+            element={
+              <DriverRoute>
+                <MytaskDriver />
+              </DriverRoute>
             }
           />
           {/* <Route path="/image-processing" element={<Imagemodal setIsOpen={true}/>} /> */}

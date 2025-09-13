@@ -32,18 +32,18 @@ export const AuthProvider = ({ children }) => {
           if (!refreshed) {
             // ถ้า refresh ไม่สำเร็จ
             setIsLoggedIn(false);
-            setUser(null);
+            setUser("");
             console.log("ยังไม่เข้าสู่ระบบ");
           }
         } else {
           setIsLoggedIn(false);
-          setUser(null);
+          setUser("");
           console.log("ยังไม่เข้าสู่ระบบ");
         }
       } catch (error) {
         console.error("เกิดข้อผิดพลาดกับเซิรฟ์เวอร์!", error);
         setIsLoggedIn(false);
-        setUser(null);
+        setUser("");
       } finally {
         setIsAuthChecked(true);
       }

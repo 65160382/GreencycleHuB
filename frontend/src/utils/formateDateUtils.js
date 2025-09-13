@@ -10,3 +10,13 @@ export const formatDateString = (date) => {
   return formattedDate;
 };
 
+export const formatDateTHStyle = (date) => {
+  if (!date) return "ไม่มีวันที่";
+  const result = new Date(date).toLocaleDateString("th-TH", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    weekday: "long",
+  });
+  return result;
+};

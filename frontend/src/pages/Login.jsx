@@ -31,12 +31,20 @@ const Login = () => {
         setIsLoggedIn(true); // อัปเดตสถานะทันทีหลัง login
         setUser(data.payload);
 
+        // if (data.payload.role == "admin") {
+        //   navigate("/admin");
+        // } else {
+        //   navigate("/home");
+        // }
         if (data.payload.role == "admin") {
           navigate("/admin");
+        } else if(data.payload.role == "driver"){
+          navigate("/driver");
         } else {
           navigate("/home");
         }
-        // console.log(data);
+
+        console.log(data);
       } else {
         // ดึงข้อความ error message ที่ส่งมาจาก api
         const errorData = await response.json();

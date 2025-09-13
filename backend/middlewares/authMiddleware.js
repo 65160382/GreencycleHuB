@@ -1,27 +1,6 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-// สร้าง token เวลาผู้ใช้ login หรือ register
-exports.createToken = (payload) => {
-  try {
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
-    return token;
-    }catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "ไม่สามารถสร้าง Token ได้!" });
-  }
-};
-
-// refreshtoken ต่ออายุ token อัตโนมัติ 
-exports.createRefreshToken = async (payload) => {
-  try {
-    const refreshToken = jwt.sign(payload , process.env.REFRESH_TOKEN_SECRET, {expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN});
-    return refreshToken;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 // ตรวจสอบว่ามี token หรือไม่เป็นการตรวจสอบว่าผู้ใช้ login หรือไม่
 exports.auth = async (req, res, next) => {
   try {
@@ -41,6 +20,7 @@ exports.auth = async (req, res, next) => {
   }
 };
 
+
 exports.checkAdmin = async (req, res, next) => {
   try {
     if(!req.user){
@@ -54,7 +34,23 @@ exports.checkAdmin = async (req, res, next) => {
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: "เกิดข้อผิดพลาดจากเซิร์ฟเวอ"})
+    return res.status(500).json({ message: "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์"})
+  }
+}
+
+exports.checkDriver = async (req,res,next) => {
+  try {
+    if(!req.user){
+      return res.status(401).json({message: "ผู้ใช้ยังไม่เข้าสู่ระบบ"});
+    }
+
+    if (req.user.role !== "driver") {
+      return res.status(403).json({ message: "คุณไม่มีสิทธิ์เข้าถึง (driver เท่านั้น)" });
+    }
+    
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์"})
   }
 }
 

@@ -1,32 +1,44 @@
-import { useCallback } from "react";
+import { useCallback, useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Calendar, UserRound, Car } from "lucide-react";
+import { LayoutDashboard, Calendar, UserRound, Car, Home, ListTodo } from "lucide-react";
+// ลองปรับให้ component มัน dynamic
+import { AuthContext } from "../../context/AuthContext";
 
-const navItems = [
-  { icon: <LayoutDashboard size={18} />, name: "Dashboard", path: "/admin" },
-  { icon: <Calendar size={18} />, name: "Booking", path: "/admin/booking" },
-  { icon: <Car size={18} />, name: "Driver", path: "#" },
-  { icon: <UserRound size={18} />, name: "Customer", path: "#" },
-];
+const navItems = {
+  admin: [
+    { icon: <LayoutDashboard size={18} />, name: "Dashboard", path: "/admin" },
+    { icon: <Calendar size={18} />, name: "Booking", path: "/admin/booking" },
+    { icon: <Car size={18} />, name: "Driver", path: "#" },
+    { icon: <UserRound size={18} />, name: "Customer", path: "#" },
+  ],
+  driver: [
+    { icon: <Home size={18} />, name: "Home", path: "/driver" },
+    { icon: <ListTodo size={18}/>, name: "My Tasks", path: "/driver/tasks" },
+  ],
+};
 
 const SidebarAdmin = () => {
+  const { user } = useContext(AuthContext);
   const location = useLocation();
   const isActive = useCallback(
     (path) => location.pathname === path,
     [location.pathname]
   );
 
+  //ตรวจสอบ role แล้วแสดง menu ตาม role
+  const menu = navItems[user?.role] || [];
+
   return (
     <aside className="w-[250px] min-h-screen bg-gray-900 text-white p-4">
       <div className="mb-8 ">
         <h1 className="text-xl font-semibold">GreencycleHuB</h1>
-        <p className="text-sm text-gray-300">Admin Panel</p>
+        <p className="text-sm text-gray-300">{user.role} Panel</p>
       </div>
 
       <nav className="">
         <ul className="space-y-3">
           <p className="text-gray-300 text-sm">Menu</p>
-          {navItems.map((item) => (
+          {menu.map((item) => (
             <li key={item.name}>
               <Link
                 to={item.path}
