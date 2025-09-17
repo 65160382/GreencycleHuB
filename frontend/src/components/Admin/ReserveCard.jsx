@@ -1,7 +1,7 @@
 import { Clock, CalendarDays } from "lucide-react";
 import StatusBadge from "./StatusBadge";
 import MapModal from "./MapModal";
-import AssignDriverModal from "./ReserveDetail";
+import ReserveDetail from "./ReserveDetail";
 import Modal from "../Core-UI/Modal";
 import { useState } from "react";
 import { formatDateString } from "../../utils/formateDateUtils";
@@ -9,16 +9,19 @@ import { formatDateString } from "../../utils/formateDateUtils";
 const ReserveCard = ({ reserves, setResid }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [openMapModal, setOpenMapModal] = useState(false);
-  const [selectedId, setSelectedId] = useState("");
+  const [selectedId, setSelectedId] = useState(null);
   const [selectedLat, setSelectedLat] = useState("");
   const [selectedLon, setSelectedLon] = useState("");
 
   // ยังไม่เข้าใจโค้ดตรงนี้
   const handleCheckboxChange = (item, isChecked) => {
     if (isChecked) {
-      setResid((prev) => [...prev, item.res_id]);
+      setResid((prev) => [
+        ...prev,{  id: item.res_id, lat: item.add_lat, lon: item.add_lat },
+      ]); //เพิ่ม lat, lon ตอน click checkbox
     } else {
-      setResid((prev) => prev.filter((id) => id !== item.res_id));
+      // เข้าถึง .id ใน object ก่อน filter
+      setResid((prev) => prev.filter((obj) => obj.id !== item.res_id));
     }
   };
 
@@ -38,10 +41,16 @@ const ReserveCard = ({ reserves, setResid }) => {
               // checked={selectedId.includes(item.res_id)}
               onChange={(e) => {
                 const checked = e.target.checked;
-                setSelectedId((prev) =>
+                setSelectedId(() =>
                   checked
-                    ? [...prev, item.res_id]
-                    : prev.filter((id) => id !== item.res_id)
+                    && 
+                      [
+                        {
+                          id: item.res_id,
+                          lat: item.add_lat,
+                          lon: item.add_lat,
+                        },
+                      ] //เพิ่ม lat, lon ตอน click checkbox และลองเปลี่ยนเป็น object
                 );
                 handleCheckboxChange(item, checked);
               }}
@@ -87,17 +96,19 @@ const ReserveCard = ({ reserves, setResid }) => {
             {/* status + action */}
             <div className="flex items-center gap-4">
               <StatusBadge status={item.res_status} />
-              {/* {item.res_status == "confirmed" && ( */}
               <button
                 onClick={() => {
-                  setSelectedId(item.res_id);
+                  setSelectedId({
+                    id: item.res_id,
+                    lat: item.add_lat,
+                    lon: item.add_lon,
+                  });
                   setIsOpen(true);
                 }}
                 className="text-sm text-green-600 hover:underline font-semibold py-2 border-gray-400 "
               >
                 ดูรายละเอียด
               </button>
-              {/* )} */}
             </div>
           </div>
         </div>
@@ -108,10 +119,10 @@ const ReserveCard = ({ reserves, setResid }) => {
         lat={selectedLat}
         lon={selectedLon}
       />
-      <AssignDriverModal
+      <ReserveDetail
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        resId={selectedId}
+        resId={selectedId?.id}
       />
     </>
   );

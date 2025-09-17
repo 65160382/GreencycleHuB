@@ -17,7 +17,7 @@ const BookingAdmin = () => {
   const [activeTab, setActiveTab] = useState("All");
   const tabs = ["All", "Confirm", "Pending", "Complete"];
   // const [assignDriver, setAssignDriver] = useState("");
-  const [selectedResid, setSelectedResid] = useState([]); // array ของ res_id
+  const [selectedResid, setSelectedResid] = useState([]); // array ของ res_id เพิ่ม lat,lon
   const [selectedDate, setSelectedDate] = useState(""); // object: { [res_id]: { date, timeslot } }
   const [selectedTimeslot, setSelectedTimeslot] = useState(""); // object: { [res_id]: { date, timeslot } }
 
@@ -34,6 +34,7 @@ const BookingAdmin = () => {
     fetchData(status);
   }, [activeTab]);
 
+  // debug
   // useEffect(() => {
   //   console.log("resid", selectedResid);
   //   console.log("date&timeslot", selectedDate, " ", selectedTimeslot);

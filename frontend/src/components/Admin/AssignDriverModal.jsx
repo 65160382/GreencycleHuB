@@ -15,6 +15,10 @@ const AssignDriverModal = ({ onClose, date, timeslot, resid }) => {
     }
   }, [date, timeslot]);
 
+  useEffect(() => {
+    if(resid) return console.log("debug res",resid);
+  },[resid]);
+
   // http://localhost:3000/api/admin/drivers/available?date=?timeslot=?
   const fetchData = async () => {
     try {
@@ -60,6 +64,8 @@ const AssignDriverModal = ({ onClose, date, timeslot, resid }) => {
         driveId: selectedDriverId,
         resId: resid,
       };
+
+      console.log("test data:",data)
 
       const res = await fetch(`${apiUrl}/api/admin/timetable`, {
         method: "POST",

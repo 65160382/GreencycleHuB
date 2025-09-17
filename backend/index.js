@@ -16,6 +16,7 @@ const reserveRoutes = require("./routes/reserveRoutes");
 const mapRoutes = require("./routes/mapRoutes");
 const driverRoutes = require("./routes/driverRoutes");
 const timetableRoutes = require("./routes/timetableRoutes");
+const nostramapRoutes = require("./routes/nostramapRoutes");
 
 app.use(cors({
   origin: 'http://localhost:5173', // ระบุ origin เฉพาะ แทน '*'
@@ -33,6 +34,7 @@ app.use("/api",reserveRoutes);
 app.use("/api",mapRoutes);
 app.use("/api",driverRoutes);
 app.use("/api",timetableRoutes);
+app.use("/api",nostramapRoutes);
 
 
 app.get("/", (req, res) => {

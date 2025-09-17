@@ -15,6 +15,7 @@ const ReserveDetail = ({ isOpen, onClose, resId }) => {
 
   useEffect(() => {
     if (resId) {
+      // console.log("debug resId",resId);
       fetchReserveById(resId);
     }
   }, [resId]);

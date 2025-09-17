@@ -61,7 +61,8 @@ export const AuthProvider = ({ children }) => {
       });
 
       if (res.ok) {
-        console.log("ต่ออายุ Token สำเร็จ, กำลังดึงข้อมูลผู้ใช้ใหม่...");
+        console.log("ต่ออายุ Token สำเร็จ!");
+        // return true;
         // หลังจาก refresh token สำเร็จ ให้ดึงข้อมูล user อีกครั้ง
         const userRes = await fetch(`${apiUrl}/api/auth`, {
           method: "GET",
