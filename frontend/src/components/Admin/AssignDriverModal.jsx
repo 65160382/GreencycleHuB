@@ -15,9 +15,9 @@ const AssignDriverModal = ({ onClose, date, timeslot, resid }) => {
     }
   }, [date, timeslot]);
 
-  useEffect(() => {
-    if(resid) return console.log("debug res",resid);
-  },[resid]);
+  // useEffect(() => {
+  //   if(resid) return console.log("debug res",resid);
+  // },[resid]);
 
   // http://localhost:3000/api/admin/drivers/available?date=?timeslot=?
   const fetchData = async () => {
@@ -58,18 +58,12 @@ const AssignDriverModal = ({ onClose, date, timeslot, resid }) => {
 
     try {
       setIsLoading(true);
+
       const nostramapdata = {
         resId:resid
       }
-      // const data = {
-      //   assigndate: date,
-      //   assigntimeslot: timeslot,
-      //   driveId: selectedDriverId,
-      //   resId: resid, //ตอนนี้กลายเป็น object { id: resid lat:lat lon:lon }
-      // };
 
-      // console.log("test data:",data)
-      // ทดสอบไอเดียใหม่คือ ลอง ยิง request สองครั้งแทน
+      // http://localhost:3000/api/closet-facility --> ส่ง body ตำแหน่งรายการจองเพื่อหาจุดที่ใกล้ที่สุดและเรียงลำดับรายการเดินรถ
       const nostramapresult = await fetch(`${apiUrl}/api/closest-facility`,{
         method: "POST",
         headers: {
@@ -78,25 +72,49 @@ const AssignDriverModal = ({ onClose, date, timeslot, resid }) => {
         credentials: "include",
         body:JSON.stringify(nostramapdata)
       });
-      if(nostramapresult){
-        console.log("debug data:",nostramapresult);
+
+      if(!nostramapresult.ok){
+        console.error("เกิดข้อผิดพลาดไม่สามารถคำนวณตำแหน่งที่ใกล้ที่สุดได้!");
       }
 
-      // const res = await fetch(`${apiUrl}/api/admin/timetable`, {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   credentials: "include",
-      //   body: JSON.stringify(data),
-      // });
-      // const result = await res.json();
-      // if (res.ok) {
-      //   toast.success(result.message || "หมอบหมายคนขับสำเร็จแล้ว");
-      //   onClose(); // ปิด modal
-      // }else{
-      //   toast.error(result.message || "เกิดข้อผิดพลาด");
-      // }
+      const resultsnostramap = await nostramapresult.json();
+      // console.log("debug datanostramap:",datanostramap);
+      const datanostramap = resultsnostramap.data;
+
+      // destucter ค่า
+      const reserveList = datanostramap.map(({facilityRank, res_id}) => ({
+        index: facilityRank,
+        resId: res_id
+      }));
+
+      console.log("debug reserveList:",reserveList);
+
+      const data = {
+        assigndate: date,
+        assigntimeslot: timeslot,
+        driveId: selectedDriverId,
+        reserve: reserveList //ตอนนี้กลายเป็น object { resid: resid index: ลำดับบ้านที่ต้องไป }
+      };
+
+      console.log("test data:",data)
+
+      // เรียกใช้ api เพื่อบันทึกข้อมูลลงตาราง timetable
+      const res = await fetch(`${apiUrl}/api/admin/timetable`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(data),
+      });
+      const result = await res.json();
+      if (res.ok) {
+        toast.success(result.message || "หมอบหมายคนขับสำเร็จแล้ว");
+        onClose(); // ปิด modal
+      }else{
+        toast.error(result.message || "เกิดข้อผิดพลาด");
+      }
+
     } catch (error) {
       console.error("เกิดข้อผิดพลาดในการเชื่อมต่อเซิรฟ์เวอร์!", error);
       toast.error("เชื่อมต่อเซิร์ฟเวอร์ล้มเหลว");

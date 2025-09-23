@@ -32,7 +32,7 @@ const Statusdetail = () => {
     if(reserve.res_status){
       const stepNumber  = status_MAP[reserve.res_status];
       setStep(stepNumber); 
-      console.log(step);
+      // console.log(step);
     }
   },[reserve])
 

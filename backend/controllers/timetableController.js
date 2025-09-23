@@ -3,8 +3,6 @@ const Timetabledetail = require("../models/timetabledetailModel");
 const Reserve = require("../models/reserveModel");
 //test refactor transaction
 const pool = require("../config/database");
-//test use nostramap api
-const { fetchClosetFacility, getClosestFacility } = require("../utils/nostramapUtils");
 require("dotenv").config();
 
 exports.createTimetable = async (req, res) => {
@@ -12,44 +10,23 @@ exports.createTimetable = async (req, res) => {
   const con = await pool.getConnection();
   try {
     await con.beginTransaction();
-    const { assigndate, assigntimeslot, driveId, resId } = req.body;
+    const { assigndate, assigntimeslot, driveId, reserve } = req.body;
 
     // ตรวจสอบ input
     if (
       !assigndate ||
       !assigntimeslot ||
       !driveId ||
-      !resId ||
-      !Array.isArray(resId)
+      !reserve ||
+      !Array.isArray(reserve)
     ) {
       return res
         .status(400)
         .json({ message: { error: "ข้อมูลไม่ครบถ้วนหรือผิดรูปแบบ" } });
     }
 
-    // test version ใหม่
-    const incident = [{ name: "Company", lat: 13.288378, lon: 100.924359 }]
-    const facilities = resId.map((item, index) => ({
-      name: String(item.id ?? `facility${index}`),
-      lat: Number(item.lat),
-      lon: Number(item.lon),
-    }));
-
-    const params = {
-      key: process.env.NOSTRAMAP_API_KEY,
-      incident: JSON.stringify(incident),
-      facilities: JSON.stringify(facilities),
-      mode: "Car",
-      impedance: "Time",
-      targetFacilityCount: facilities.length,
-      language: "L",
-      directionLanguage: "English",
-      cutOff: 60,
-      returnedAGSResult: "True",
-      outSR: 4326,
-    };
-
-    // console.log("debug value:", resId); // ต้องได้ค่าเป็น  array object { id: resid lat:lat lon:lon } ของแต่ละรายการจอง
+    // debug value: [ { index: 1, resId: 2 }, { index: 2, resId: 3 } ]
+    console.log("debug value:", reserve); // ต้องได้ค่าเป็น  array object { id: resid lat:lat lon:lon } ของแต่ละรายการจอง
 
     // เพิ่มข้อมูลลง timetable
     // const timetaleId = await Timetable.insertTimetable(
@@ -62,14 +39,7 @@ exports.createTimetable = async (req, res) => {
     // if (!timetaleId) {
     //   return res.status(400).json({ message: "เกิดข้อผิดพลาดไม่มี timetableid!" });
     // }
-
-    // <---- เพิ่มเรียกใช้ api nostramap service ที่ค้นหาเส้นทางที่ใกล้ที่สุด
-    // const response = await getClosestFacility(params);
-    // const response = await fetchClosetFacility(resId);
-    console.log("response utils :",response)
-    if (!response) {
-      return res.status(502).json({ message: "NOSTRA API error" });
-    }
+    
     // console.log("debug:", data);
 
     // เตรียม values สำหรับ bulk insert

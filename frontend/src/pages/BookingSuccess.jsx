@@ -55,8 +55,8 @@ const BookingSuccess = () => {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-neutral-100 flex items-start justify-center p-4 pt-12">
-        <section className="w-full max-w-xl">
+      <main className="min-h-screen bg-neutral-100 p-4 pt-12">
+        <section className="w-full max-w-xl mx-auto">
           
           {/* success badge – gradient + ring + glow */}
           <div className="relative mx-auto mb-4 grid h-20 w-20 place-items-center ">

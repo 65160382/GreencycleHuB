@@ -4,7 +4,6 @@ require("dotenv").config();
 
 exports.getClosetFacility = async (req, res) => {
   try {
-    // const { incident, facilities } = req.body;
     const { resId } = req.body;
     // console.log("debug resid:",resId)
     const url = "https://api.nostramap.com/Service/V2/Network/ClosestFacility";
@@ -17,7 +16,7 @@ exports.getClosetFacility = async (req, res) => {
     //   { name: "sevenEleven4", lat: 13.285968, lon: 100.923165 }
     // ]
     const facilities = resId.map((item, index) => ({
-      name: String(item.id ?? `facility${index}`),
+      name: String(item.id),
       lat: Number(item.lat),
       lon: Number(item.lon),
     }));
@@ -33,10 +32,12 @@ exports.getClosetFacility = async (req, res) => {
       targetFacilityCount: facilities.length,
       language: "L",
       directionLanguage: "English",
-      cutOff: 60,
+      // cutOff: 60, 
       returnedAGSResult: "True",
       outSR: 4326,
     };
+
+    // console.log("debug length:",params.targetFacilityCount);
 
     const response = await axios.get(url, { params: params });
     // const response = await fetchClosetFacility(params);
@@ -46,6 +47,7 @@ exports.getClosetFacility = async (req, res) => {
       const results = response.data.results;
       // ตัด Object json data ของ api
       const nostraResults = results.routes.features.map((item) => ({
+
         facilityName: item.attributes.Name,
         facilityRank: item.attributes.FacilityRank,
         totalTime: item.attributes.Total_TravelTime,
@@ -53,7 +55,17 @@ exports.getClosetFacility = async (req, res) => {
       }));
 
       // console.log("debug data after:",nostraResults);
-      return res.json({message: "เรียกข้อมูลสำเร็จ!"})
+
+      // map ค่าใหม่เอา id ของการจองแปะไปใน data ที่จะส่งให้ frontend ด้วย
+      const mapped = nostraResults.map(item => {
+        const id = item.facilityName.replace("Company - ","")//ตัดคำออกไปเหลือแต่ไอดี
+        return {
+          res_id:Number(id), //เก็บเป็น resId แทน
+          ...item
+        }
+      })
+      // console.log("debug new value:",mapped);
+      return res.status(200).json({ data: mapped, message: "เรียกข้อมูลสำเร็จ!"})
     } else {
       console.log("ไม่มีผลลัพธ์จาก api!");
       return res.json({message: "เกิดข้อผิดพลาดไม่สามารถเรียกใช้งานได้"})

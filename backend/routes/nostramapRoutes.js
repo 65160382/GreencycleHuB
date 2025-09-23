@@ -7,6 +7,7 @@ require("dotenv").config();
 const NOSTRAMAP_API_KEY = process.env.NOSTRAMAP_API_KEY;
 
 // router.get("/closest-facility", async (req, res) => {
+
 //   const url = "https://api.nostramap.com/Service/V2/Network/ClosestFacility";
 
 //   const mockdata = {
@@ -51,6 +52,7 @@ const NOSTRAMAP_API_KEY = process.env.NOSTRAMAP_API_KEY;
 // });
 
 // router.get("/closest-facility",NostramapController.getClosetFacility);
+
 router.post("/closest-facility",NostramapController.getClosetFacility);
 
 router.get("/route", async (req, res) => {
