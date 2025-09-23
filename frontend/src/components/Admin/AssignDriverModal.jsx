@@ -58,30 +58,45 @@ const AssignDriverModal = ({ onClose, date, timeslot, resid }) => {
 
     try {
       setIsLoading(true);
-      const data = {
-        assigndate: date,
-        assigntimeslot: timeslot,
-        driveId: selectedDriverId,
-        resId: resid,
-      };
+      const nostramapdata = {
+        resId:resid
+      }
+      // const data = {
+      //   assigndate: date,
+      //   assigntimeslot: timeslot,
+      //   driveId: selectedDriverId,
+      //   resId: resid, //ตอนนี้กลายเป็น object { id: resid lat:lat lon:lon }
+      // };
 
-      console.log("test data:",data)
-
-      const res = await fetch(`${apiUrl}/api/admin/timetable`, {
+      // console.log("test data:",data)
+      // ทดสอบไอเดียใหม่คือ ลอง ยิง request สองครั้งแทน
+      const nostramapresult = await fetch(`${apiUrl}/api/closest-facility`,{
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify(data),
+        body:JSON.stringify(nostramapdata)
       });
-      const result = await res.json();
-      if (res.ok) {
-        toast.success(result.message || "หมอบหมายคนขับสำเร็จแล้ว");
-        onClose(); // ปิด modal
-      }else{
-        toast.error(result.message || "เกิดข้อผิดพลาด");
+      if(nostramapresult){
+        console.log("debug data:",nostramapresult);
       }
+
+      // const res = await fetch(`${apiUrl}/api/admin/timetable`, {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   credentials: "include",
+      //   body: JSON.stringify(data),
+      // });
+      // const result = await res.json();
+      // if (res.ok) {
+      //   toast.success(result.message || "หมอบหมายคนขับสำเร็จแล้ว");
+      //   onClose(); // ปิด modal
+      // }else{
+      //   toast.error(result.message || "เกิดข้อผิดพลาด");
+      // }
     } catch (error) {
       console.error("เกิดข้อผิดพลาดในการเชื่อมต่อเซิรฟ์เวอร์!", error);
       toast.error("เชื่อมต่อเซิร์ฟเวอร์ล้มเหลว");

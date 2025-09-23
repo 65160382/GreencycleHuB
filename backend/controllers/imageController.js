@@ -108,19 +108,22 @@ exports.createWasteCollection = async (req, res) => {
   try {
     // รับค่า public_id, secure_url, wastetype, weight
     const { public_id, secure_url, waste_type, weight } = req.body;
+    console.log("secure_url",secure_url);
 
     // รับค่า cus_id จาก token/session
     const cusId = req.user.cus_id;
 
     // ค้นหา id ประเภทขยะตามชื่อที่ได้รับมา
     const [recycleTypeRow] = await RecycleType.getrecycleTypeByName(waste_type);
-    const { rec_type_id: recycleTypeId } = recycleTypeRow; // destuctering เอา id พร้อมเปลี่ยนชื่อ
+    console.log("debug result:",recycleTypeRow);
+    const { rec_type_id: recycleTypeId, rec_type_price: recyclePrice } = recycleTypeRow; // destuctering เอา id พร้อมเปลี่ยนชื่อ
 
     // เพิ่มข้อมูลลง table waste_collection
     const result = await WasteCollection.insertWasteCollection(
       public_id,
       secure_url,
       recycleTypeId,
+      recyclePrice,
       weight,
       cusId
     );

@@ -17,7 +17,7 @@ const ReserveCard = ({ reserves, setResid }) => {
   const handleCheckboxChange = (item, isChecked) => {
     if (isChecked) {
       setResid((prev) => [
-        ...prev,{  id: item.res_id, lat: item.add_lat, lon: item.add_lat },
+        ...prev,{  id: item.res_id, lat: item.add_lat, lon: item.add_lon },
       ]); //เพิ่ม lat, lon ตอน click checkbox
     } else {
       // เข้าถึง .id ใน object ก่อน filter

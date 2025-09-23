@@ -1,0 +1,370 @@
+{
+  "messages": [],
+  "error": { "code": null, "message": null, "details": null },
+  // อาเรย์ของเส้นทางแต่ละเส้นทาง
+  "routes": {
+    "spatialReference": { "wkid": 4326, "latestWkid": 4326 },
+    "hasZ": null,
+    "hazM": null,
+    "features": [
+      {
+        "attributes": {
+          "ObjectID": 1,
+          "FacilityID": 2,
+          "FacilityRank": 1,
+          "Name": "Incident - sevenEleven2",
+          "IncidentCurbApproach": 1,
+          "FacilityCurbApproach": 1,
+          "IncidentID": 1,
+          "StartTime": null,
+          "EndTime": null,
+          "StartTimeUTC": null,
+          "EndTimeUTC": null,
+          "Total_BikeTravelTime": null,
+          "Total_Minutes": null,
+          "Total_MotorcycleTravelTime": null,
+          "Total_TimeAt1KPH": null,
+          "Total_TravelTime": 0.7544551299694284,
+          "Total_TruckTravelTime_SL100": null,
+          "Total_TruckTravelTime_SL50": null,
+          "Total_TruckTravelTime_SL60": null,
+          "Total_TruckTravelTime": null,
+          "Total_TruckTravelTime_SL70": null,
+          "Total_WalkTime": null,
+          "Total_Meters": null,
+          "Total_Kilometers": 0.27007434463981905,
+          "Total_Miles": null,
+          "Shape_Length": 0.0024818031281960804
+        },
+        "geometry": {
+          "paths": [
+            [
+              [100.92445932800007, 13.288391004000061],
+              [100.92446187700006, 13.288371335000022],
+              [100.92482123800005, 13.28843514600004],
+              [100.92503331900008, 13.288427954000042],
+              [100.92550981600004, 13.288542146000054],
+              [100.92569265400004, 13.288581696000051],
+              [100.92592537300004, 13.288632323000058],
+              [100.92620759600004, 13.288693056000056],
+              [100.92649911200004, 13.288746905000039],
+              [100.92687877800006, 13.288807270000063]
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "ObjectID": 2,
+          "FacilityID": 1,
+          "FacilityRank": 2,
+          "Name": "Incident - sevenEleven1",
+          "IncidentCurbApproach": 1,
+          "FacilityCurbApproach": 2,
+          "IncidentID": 1,
+          "StartTime": null,
+          "EndTime": null,
+          "StartTimeUTC": null,
+          "EndTimeUTC": null,
+          "Total_BikeTravelTime": null,
+          "Total_Minutes": null,
+          "Total_MotorcycleTravelTime": null,
+          "Total_TimeAt1KPH": null,
+          "Total_TravelTime": 0.8868346151759463,
+          "Total_TruckTravelTime_SL100": null,
+          "Total_TruckTravelTime_SL50": null,
+          "Total_TruckTravelTime_SL60": null,
+          "Total_TruckTravelTime": null,
+          "Total_TruckTravelTime_SL70": null,
+          "Total_WalkTime": null,
+          "Total_Meters": null,
+          "Total_Kilometers": 0.2956115383919821,
+          "Total_Miles": null,
+          "Shape_Length": 0.002676130645824202
+        },
+        "geometry": {
+          "paths": [
+            [
+              [100.92445932800007, 13.288391004000061],
+              [100.92446187700006, 13.288371335000022],
+              [100.92446005100004, 13.28814443400006],
+              [100.92447199600008, 13.287855598000021],
+              [100.92465657600007, 13.287814943000058],
+              [100.92460154000008, 13.28767487600004],
+              [100.92498295400009, 13.287673580000046],
+              [100.92568045900003, 13.28643739000006]
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "ObjectID": 3,
+          "FacilityID": 4,
+          "FacilityRank": 3,
+          "Name": "Incident - sevenEleven4",
+          "IncidentCurbApproach": 1,
+          "FacilityCurbApproach": 1,
+          "IncidentID": 1,
+          "StartTime": null,
+          "EndTime": null,
+          "StartTimeUTC": null,
+          "EndTimeUTC": null,
+          "Total_BikeTravelTime": null,
+          "Total_Minutes": null,
+          "Total_MotorcycleTravelTime": null,
+          "Total_TimeAt1KPH": null,
+          "Total_TravelTime": 1.2036709052180719,
+          "Total_TruckTravelTime_SL100": null,
+          "Total_TruckTravelTime_SL50": null,
+          "Total_TruckTravelTime_SL60": null,
+          "Total_TruckTravelTime": null,
+          "Total_TruckTravelTime_SL70": null,
+          "Total_WalkTime": null,
+          "Total_Meters": null,
+          "Total_Kilometers": 0.41955718023593225,
+          "Total_Miles": null,
+          "Shape_Length": 0.003777075765262805
+        },
+        "geometry": {
+          "paths": [
+            [
+              [100.92445932800007, 13.288391004000061],
+              [100.92446187700006, 13.288371335000022],
+              [100.92446005100004, 13.28814443400006],
+              [100.92447199600008, 13.287855598000021],
+              [100.92465657600007, 13.287814943000058],
+              [100.92460154000008, 13.28767487600004],
+              [100.92412446400004, 13.287676497000064],
+              [100.92403207600006, 13.287676000000033],
+              [100.92364866400004, 13.287633327000037],
+              [100.92349913800007, 13.287610209000036],
+              [100.92321491300004, 13.28742496500007],
+              [100.92317101000003, 13.286691229000041],
+              [100.92323557500004, 13.28597323200006]
+            ]
+          ]
+        }
+      }
+    ]
+  },
+
+  // อาเรย์ของฟีเจอร์ที่อธิบายละเอียดของเส้นทาง
+  "directions": [
+    {
+      "routeId": 1,
+      "routeName": "Incident - sevenEleven2",
+      "summary": {
+        "totalLength": 270.07434463981906,
+        "totalTime": 0.7544551299694284,
+        "totalDriveTime": 0.7544551299694284,
+        "envelope": {
+          "xmin": 100.92445932800007,
+          "ymin": 13.288371335000022,
+          "xmax": 100.92687877800006,
+          "ymax": 13.288807270000063,
+          "spatialReference": { "wkid": 4326, "latestWkid": 4326 }
+        }
+      },
+      "hasZ": null,
+      "hazM": null,
+      "features": [
+        {
+          "attributes": {
+            "length": 0,
+            "time": 0,
+            "text": "เริ่มต้นที่ Incident",
+            "ETA": -2209161600000,
+            "maneuverType": "esriDMTDepart"
+          },
+          "compressedGeometry": "+k9bdg+1vvvvtc+8dkt2l+0+0"
+        },
+        {
+          "attributes": {
+            "length": 2.1934693787057964,
+            "time": 0.0065804081361173885,
+            "text": "ไปทางทิศใต้",
+            "ETA": -2209161600000,
+            "maneuverType": "esriDMTStraight"
+          },
+          "compressedGeometry": "+k9bdg+1vvvvtc+8dkt2l+1m-d3"
+        },
+        {
+          "attributes": {
+            "length": 267.88087526111326,
+            "time": 0.747874721833311,
+            "text": "เลี้ยวซ้าย",
+            "ETA": -2209161600000,
+            "maneuverType": "esriDMTTurnLeft"
+          },
+          "compressedGeometry": "+k9ati+1vvudmj+8dkm1p+7eu+1ae+4d1-4p+9sq+2bu+3pj+q9+4qn+11l+5rl+18d+61r+13p+7sf+185"
+        },
+        {
+          "attributes": {
+            "length": 0,
+            "time": 0,
+            "text": "ถึงที่หมาย sevenEleven2",
+            "ETA": -2209161600000,
+            "maneuverType": "esriDMTStop"
+          },
+          "compressedGeometry": "+k9ati+1vvvvtl+8dkv3l+0+0"
+        }
+      ]
+    },
+    {
+      "routeId": 2,
+      "routeName": "Incident - sevenEleven1",
+      "summary": {
+        "totalLength": 295.6115383919821,
+        "totalTime": 0.8868346151759463,
+        "totalDriveTime": 0.8868346151759463,
+        "envelope": {
+          "xmin": 100.92445932800007,
+          "ymin": 13.28643739000006,
+          "xmax": 100.92568045900009,
+          "ymax": 13.288391004000061,
+          "spatialReference": { "wkid": 4326, "latestWkid": 4326 }
+        }
+      },
+      "hasZ": null,
+      "hazM": null,
+      "features": [
+        {
+          "attributes": {
+            "length": 0,
+            "time": 0,
+            "text": "เริ่มต้นที่ Incident",
+            "ETA": -2209161600000,
+            "maneuverType": "esriDMTDepart"
+          },
+          "compressedGeometry": "+k9bdg+1vvvvtc+8dkt2l+0+0"
+        },
+        {
+          "attributes": {
+            "length": 97.95049030308543,
+            "time": 0.2938514709092563,
+            "text": "ไปทางทิศใต้",
+            "ETA": -2209161600000,
+            "maneuverType": "esriDMTStraight"
+          },
+          "compressedGeometry": "+k9bc7+1vvvrs2+8dkshk+1m-d3-17-4ms+7v-602+3qn-r1-14j-2t4"
+        },
+        {
+          "attributes": {
+            "length": 197.66104808889668,
+            "time": 0.59298314426669,
+            "text": "เตรียมไปทางซ้ายบน ซ.ลงหาดบางแสน 14, จากนั้นเลี้ยวขวาบน ซ.ลงหาดบางแสน 14",
+            "ETA": -2209161600000,
+            "maneuverType": "esriDMTTurnLeftRight"
+          },
+          "compressedGeometry": "+k9b5f+1vvv9hc+8dkaro+7tk-s+efp-plv"
+        },
+        {
+          "attributes": {
+            "length": 0,
+            "time": 0,
+            "text": "ถึงที่หมาย sevenEleven1",
+            "ETA": -2209161600000,
+            "maneuverType": "esriDMTStop"
+          },
+          "compressedGeometry": "+k9b5f+1vvvvup+8djh4t+0+0"
+        }
+      ]
+    },
+    {
+      "routeId": 3,
+      "routeName": "Incident - sevenEleven4",
+      "summary": {
+        "totalLength": 419.55718023593226,
+        "totalTime": 1.2036709052180719,
+        "totalDriveTime": 1.2036709052180719,
+        "envelope": {
+          "xmin": 100.92317101000003,
+          "ymin": 13.28597323200006,
+          "xmax": 100.92465657600007,
+          "ymax": 13.288391004000061,
+          "spatialReference": { "wkid": 4326, "latestWkid": 4326 }
+        }
+      },
+      "hasZ": null,
+      "hazM": null,
+      "features": [
+        {
+          "attributes": {
+            "length": 0,
+            "time": 0,
+            "text": "เริ่มต้นที่ Incident",
+            "ETA": -2209161600000,
+            "maneuverType": "esriDMTDepart"
+          },
+          "compressedGeometry": "+k9bdg+1vvvvtc+8dkt2l+0+0"
+        },
+        {
+          "attributes": {
+            "length": 97.95049030308543,
+            "time": 0.2938514709092563,
+            "text": "ไปทางทิศใต้",
+            "ETA": -2209161600000,
+            "maneuverType": "esriDMTStraight"
+          },
+          "compressedGeometry": "+k9bc7+1vvvrs2+8dkshk+1m-d3-17-4ms+7v-602+3qn-r1-14j-2t4"
+        },
+        {
+          "attributes": {
+            "length": 160.31443232406727,
+            "time": 0.469931459012144,
+            "text": "เลี้ยวขวาที่ ซ.ลงหาดบางแสน 14",
+            "ETA": -2209161600000,
+            "maneuverType": "esriDMTTurnRight"
+          },
+          "compressedGeometry": "+k9bci+1vvvvta+8dkdq0-9t7+13-1te-b-7uu-sc-33e-fc-5t0-3r5"
+        },
+        {
+          "attributes": {
+            "length": 161.29225760877952,
+            "time": 0.43988797529667156,
+            "text": "ไปข้างหน้าต่อไป",
+            "ETA": -2209161600000,
+            "maneuverType": "esriDMTStraight"
+          },
+          "compressedGeometry": "+k9bli+1vvvvfj+8dkcbd-t6-f7s+1au-ete"
+        },
+        {
+          "attributes": {
+            "length": 0,
+            "time": 0,
+            "text": "ถึงที่หมาย sevenEleven4",
+            "ETA": -2209161600000,
+            "maneuverType": "esriDMTStop"
+          },
+          "compressedGeometry": "+k9bli+1vvvvtb+8dje63+0+0"
+        }
+      ]
+    }
+  ],
+
+  "facilities": {
+    "spatialReference": { "wkid": 4326, "latestWkid": 4326 },
+    "hasZ": null,
+    "features": [
+      {
+        "attributes": { "name": "sevenEleven1", "sequence": 0 },
+        "geometry": { "x": 100.92575900000008, "y": 13.286474000000055 }
+      },
+      {
+        "attributes": { "name": "sevenEleven2", "sequence": 0 },
+        "geometry": { "x": 100.92689600000006, "y": 13.288700000000063 }
+      },
+      {
+        "attributes": { "name": "sevenEleven3", "sequence": 0 },
+        "geometry": { "x": 100.93010600000008, "y": 13.287216000000058 }
+      },
+      {
+        "attributes": { "name": "sevenEleven4", "sequence": 0 },
+        "geometry": { "x": 100.92316500000004, "y": 13.285968000000025 }
+      }
+    ]
+  },
+  
+  "incidents": null
+}

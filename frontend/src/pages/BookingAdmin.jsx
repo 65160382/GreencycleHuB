@@ -66,7 +66,7 @@ const BookingAdmin = () => {
       });
       if (res.ok) {
         const data = await res.json();
-        // console.log("debug data:", data.result);
+        console.log("debug data:", data.result);
         // เก็บรายการจองทั้งหมด
         setReserves(data.result);
 

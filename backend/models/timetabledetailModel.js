@@ -13,4 +13,5 @@ class Timetabledetail {
   }
 }
 
+
 module.exports = Timetabledetail;
