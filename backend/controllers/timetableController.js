@@ -26,43 +26,54 @@ exports.createTimetable = async (req, res) => {
     }
 
     // debug value: [ { index: 1, resId: 2 }, { index: 2, resId: 3 } ]
-    console.log("debug value:", reserve); // ต้องได้ค่าเป็น  array object { id: resid lat:lat lon:lon } ของแต่ละรายการจอง
+    // console.log("debug value:", reserve); // ต้องได้ค่าเป็น  array object ของแต่ละรายการจอง
 
     // เพิ่มข้อมูลลง timetable
-    // const timetaleId = await Timetable.insertTimetable(
-    //   con,
-    //   assigndate,
-    //   assigntimeslot,
-    //   driveId
-    // );
+    const timetableId = await Timetable.insertTimetable(
+      con,
+      assigndate,
+      assigntimeslot,
+      driveId
+    );
 
-    // if (!timetaleId) {
-    //   return res.status(400).json({ message: "เกิดข้อผิดพลาดไม่มี timetableid!" });
-    // }
-    
+    if (!timetableId) {
+      return res
+        .status(400)
+        .json({ message: "เกิดข้อผิดพลาดไม่มี timetableid!" });
+    }
+
     // console.log("debug:", data);
 
     // เตรียม values สำหรับ bulk insert
-    // const values = resId.map((id) => [timetaleId, id, null, null]);
+    const values = reserve.map((item) => [
+      timetableId,
+      item.index,
+      item.resId,
+      null,
+      null,
+    ]);
+    // console.log("debug data bluk insert:",values)
 
     // เพิ่มข้อมูลง timetabledetail
-    // const result = await Timetabledetail.insertTimetabledetail(con, values);
+    await Timetabledetail.insertTimetabledetail(con, values);
 
     // เตรียม ข้อมูล Resid สำหรับ update status reserve
-    // const update = resId.map((id) => ["pending", id]);
+    const update = reserve.map((item) => ["pending", item.resId]);
+    // console.log("debug update value:",update);
 
     // อัปเดตสถานะรายการจอง ให้เป็น Pending
-    // await Reserve.updateReserve(con, update);
+    await Reserve.updateReserve(con, update);
 
     // ยืนยัน transaction
-    // await con.commit();
+    const result = await con.commit();
 
-    // if (result) {
-    //   res.status(200).json({ message: "หมอบหมายคนขับสำเร็จ!" });
-    // }
+    if (result) {
+      res.status(200).json({ message: "หมอบหมายคนขับสำเร็จ!" });
+    }
   } catch (error) {
     await con.rollback(); // rollback ข้อมูลเวลาเกิดขึ้น
     console.log("เกิดข้อผิดพลาดกับเซิร์ฟเวอร์!", error);
+    return res.status(500).json({ message: "เกิดข้อผิดพลาด" });
   } finally {
     await con.release(); //ปิด connection
   }

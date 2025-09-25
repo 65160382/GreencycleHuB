@@ -22,12 +22,46 @@ exports.createRefreshToken = (payload) => {
   }
 };
 
+// สร้าง token ใหม่
 exports.generateAccessTokenFromRefresh = (refreshToken) => {
   try {
     const user = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
 
+    // console.log("debug user",user);
+
+    let payload = {
+      userid: user.id,
+      email: user.email,
+      role: user.role,
+    }
+
+    // ถ้า role เป็น customer
+    if(user.role === "customer"){
+      payload = {
+        ...payload,
+        fname: user.fname,
+        lanme: user.lname,
+        phone: user.phone,
+        cus_id: user.cus_id
+      }
+    }
+
+    if(user.role === "driver"){
+      payload = {
+        ...payload,
+        drivId: user.drivId,
+        fname: user.fname,
+        lname: user.lname,
+        phone: user.phone,
+        license_plate: user.license_plate,
+      }
+    }
+
+    // console.log("debug payload",payload);
+
     const newAccessToken = jwt.sign(
-      { id: user.id, email:user.email, role: user.role}, // ใช้ payload เดิมจาก refresh token
+      payload, // ใช้ payload เดิมจาก refresh token
+      // user,
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN }
     );
@@ -37,3 +71,12 @@ exports.generateAccessTokenFromRefresh = (refreshToken) => {
     console.error("Refresh token ไม่ถูกต้อง:", error);
   }
 };
+
+exports.decodedToken = (accessToken) => {
+  try {
+    const user = jwt.verify(accessToken, process.env.JWT_SECRET);
+    return user;
+  } catch (error) {
+    console.error("เกิดข้อผิดพลาด",error);
+  }
+}

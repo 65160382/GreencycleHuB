@@ -15,8 +15,10 @@ exports.auth = async (req, res, next) => {
     // console.log(req.user);
     next();
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์" });
+    if (error.name === "TokenExpiredError") {
+      return res.status(401).json({ message: "Token หมดอายุ" }); // ให้ frontend trigger refresh
+    }
+    return res.status(403).json({ message: "Token ไม่ถูกต้อง" });
   }
 };
 

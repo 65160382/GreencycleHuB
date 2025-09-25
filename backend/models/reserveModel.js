@@ -12,8 +12,8 @@ class Reserve {
     addrId
   ) {
     try {
-      const sql = `INSERT INTO reserve(res_status, res_code, res_booking_date, res_time_slot, res_amount, res_weight, res_create_at, cus_id, add_id) 
-      VALUES (?, ?, ?, ?, ?, ?, NOW(), ?, ?)`;
+      const sql = `INSERT INTO reserve(res_status, res_code, res_booking_date, res_time_slot, res_amount, res_weight, res_create_at, res_update_at, cus_id, add_id) 
+      VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?)`;
       const [result] = await pool.query(sql, [
         "confirmed",
         resCode,

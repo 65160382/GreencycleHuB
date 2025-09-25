@@ -14,9 +14,6 @@ export const AuthProvider = ({ children }) => {
       try {
         const response = await fetch(`${apiUrl}/api/auth`, {
           method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
           credentials: "include",
         });
 
@@ -27,8 +24,9 @@ export const AuthProvider = ({ children }) => {
           console.log("เข้าสู่ระบบแล้ว");
         } else if (response.status === 401 || response.status === 403) {
           // ถ้า token หมดอายุ ลอง refresh
-          console.log("Token หมดอายุ, กำลังลองต่ออายุ...");
+          console.log("Token หมดอายุ, กำลังเรียก api สำหรับต่ออายุ token");
           const refreshed = await refreshToken();
+          // console.log("ตรวจสอบ refreshed",refreshed);
           if (!refreshed) {
             // ถ้า refresh ไม่สำเร็จ
             setIsLoggedIn(false);
@@ -59,21 +57,29 @@ export const AuthProvider = ({ children }) => {
         method: "POST",
         credentials: "include",
       });
-
+      // const data = await res.json();
+      // console.log("debug res",data);
       if (res.ok) {
-        console.log("ต่ออายุ Token สำเร็จ!");
+        // console.log("ต่ออายุ Token สำเร็จ!");
         // return true;
         // หลังจาก refresh token สำเร็จ ให้ดึงข้อมูล user อีกครั้ง
-        const userRes = await fetch(`${apiUrl}/api/auth`, {
-          method: "GET",
-          credentials: "include",
-        });
-        if (userRes.ok) {
-          const data = await userRes.json();
-          setIsLoggedIn(true);
-          setUser(data.user);
-          return true; // คืนค่าว่า refresh สำเร็จ
-        }
+        // const userRes = await fetch(`${apiUrl}/api/auth`, {
+        //   method: "GET",
+        //   credentials: "include",
+        // });
+        // if (userRes.ok) {
+        //   const data = await userRes.json();
+        //   setIsLoggedIn(true);
+        //   setUser(data.user);
+        //   return true; // คืนค่าว่า refresh สำเร็จ
+        // }
+
+        // test 
+        const data = await res.json();
+        console.log("ต่ออายุ Token สำเร็จ!",data);
+        setUser(data.user);
+        setIsLoggedIn(true);
+        return true;
       }
       return false; // คืนค่าว่า refresh ไม่สำเร็จ
     } catch (error) {
