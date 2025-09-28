@@ -17,6 +17,7 @@ import AdminRoute from "./routes/AdminRoute";
 import DriverRoute from "./routes/DriverRoute";
 import MainDriver from "./pages/MainDriver";
 import MytaskDriver from "./pages/MytaskDriver";
+import MytaskDriverdetail from "./pages/MytaskDriverdetail";
 
 function App() {
   return (
@@ -71,6 +72,15 @@ function App() {
               </DriverRoute>
             }
           />
+          <Route
+           path="/driver/tasksdetail"
+           element={
+            <DriverRoute>
+              <MytaskDriverdetail/>
+            </DriverRoute>
+           }
+           >
+          </Route>
           {/* <Route path="/image-processing" element={<Imagemodal setIsOpen={true}/>} /> */}
         </Routes>
         {/* ตั้งค่า toastcotainer สำหรับการแจ้งเตือน */}

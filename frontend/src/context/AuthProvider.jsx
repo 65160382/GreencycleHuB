@@ -57,26 +57,9 @@ export const AuthProvider = ({ children }) => {
         method: "POST",
         credentials: "include",
       });
-      // const data = await res.json();
-      // console.log("debug res",data);
       if (res.ok) {
-        // console.log("ต่ออายุ Token สำเร็จ!");
-        // return true;
-        // หลังจาก refresh token สำเร็จ ให้ดึงข้อมูล user อีกครั้ง
-        // const userRes = await fetch(`${apiUrl}/api/auth`, {
-        //   method: "GET",
-        //   credentials: "include",
-        // });
-        // if (userRes.ok) {
-        //   const data = await userRes.json();
-        //   setIsLoggedIn(true);
-        //   setUser(data.user);
-        //   return true; // คืนค่าว่า refresh สำเร็จ
-        // }
-
-        // test 
         const data = await res.json();
-        console.log("ต่ออายุ Token สำเร็จ!",data);
+        console.log("ต่ออายุ Token สำเร็จ!");
         setUser(data.user);
         setIsLoggedIn(true);
         return true;

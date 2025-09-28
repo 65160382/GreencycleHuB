@@ -31,11 +31,6 @@ const Login = () => {
         setIsLoggedIn(true); // อัปเดตสถานะทันทีหลัง login
         setUser(data.payload);
 
-        // if (data.payload.role == "admin") {
-        //   navigate("/admin");
-        // } else {
-        //   navigate("/home");
-        // }
         if (data.payload.role == "admin") {
           navigate("/admin");
         } else if(data.payload.role == "driver"){

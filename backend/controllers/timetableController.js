@@ -78,3 +78,61 @@ exports.createTimetable = async (req, res) => {
     await con.release(); //ปิด connection
   }
 };
+
+// แสดงตารางการเดินรถตามวันที่ของคนขับ
+exports.getTimetable = async (req, res) => {
+  try {
+    const { drivId, date } = req.query;
+
+    if (!drivId || !date) {
+      return res.status(400).json({ message: "กรุณาระบุ drivId และ date" });
+    }
+
+    const results = await Timetable.fetchTimetable(drivId, date);
+    // console.log("debug results:", results);
+
+    // test ยังไม่เข้าใจ flow ต้องนี้เรื่องการ group object
+    // Group ตาม time_id
+    const grouped = results.reduce((acc, item) => {
+      if (!acc[item.time_id]) {
+        acc[item.time_id] = {
+          time_id: item.time_id,
+          time_date: item.time_date,
+          time_slot: item.time_time_slot,
+          items: [],
+          total_weight: 0, // <-- เก็บน้ำหนักรวม
+        };
+      }
+
+      acc[item.time_id].items.push({
+        res_id: item.res_id,
+        time_index: item.time_index,
+        addressLine1: item.addressLine1,
+        addressLine2: item.addressLine2,
+        weight: parseFloat(item.res_weight), // เก็บน้ำหนักของแต่ละบ้าน
+      });
+
+      acc[item.time_id].total_weight += parseFloat(item.res_weight); // บวกน้ำหนัก
+      return acc;
+    }, {});
+
+    const timetable = Object.values(grouped).map((group) => ({
+      ...group,
+      total_points: group.items.length,
+    }));
+
+    // console.log("debug timetable:",timetable);
+    // return res.status(200).json({ timetable });
+
+    if (timetable) {
+      return res.status(200).json({ timetable });
+    } else {
+      return res
+        .status(404)
+        .json({ message: "ไม่พบข้อมูลตารางการเดินรถของคนขับ!" });
+    }
+  } catch (error) {
+    console.log("เกิดข้อผิดพลาดกับเซิร์ฟเวอร์!", error);
+    return res.status(500).json({ message: "เกิดข้อผิดพลาด" });
+  }
+};
