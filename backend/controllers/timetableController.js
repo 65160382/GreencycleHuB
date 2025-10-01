@@ -110,6 +110,8 @@ exports.getTimetable = async (req, res) => {
         addressLine1: item.addressLine1,
         addressLine2: item.addressLine2,
         weight: parseFloat(item.res_weight), // เก็บน้ำหนักของแต่ละบ้าน
+        lat:item.add_lat,
+        lon:item.add_lon
       });
 
       acc[item.time_id].total_weight += parseFloat(item.res_weight); // บวกน้ำหนัก
@@ -136,3 +138,21 @@ exports.getTimetable = async (req, res) => {
     return res.status(500).json({ message: "เกิดข้อผิดพลาด" });
   }
 };
+
+exports.getTimetableById = async(req,res) => {
+  try {
+    const timeId = req.params.id;
+
+    if(!timeId){
+      return res.status(404).json({ message: "ไม่มีข้อมูลตารางเดินรถที่เลือก" })
+    }
+
+    const results = await Timetable.fetchTimetablebyid(timeId);
+    // console.log("debug results",results);
+
+    return res.status(200).json({ message: "ดึงข้อมูลสำเร็จ", results });
+
+  } catch (error) {
+    console.log("เกิดข้อผิดพลาดกับเซิรฟ์เวอร์",error);
+  }
+}

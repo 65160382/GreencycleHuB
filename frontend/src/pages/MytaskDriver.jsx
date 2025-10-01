@@ -16,7 +16,7 @@ import { AuthContext } from "../context/AuthContext";
 
 const MytaskDriver = () => {
   const apiUrl = import.meta.env.VITE_API_URL;
-  const naviagte = useNavigate();
+  const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [selectedRound, setSelectedRound] = useState(null);
@@ -53,6 +53,10 @@ const MytaskDriver = () => {
       fetchData(user.drivId, today);
     }
   }, [user]);
+
+  // useEffect(() => {
+  //   console.log("timetable",timetable);
+  // },[timetable])
 
   // http://localhost:3000/api/timetable
   const fetchData = async (drivId, date) => {
@@ -121,7 +125,7 @@ const MytaskDriver = () => {
 
           {/* ส่วนแสดงรอบ  <---- เพิ่มเติมตรงนี้ต้อง loop เอา มาแสดงผลและแสดงผลได้มากสุด 2 รอบ*/}
           <section className="mt-4 space-y-6">
-            {timetable.map((round, roundIndex) => (
+            {timetable.map((round) => (
               <div
                 key={round.time_id}
                 className="border rounded-md shadow-sm p-6 bg-white"
@@ -240,7 +244,7 @@ const MytaskDriver = () => {
           onClose={() => setIsConfirmOpen(false)}
           onConfirm={() => {
             // ทำ action เช่น navigate ไปหน้า detail
-            naviagte("/driver/tasksdetail");
+            navigate(`/driver/tasksdetail/${selectedRound.time_id}`);
             console.log("เริ่มงานรอบ:", selectedRound);
           }}
           title="ยืนยันการเริ่มงาน"

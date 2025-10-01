@@ -54,33 +54,35 @@ const NOSTRAMAP_API_KEY = process.env.NOSTRAMAP_API_KEY;
 // router.get("/closest-facility",NostramapController.getClosetFacility);
 
 router.post("/closest-facility",NostramapController.getClosetFacility);
+// test endpoint
+router.post("/route",NostramapController.getRoute)
 
-router.get("/route", async (req, res) => {
-  const url = "https://api.nostramap.com/service/v2/Network/Route";
+// router.get("/route", async (req, res) => {
+//   const url = "https://api.nostramap.com/service/v2/Network/Route";
 
-  const data = {
-    key: NOSTRAMAP_API_KEY, // ✅ ส่ง key เป็น param
-    stops: JSON.stringify([
-      { name: "sevenEleven2", lat: 13.2887, lon: 100.926896 },
-      { name: "sevenEleven1", lat: 13.286474, lon: 100.925759 }
-    ]),
-    mode: "Car",
-    impedance: "Distance",
-    returnedRouteDetail: "True", //รายละเอียดเส้นทางทั้งหมด
-    findBestSequence: "True",
-    preserveFirstStop: "True" //บังคับให้จุดแรกต้องเริ่มที่ stop[0]
-  };
+//   const data = {
+//     key: NOSTRAMAP_API_KEY, // ✅ ส่ง key เป็น param
+//     stops: JSON.stringify([
+//       { name: "sevenEleven2", lat: 13.2887, lon: 100.926896 },
+//       { name: "sevenEleven1", lat: 13.286474, lon: 100.925759 }
+//     ]),
+//     mode: "Car",
+//     impedance: "Distance",
+//     returnedRouteDetail: "True", //รายละเอียดเส้นทางทั้งหมด
+//     findBestSequence: "True",
+//     preserveFirstStop: "True" //บังคับให้จุดแรกต้องเริ่มที่ stop[0]
+//   };
 
-  try {
-    const response = await axios.get(url, { params: data });
-    const results = response.data.results;
+//   try {
+//     const response = await axios.get(url, { params: data });
+//     const results = response.data.results;
 
-    console.log("debug result", results);
-    res.json(results);
-  } catch (error) {
-    console.error("Error:", error.message);
-  }
-});
+//     console.log("debug result", results);
+//     res.json(results);
+//   } catch (error) {
+//     console.error("Error:", error.message);
+//   }
+// });
 
 
 module.exports = router;

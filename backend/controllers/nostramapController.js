@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { fetchClosetFacility } = require("../utils/nostramapUtils");
+const { normalizeLocation } = require("../utils/nostramapUtils");
 require("dotenv").config();
 
 exports.getClosetFacility = async (req, res) => {
@@ -8,7 +8,7 @@ exports.getClosetFacility = async (req, res) => {
     // console.log("debug resid:",resId)
     const url = "https://api.nostramap.com/Service/V2/Network/ClosestFacility";
 
-    incident = [{ name: "Company", lat: 13.288378, lon: 100.924359 }]
+    incident = [{ name: "Company", lat: 13.288378, lon: 100.924359 }];
     // facilities = [
     //   { name: "sevenEleven1", lat: 13.286474, lon: 100.925759 },
     //   { name: "sevenEleven2", lat: 13.2887, lon: 100.926896 },
@@ -32,7 +32,7 @@ exports.getClosetFacility = async (req, res) => {
       targetFacilityCount: facilities.length,
       language: "L",
       directionLanguage: "English",
-      // cutOff: 60, 
+      // cutOff: 60,
       returnedAGSResult: "True",
       outSR: 4326,
     };
@@ -47,7 +47,6 @@ exports.getClosetFacility = async (req, res) => {
       const results = response.data.results;
       // ตัด Object json data ของ api
       const nostraResults = results.routes.features.map((item) => ({
-
         facilityName: item.attributes.Name,
         facilityRank: item.attributes.FacilityRank,
         totalTime: item.attributes.Total_TravelTime,
@@ -57,26 +56,57 @@ exports.getClosetFacility = async (req, res) => {
       // console.log("debug data after:",nostraResults);
 
       // map ค่าใหม่เอา id ของการจองแปะไปใน data ที่จะส่งให้ frontend ด้วย
-      const mapped = nostraResults.map(item => {
-        const id = item.facilityName.replace("Company - ","")//ตัดคำออกไปเหลือแต่ไอดี
+      const mapped = nostraResults.map((item) => {
+        const id = item.facilityName.replace("Company - ", ""); //ตัดคำออกไปเหลือแต่ไอดี
         return {
-          res_id:Number(id), //เก็บเป็น resId แทน
-          ...item
-        }
-      })
+          res_id: Number(id), //เก็บเป็น resId แทน
+          ...item,
+        };
+      });
       // console.log("debug new value:",mapped);
-      return res.status(200).json({ data: mapped, message: "เรียกข้อมูลสำเร็จ!"})
+      return res
+        .status(200)
+        .json({ data: mapped, message: "เรียกข้อมูลสำเร็จ!" });
     } else {
       console.log("ไม่มีผลลัพธ์จาก api!");
-      return res.json({message: "เกิดข้อผิดพลาดไม่สามารถเรียกใช้งานได้"})
+      return res.json({ message: "เกิดข้อผิดพลาดไม่สามารถเรียกใช้งานได้" });
     }
   } catch (error) {
     console.error("เกิดข้อผิดพลาดในการเรียกใช้งาน API", error);
   }
 };
 
+// คำนวณเส้นทางการเดินรถไปยังตำแหน่งต่างๆตามลำดับที่วางเอาไว้
 exports.getRoute = async (req, res) => {
+  // รับข้อมูลที่อยู่ต่างๆของลูกค้าตามลำดับจาก react
+  let { from, to } = req.body;
+  // console.log("debug from ",from," to ",to);
+
+  // สร้าง object ใหม่ที่ตรงตาม pattern nostramaps
+   from = normalizeLocation(from);
+   to = normalizeLocation(to);
+
+  // ต้อง push จุดเริ่มต้นและจุดสิ้นสุดไปในตัวแรกและตัวสุดท้ายด้วยรวมเป็น array
+  const stops = [from, to];
+  // console.log("debug stops:", stops);
+  // const url = "https://api.nostramap.com/service/v2/Network/Route";
+  const url = process.env.NOSTRAMAP_ROUTE_URL;
+
+  const data = {
+    key: process.env.NOSTRAMAP_API_KEY,
+    stops: JSON.stringify(stops),
+    mode: "Car",
+    impedance: "Distance",
+    returnedRouteDetail: "True", //รายละเอียดเส้นทางทั้งหมด
+    findBestSequence: "True",
+    preserveFirstStop: "True", //บังคับให้จุดแรกต้องเริ่มที่ stop[0]
+  };
+
   try {
+    const response = await axios.get(url, { params: data });
+    const results = response.data.results;
+    console.log("debug results", results);
+    res.json({ results });
   } catch (error) {
     console.error("เกิดข้อผิดพลาดในการเรียกใช้งาน API", error);
   }

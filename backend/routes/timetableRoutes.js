@@ -7,6 +7,7 @@ const TimetableController = require("../controllers/timetableController");
 router.post("/admin/timetable",auth,checkAdmin,TimetableController.createTimetable);
 // router.get("/timetable",auth,TimetableController.getTimetable);
 router.get("/timetable",TimetableController.getTimetable);
+router.get("/timetable/:id",TimetableController.getTimetableById)
 
 
 module.exports = router;

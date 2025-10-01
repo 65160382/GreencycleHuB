@@ -73,7 +73,7 @@ function App() {
             }
           />
           <Route
-           path="/driver/tasksdetail"
+           path="/driver/tasksdetail/:timeId"
            element={
             <DriverRoute>
               <MytaskDriverdetail/>
