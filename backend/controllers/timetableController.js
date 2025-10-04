@@ -89,7 +89,7 @@ exports.getTimetable = async (req, res) => {
     }
 
     const results = await Timetable.fetchTimetable(drivId, date);
-    // console.log("debug results:", results);
+    console.log("debug results:", results);
 
     // test ยังไม่เข้าใจ flow ต้องนี้เรื่องการ group object
     // Group ตาม time_id
@@ -150,7 +150,25 @@ exports.getTimetableById = async(req,res) => {
     const results = await Timetable.fetchTimetablebyid(timeId);
     // console.log("debug results",results);
 
-    return res.status(200).json({ message: "ดึงข้อมูลสำเร็จ", results });
+    if(!results.length){
+      return res.status(404).json({message: "ไม่พบข้อมูลรายการจองในรอบการเดินรถนี้"})
+    }
+
+    // map res_id ของตารางเดินรถออกมา
+    const resIds = results.map((item)=> item.res_id)
+
+    const wasteSummaries = await Promise.all(
+      resIds.map((id)=> Reserve.getReserveWasteSummary(id))
+    );
+    // console.log("debug waste summary:",wasteSummaries);
+
+    const mergedResult = results.map((item,index)=> ({
+      ...item,
+      wastes: wasteSummaries[index], //ขยะของรายการจองนี้
+    }))
+    // console.log("debug merge value:",mergedResult);
+
+    return res.status(200).json({ message: "ดึงข้อมูลสำเร็จ", mergedResult });
 
   } catch (error) {
     console.log("เกิดข้อผิดพลาดกับเซิรฟ์เวอร์",error);

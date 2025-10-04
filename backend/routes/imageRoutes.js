@@ -9,6 +9,6 @@ router.post("/predict", upload.single("image"), auth, imageController.predictIma
 router.post("/image", upload.single("image"), auth,imageController.uploadImage);
 router.post("/waste-collection",auth,imageController.createWasteCollection);
 
-router.get("/recycle-type",imageController.getRecycleType);
+// router.get("/recycle-type",imageController.getRecycleType);
 
 module.exports = router;

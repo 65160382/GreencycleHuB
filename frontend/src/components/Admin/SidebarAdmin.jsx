@@ -1,6 +1,6 @@
 import { useCallback, useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Calendar, UserRound, Car, Home, ListTodo } from "lucide-react";
+import { LayoutDashboard, Calendar, UserRound, Car, Home, ListTodo, History, FileText } from "lucide-react";
 // ลองปรับให้ component มัน dynamic
 import { AuthContext } from "../../context/AuthContext";
 
@@ -14,6 +14,8 @@ const navItems = {
   driver: [
     { icon: <Home size={18} />, name: "Home", path: "/driver" },
     { icon: <ListTodo size={18}/>, name: "My Tasks", path: "/driver/tasks" },
+    { icon: <History size={18}/>, name: "History", path: "/driver/history" },
+    { icon: <FileText size={18}/>, name: "Report", path: "/driver/report" },
   ],
 };
 

@@ -89,7 +89,6 @@ exports.getRoute = async (req, res) => {
   // ต้อง push จุดเริ่มต้นและจุดสิ้นสุดไปในตัวแรกและตัวสุดท้ายด้วยรวมเป็น array
   const stops = [from, to];
   // console.log("debug stops:", stops);
-  // const url = "https://api.nostramap.com/service/v2/Network/Route";
   const url = process.env.NOSTRAMAP_ROUTE_URL;
 
   const data = {
@@ -105,8 +104,14 @@ exports.getRoute = async (req, res) => {
   try {
     const response = await axios.get(url, { params: data });
     const results = response.data.results;
-    console.log("debug results", results);
-    res.json({ results });
+    // console.log("debug results", results);
+    // const routedata = {
+    //   totalLength:results.totalLength,
+    //   totalTime:results.totalTime,
+    //   geometry:results.route
+    // }
+    // res.status(200).json({ message: "คำนวณเส้นทางสำเร็จ!",routedata });
+    res.status(200).json({ message: "คำนวณเส้นทางสำเร็จ!",results });
   } catch (error) {
     console.error("เกิดข้อผิดพลาดในการเรียกใช้งาน API", error);
   }

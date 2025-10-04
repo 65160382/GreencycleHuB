@@ -149,7 +149,7 @@ WHERE r.res_id = ?;`;
   }
 
   // ใช้ Promise.all() แล้ว loop update ทีละรายการ
-  static async updateReserve(con,updateArray) {
+  static async updateReserve(con, updateArray) {
     const sql = `UPDATE reserve SET res_status = ?, res_update_at = NOW() WHERE res_id = ?`;
 
     try {
@@ -161,6 +161,36 @@ WHERE r.res_id = ?;`;
       return true;
     } catch (error) {
       console.error("Error updating reserve table!", error);
+      throw error;
+    }
+  }
+
+  // ดึงข้อมูลขยะโดยรวมของแต่ละการจอง
+  static async getReserveWasteSummary(resId) {
+    try {
+      const [rows] = await pool.query(
+        `
+    SELECT
+      wc.rec_type_id,
+      rt.rec_type_name,
+      wc.waste_collect_price,
+      SUM(wc.waste_collect_quantity) AS total_weight,
+      SUM(wc.waste_collect_quantity * wc.waste_collect_price) AS total_price
+    FROM reserve AS r
+    JOIN reserve_detail AS rd ON rd.res_id = r.res_id
+    JOIN waste_collection AS wc ON rd.waste_collect_id = wc.waste_collect_id
+    JOIN recycle_type AS rt ON rt.rec_type_id = wc.rec_type_id
+    WHERE r.res_id = ?
+    GROUP BY
+      wc.rec_type_id,
+      rt.rec_type_name,
+      wc.waste_collect_price
+  `,
+        [resId]
+      );
+      return rows;
+    } catch (error) {
+      console.error("Error query reserve table!", error);
       throw error;
     }
   }

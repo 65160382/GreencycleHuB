@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 
-const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message }) => {
+const ConfirmModal = ({ isOpen, onClose, onConfirm, title, children, message }) => {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -20,6 +20,10 @@ const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message }) => {
             {/* Title */}
             <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
             <p className="mt-2 text-sm text-gray-600">{message}</p>
+
+            
+            <section className="mt-4">{children}</section>
+
 
             {/* ปุ่ม */}
             <div className="flex justify-end gap-3 mt-6">

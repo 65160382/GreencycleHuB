@@ -79,7 +79,7 @@ const MytaskDriver = () => {
       // console.log("debug res:",res);
       if (res.ok) {
         const data = await res.json();
-        console.log("debug data:", data);
+        // console.log("debug data:", data);
         setTimetable(data.timetable);
       }
     } catch (error) {
@@ -245,7 +245,7 @@ const MytaskDriver = () => {
           onConfirm={() => {
             // ทำ action เช่น navigate ไปหน้า detail
             navigate(`/driver/tasksdetail/${selectedRound.time_id}`);
-            console.log("เริ่มงานรอบ:", selectedRound);
+            // console.log("เริ่มงานรอบ:", selectedRound);
           }}
           title="ยืนยันการเริ่มงาน"
           message={`คุณต้องการเริ่มเก็บขยะรอบ ${selectedRound?.time_slot} ใช่หรือไม่?`}

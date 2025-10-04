@@ -113,6 +113,7 @@ exports.getReserves = async (req, res) => {
 //อัปเดตสถานะการจอง
 exports.updateReserves = async(req,res) => {
 
+  
 };
 
 

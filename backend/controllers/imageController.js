@@ -139,16 +139,4 @@ exports.createWasteCollection = async (req, res) => {
   }
 };
 
-// ทดสอบยังไม่ได้ใช้จริง
-exports.getRecycleType = async (req, res) => {
-  try {
-    const result = await RecycleType.getRecycleType();
-    console.log(result);
 
-    // const data
-    res.json({ result });
-  } catch (error) {
-    console.error("อัปโหลดไม่สำเร็จเกิดข้อผิดพลาด!:", error);
-    res.status(500).json({ message: "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์" });
-  }
-};
