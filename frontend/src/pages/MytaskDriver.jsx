@@ -1,17 +1,11 @@
 import HeaderAdmin from "../components/Admin/HeaderAdmin";
 import SidebarAdmin from "../components/Admin/SidebarAdmin";
 import ConfirmModal from "../components/Core-UI/Confirmmodal";
+import SummaryStatus from "../components/Driver/SummaryStatus";
+import TimetableCard from "../components/Driver/TimetableCard";
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { formatDateTHStyle } from "../utils/formateDateUtils";
-import {
-  MapPinHouse,
-  Weight,
-  Clock4,
-  ClipboardList,
-  Truck,
-  Package,
-} from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 
 const MytaskDriver = () => {
@@ -23,45 +17,21 @@ const MytaskDriver = () => {
   const { user } = useContext(AuthContext);
   const [selectedPoint, setSelectedPoint] = useState("1");
   const [timetable, setTimetable] = useState([]);
-
-  // ตรงนี้ต้องเปลี่ยนเป็นดึงจำนวนรายการจอง
-  const item = [
-    {
-      icon: <ClipboardList size={24} />,
-      total: 8,
-      label: "Total Task",
-      color: "bg-blue-100 text-blue-600",
-    },
-    {
-      icon: <Truck size={24} />,
-      total: 1,
-      label: "Pickup",
-      color: "bg-amber-100 text-amber-600",
-    },
-    {
-      icon: <Package size={24} />,
-      total: 2,
-      label: "Available",
-      color: "bg-green-100 text-green-600",
-    },
-  ];
+  const [summary, setSummary] = useState({});
 
   useEffect(() => {
     if (user?.drivId) {
       // const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
       const today = "2025-08-18"; // YYYY-MM-DD
       fetchData(user.drivId, today);
+      fetchSummary(user.drivId);
     }
   }, [user]);
-
-  // useEffect(() => {
-  //   console.log("timetable",timetable);
-  // },[timetable])
 
   // http://localhost:3000/api/timetable
   const fetchData = async (drivId, date) => {
     try {
-      // ใส่ query params ลงไป
+      // ใส่ query params วันที่ลงไปเพราะว่าจะแสดงแค่รายวัน
       const query = new URLSearchParams({
         drivId,
         date, // "2025-09-28"
@@ -83,7 +53,44 @@ const MytaskDriver = () => {
         setTimetable(data.timetable);
       }
     } catch (error) {
+      console.error("เกิดข้อผิดพลาดทางเซิร์ฟเวอร์", error);
+    }
+  };
+
+  // http://localhost:3000/api/timetable/summary
+  const fetchSummary = async (drivId) => {
+    try {
+      const res = await fetch(
+        `${apiUrl}/api/driver/timetable/summary?drivId=${drivId}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        // console.log("debug summary data",data);
+        setSummary({
+          total: data.summary.total_tasks || 0,
+          completed: data.summary.completed_tasks || 0,
+          pending: data.summary.pending_tasks || 0,
+        });
+      }
+    } catch (error) {
       console.error("เกิดข้อผิดพลาดกับเซิรฟ์เวอร์", error);
+    }
+  };
+
+  // เรียกใช้ api เพื่ออัพเดตสถานะและ timestamp http://localhost:3000/api/timetable/start/:timeid
+  const handleUpdateTimetable = async () => {
+    try {
+      await fetch(`${apiUrl}/api/timetable/start/${selectedRound.time_id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+    } catch (error) {
+      console.error("เกิดข้อผิดพลาดทางเซิร์ฟเวอร์", error);
     }
   };
 
@@ -100,152 +107,47 @@ const MytaskDriver = () => {
           </h2>
           <h3 className="text-lg font-normal ">{formatDateTHStyle(Date())}</h3>
 
-          {/* ส่วนแสดงจำนวนงาน เป็นตัวเลข*/}
-          <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 mt-4">
-            {item.map((task, index) => (
-              <div
-                key={index}
-                className="flex items-center bg-white border border-gray-200 rounded-lg shadow-sm p-5"
-              >
-                {/* Icon with colored background */}
-                <div className={`p-3 rounded-full mr-4 ${task.color}`}>
-                  {task.icon}
-                </div>
-
-                {/* Text */}
-                <div>
-                  <p className="text-xl font-bold text-slate-800">
-                    {task.total}
-                  </p>
-                  <span className="text-sm text-gray-500">{task.label}</span>
-                </div>
-              </div>
-            ))}
-          </section>
+          {/* ส่วนแสดงจำนวนงาน เป็นตัวเลข -->ต้องแก้ไขให้เป็นตัวเลขจริงด้วยโดยการดึงข้อมูลแล้วส่ง props ไป*/}
+          <SummaryStatus  summary={summary}/>
 
           {/* ส่วนแสดงรอบ  <---- เพิ่มเติมตรงนี้ต้อง loop เอา มาแสดงผลและแสดงผลได้มากสุด 2 รอบ*/}
           <section className="mt-4 space-y-6">
-            {timetable.map((round) => (
-              <div
-                key={round.time_id}
-                className="border rounded-md shadow-sm p-6 bg-white"
-              >
-                {/* Header */}
-                <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-semibold">
-                    รอบเก็บขยะ {round.time_slot}
-                  </h2>
-                  <span className="px-3 py-1 bg-yellow-500 text-white text-sm rounded-full">
-                    Pending
-                  </span>
-                </div>
-
-                {/* รายละเอียดรอบ */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 text-sm">
-                  <div>
-                    <div className="text-gray-500 flex flex-row gap-2">
-                      <MapPinHouse size={17} />
-                      <span>จุดเก็บขยะ</span>
-                    </div>
-                    <div className="font-medium items-center">
-                      {round.total_points} จุด
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-gray-500 flex flex-row gap-2">
-                      <Weight size={17} />
-                      <span>น้ำหนักรวม</span>
-                    </div>
-                    <div className="font-medium">{round.total_weight} กก.</div>
-                  </div>
-                  <div>
-                    <div className="text-gray-500 flex flex-row gap-2">
-                      <Clock4 size={17} />
-                      <span>เวลาเริ่มต้น</span>
-                    </div>
-                    <div className="font-medium">
-                      {round.time_slot.split("-")[0]} น.
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-gray-500 flex flex-row gap-2">
-                      <Clock4 size={17} />
-                      <span>เวลาสิ้นสุด</span>
-                    </div>
-                    <div className="font-medium">
-                      {round.time_slot.split("-")[1]} น.
-                    </div>
-                  </div>
-                </div>
-
-                {/* ปุ่มลำดับจุด */}
-                <div className="flex gap-2 mt-4">
-                  {round.items.map((point) => (
-                    <button
-                      key={point.res_id}
-                      onClick={() => setSelectedPoint(point.res_id)}
-                      className={`px-3 py-1 rounded border text-sm ${
-                        selectedPoint === point.res_id
-                          ? "bg-green-600 text-white"
-                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                      }`}
-                    >
-                      จุดที่ {point.time_index}
-                    </button>
-                  ))}
-                </div>
-
-                {/* แสดงรายละเอียดจุดที่เลือก */}
-                {selectedPoint && (
-                  <div className="mt-4 border rounded p-4 bg-gray-50">
-                    {(() => {
-                      const selected = round.items.find(
-                        (p) => p.res_id === selectedPoint
-                      );
-                      return selected ? (
-                        <>
-                          <h3 className="text-sm font-semibold text-gray-700 mb-1">
-                            จุดที่ {selected.time_index}
-                          </h3>
-                          <p className="text-sm text-gray-600">
-                            {selected.addressLine1}
-                          </p>
-                          <p className="text-sm text-gray-600">
-                            {selected.addressLine2}
-                          </p>
-                        </>
-                      ) : (
-                        <p className="text-sm text-gray-500">
-                          เลือกจุดเพื่อดูรายละเอียด
-                        </p>
-                      );
-                    })()}
-                  </div>
-                )}
-
-                {/* ปุ่มเริ่มเก็บขยะ */}
-                <button
-                  type="button"
-                  onClick={() => {
+            {timetable.length > 0 ? (
+              timetable.map((round) => (
+                // refactor แยกออกเป็น Component
+                <TimetableCard
+                  key={round.time_id}
+                  round={round}
+                  selectedPoint={selectedPoint}
+                  onSelectPoint={setSelectedPoint}
+                  onStart={() => {
                     setSelectedRound(round);
                     setIsConfirmOpen(true);
                   }}
-                  className="mt-6 w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded-md transition"
-                >
-                  เริ่มเก็บขยะ
-                </button>
+                />
+              ))
+            ) : (
+              <div className="text-center border bg-white border-gray-200 py-10 rounded-lg text-gray-600">
+                <p className="text-lg font-medium mb-1">
+                  ไม่มีตารางการเก็บขยะในวันนี้
+                </p>
+                <p className="text-sm text-gray-400">
+                  ระบบจะอัปเดตรอบการเดินรถใหม่ในวันถัดไป
+                </p>
               </div>
-            ))}
-            {/* เรียกใช้ template component modal */}
+            )}
           </section>
         </main>
+
+        {/* เรียกใช้ template component modal */}
         <ConfirmModal
           isOpen={isConfirmOpen}
           onClose={() => setIsConfirmOpen(false)}
           onConfirm={() => {
-            // ทำ action เช่น navigate ไปหน้า detail
+            // อัปเดต timetable status,starttime
+            handleUpdateTimetable();
+            // navigate ไปหน้า detail
             navigate(`/driver/tasksdetail/${selectedRound.time_id}`);
-            // console.log("เริ่มงานรอบ:", selectedRound);
           }}
           title="ยืนยันการเริ่มงาน"
           message={`คุณต้องการเริ่มเก็บขยะรอบ ${selectedRound?.time_slot} ใช่หรือไม่?`}

@@ -71,7 +71,7 @@ exports.createTimetable = async (req, res) => {
       res.status(200).json({ message: "หมอบหมายคนขับสำเร็จ!" });
     }
   } catch (error) {
-    await con.rollback(); // rollback ข้อมูลเวลาเกิดขึ้น
+    await con.rollback(); // rollback ข้อมูลเวลาเกิด error ขึ้น
     console.log("เกิดข้อผิดพลาดกับเซิร์ฟเวอร์!", error);
     return res.status(500).json({ message: "เกิดข้อผิดพลาด" });
   } finally {
@@ -89,7 +89,7 @@ exports.getTimetable = async (req, res) => {
     }
 
     const results = await Timetable.fetchTimetable(drivId, date);
-    console.log("debug results:", results);
+    // console.log("debug results:", results);
 
     // test ยังไม่เข้าใจ flow ต้องนี้เรื่องการ group object
     // Group ตาม time_id
@@ -172,5 +172,61 @@ exports.getTimetableById = async(req,res) => {
 
   } catch (error) {
     console.log("เกิดข้อผิดพลาดกับเซิรฟ์เวอร์",error);
+  }
+}
+
+// update status, timestart ถ้าเป็นไปได้อยากทำแบบ dynamic ให้สามารถอัปเดต finishtime ได้ด้วย
+exports.updateTimetableStart = async(req, res) => {
+  try {
+    const {timeid} = req.params
+
+    if (!timeid) {
+      return res.status(400).json({ message: "กรุณาระบุ time_id" });
+    }
+
+    await Timetable.updateTimetableStart(timeid);
+
+    return res.status(200).json({message: "อัปเดตสถานะสำเร็จ!"});
+
+  } catch (error) {
+    console.log("เกิดข้อผิดพลาดกับเซิรฟ์เวอร์!",error);
+    return res.status(500).json({ message: "มีข้อผิดพลาดเกิดขึ้น"});
+  } 
+}
+
+exports.updateTimetableFinish = async(req, res) => {
+  try {
+    const {timeid} = req.params
+    
+    if (!timeid) {
+      return res.status(400).json({ message: "กรุณาระบุ time_id" });
+    }
+
+    await Timetable.updateTimetableFinish(timeid)
+
+    return res.status(200).json({message: "อัปเดตสถานะสำเร็จ!"});
+
+  } catch (error) {
+    console.log("เกิดข้อผิดพลาดกับเซิรฟ์เวอร์!",error);
+    return res.status(500).json({ message: "มีข้อผิดพลาดเกิดขึ้น"});
+  } 
+}
+
+// ตอนนี้เราสมมุติข้อมูลเป็นวันที่ "2025-08-18" อย่าลืมเป็น CURDATE() ใน Model
+exports.getDriverTaskSummary = async(req,res) => {
+  try {
+    const { drivId } = req.query
+    const date = "2025-08-18"
+
+    if(!drivId){
+      return res.status(400).json({ message: "ไม่มี driveId"});
+    }
+
+    const summary = await Timetable.getDriverTaskSummary(drivId,date)
+    return res.status(200).json({ summary });
+
+  } catch (error) {
+    console.error("เกิดข้อผิดพลาดกับเซิรฟ์เวอร์",error);
+    return res.status(500).json({ message: "เกิดข้อผิดพลาดในระบบ"});
   }
 }

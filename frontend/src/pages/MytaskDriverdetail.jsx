@@ -1,9 +1,11 @@
 import HeaderAdmin from "../components/Admin/HeaderAdmin";
 import SidebarAdmin from "../components/Admin/SidebarAdmin";
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { MapPin, User, Phone, Mail, Clock } from "lucide-react";
 import Modal from "../components/Core-UI/Modal";
+import DestinationInfo from "../components/Driver/DestinationInfo";
+import ConfirmWasteModal from "../components/Driver/ConfirmWasteModal";
 import {
   loadNostraScript,
   initializeMap,
@@ -17,10 +19,14 @@ const MytaskDriverdetail = () => {
   const apiKey = import.meta.env.VITE_NOSTRA_API_KEY;
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const [items, setItems] = useState([]);
-  const [currentIndex, setIscurrentIndex] = useState(0);
-  const currentItem = items?.[currentIndex]; //เก็บข้อมูลรายละเอียดการจอง
+  const [isCompelteModalOpen, setIsCompelteModalOpen] = useState(false);
+  const [isTravelStarted, setIsTravelStarted] = useState(false); // สถานะเริ่มเดินทาง
+  const [items, setItems] = useState([]); //เก็บ รายการบ้านที่ต้องไปทั้งหมด
+  const [currentIndex, setIscurrentIndex] = useState(0); //ตำแหน่งบ้านปัจจุบันเพื่อเอาไปเทียบกับ items
+  const currentItem = items?.[currentIndex]; //เก็บข้อมูลรายละเอียดการจองตาม currentindex
   const [route, setRoute] = useState([]); //เก็บเส้นทางที่คำนวณเเล้ว
+
+  const navigate = useNavigate();
 
   //test2
   const [map, setMap] = useState(null);
@@ -102,18 +108,41 @@ const MytaskDriverdetail = () => {
   // };
 
   //ฟังก์ชั่นสำหรับเรียกเส้นทางถัดไป
-  const nextRoute = async () => {
-    try {
-      // setIscurrentIndex(currentIndex + 1);
-      if (currentIndex < items.length - 1) {
-        setIscurrentIndex(currentIndex + 1);
-        console.log(`กำลังไปบ้านหลังที่ ${currentIndex}`);
-      } else {
-        console.log("ไม่มีบ้านให้ไปต่อแล้ว");
-      }
-    } catch (error) {
-      console.error("เกิดข้อผิดพลาด", error);
+  const handleConfirm = async () => {
+    // ปิด modal ก่อน
+    setIsOpenModal(false);
+    setIsTravelStarted(false); // รีเซ็ตให้พร้อมบ้านถัดไป
+
+    await fetch(`${apiUrl}/api/timtabledetail/arrive/${currentItem.res_id}`,{
+      method:"PATCH",
+      headers: { "Content-Type": "application/json" },
+      credentials:"include",
+    })
+
+    // ถ้าไม่ใช่บ้านสุดท้าย → ไปบ้านถัดไป
+    if (currentIndex < items.length - 1) {
+      setIscurrentIndex(currentIndex + 1);
+    } else {
+      console.log("จบรอบการเดินรถแล้ว");
+      // เรียกใช้  http://localhost:3000/api/timetable/arrive/:timeid
+      await fetch(`${apiUrl}/api/timetable/arrive/${currentItem.time_id}`,{
+        method:"PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials:"include",
+      })
+      setIsCompelteModalOpen(true); //เรียกใช้ modal จบงานสำเร็จ
     }
+  };
+
+  //ฟังก์ชั่นสำหรับอัพเดต timestamp ตอนเริ่มเดินรถ
+  const handleStartTravel = async () => {
+    setIsTravelStarted(true);
+    // เรียกใช้ api สำหรับ update เวลาเริ่มต้น
+    await fetch(`${apiUrl}/api/timtabledetail/start/${currentItem.res_id}`,{
+      method:"PATCH",
+      headers: { "Content-Type": "application/json" },
+      credentials:"include",
+    });
   };
 
   return (
@@ -145,63 +174,26 @@ const MytaskDriverdetail = () => {
           ></div>
 
           {/* ข้อมูลจุดหมาย */}
-          <div className="bg-white rounded-xl shadow-md p-6 mb-6 border">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">
-              จุดที่ {currentItem?.time_index}
-            </h2>
-
-            {/* ที่อยู่ */}
-            <div className="mb-5">
-              <div className="flex items-center text-gray-600 mb-1">
-                <MapPin className="w-4 h-4 mr-2" />
-                <span className="font-medium">ที่อยู่</span>
-              </div>
-              <p className="text-gray-800 bg-gray-50 rounded-md px-3 py-2 border">
-                {currentItem?.addressLine1} {currentItem?.addressLine2}
-              </p>
-            </div>
-
-            {/* ข้อมูลลูกค้า */}
-            <div className="mb-5">
-              <div className="flex items-center text-gray-600 mb-1">
-                <User className="w-4 h-4 mr-2" />
-                <span className="font-medium">ข้อมูลลูกค้า</span>
-              </div>
-              <div className="bg-gray-50 rounded-md p-3 border space-y-1">
-                <p>ชื่อ: {currentItem?.customers_name}</p>
-                <p className="flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-blue-500" />{" "}
-                  {currentItem?.cus_email}
-                </p>
-                <p className="flex items-center gap-2">
-                  <Phone className="w-4 h-4 text-green-500" />{" "}
-                  {currentItem?.cus_phone}
-                </p>
-              </div>
-            </div>
-
-            {/* หมายเหตุ */}
-            <div className="p-3 bg-yellow-50 border-l-4 border-yellow-400 text-yellow-800 text-sm rounded">
-              หมายเหตุ: อย่าลืมกดปุ่ม "ถึงจุดหมาย" เมื่อไปถึงแล้ว
-            </div>
-          </div>
+          <DestinationInfo currentItem={currentItem} />
 
           {/* ปุ่มหลัก */}
-          {currentIndex < items.length - 1 ? (
+          {!isTravelStarted ? (
+            // 🔹 ปุ่มเริ่มเดินทาง
             <button
-              // onClick={() => nextRoute()}
-              // Modal ยืนยันการรับขยะ
+              onClick={handleStartTravel}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium shadow"
+            >
+              เริ่มเดินทาง
+            </button>
+          ) : (
+            // 🔹 ปุ่มถึงจุดหมาย
+            <button
               onClick={() => setIsOpenModal(true)}
               className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-medium shadow"
             >
-              ถึงจุดหมาย
-            </button>
-          ) : (
-            <button
-              // onClick={() => nextRoute()}
-              className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-medium shadow"
-            >
-              เสร็จสิ้น
+              {currentIndex === items.length - 1
+                ? "ถึงจุดหมายสุดท้าย"
+                : "ถึงจุดหมาย"}
             </button>
           )}
         </main>
@@ -211,86 +203,42 @@ const MytaskDriverdetail = () => {
           isOpen={isOpenModal}
           title="ยืนยันการรับขยะ"
           onClose={() => setIsOpenModal(false)}
-          widthClass="w-1/2"
+          // widthClass="w-1/2"
         >
-          <div className="p-6">
-            {/* ส่วนหัว */}
-            <div className="mb-4 border-b pb-3">
-              <h2 className="text-lg font-semibold text-gray-800">
-                รายละเอียดการรับขยะจากลูกค้า
-              </h2>
-              <p className="text-sm text-gray-500 mt-1">
-                โปรดตรวจสอบรายการขยะก่อนกดยืนยันการรับ
-              </p>
-            </div>
+          <ConfirmWasteModal
+            isOpen={isOpenModal}
+            onClose={() => setIsOpenModal(false)}
+            onConfirm={handleConfirm}
+            currentItem={currentItem}
+          />
+        </Modal>
 
-            {/* ตรวจสอบว่ามีข้อมูลหรือไม่ */}
-            {currentItem?.wastes && currentItem.wastes.length > 0 ? (
-              <div className="space-y-3">
-                {currentItem.wastes.map((waste, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between border rounded-lg px-4 py-3 hover:bg-gray-50 transition"
-                  >
-                    <div>
-                      <p className="font-medium text-gray-800">
-                        {waste.rec_type_name}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        น้ำหนักรวม: {waste.total_weight} กก.
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm text-gray-500">
-                        ราคาต่อกก.: {waste.waste_collect_price} บาท
-                      </p>
-                      <p className="text-base font-semibold text-green-600">
-                        รวม {parseFloat(waste.total_price).toFixed(2)} บาท
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-500 text-center py-4">
-                ไม่มีข้อมูลรายการขยะในจุดนี้
-              </p>
-            )}
-
-            {/* สรุปราคารวม */}
-            {currentItem?.wastes && currentItem.wastes.length > 0 && (
-              <div className="mt-6 border-t pt-4 flex justify-between items-center">
-                <p className="font-semibold text-gray-700">ราคารวมทั้งหมด</p>
-                <p className="text-xl font-bold text-green-600">
-                  {currentItem.wastes
-                    .reduce(
-                      (sum, item) => sum + parseFloat(item.total_price),
-                      0
-                    )
-                    .toFixed(2)}{" "}
-                  บาท
-                </p>
-              </div>
-            )}
-
-            {/* ปุ่มกดยืนยัน/ยกเลิก */}
-            <div className="flex justify-end gap-3 mt-6">
-              <button
-                onClick={() => setIsOpenModal(false)}
-                className="px-4 py-2 text-sm rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100"
-              >
-                ยกเลิก
-              </button>
-              <button
-                onClick={() => {
-                  // TODO: เพิ่มฟังก์ชัน update สถานะรายการจองที่นี่
-                  setIsOpenModal(false);
-                }}
-                className="px-4 py-2 text-sm rounded-md bg-green-600 text-white hover:bg-green-700"
-              >
-                ยืนยันการรับขยะ
-              </button>
-            </div>
+        {/* Modal แจ้งเสร็จสิ้นรอบ */}
+        <Modal
+          isOpen={isCompelteModalOpen}
+          title="งานในรอบนี้เสร็จสิ้นแล้ว 🎉"
+          onClose={() => {
+            setIsCompelteModalOpen(false);
+            navigate("/driver/tasks");
+          }}
+          // widthClass="w-1/3"
+        >
+          <div className="text-center p-6">
+            <p className="text-gray-700 mb-4">
+              คุณได้เก็บขยะครบทั้งหมดในรอบนี้เรียบร้อยแล้ว
+            </p>
+            <p className="font-semibold text-green-600 mb-6">
+              ขอบคุณสำหรับการทำงานที่ยอดเยี่ยม!
+            </p>
+            <button
+              onClick={() => {
+                setIsCompelteModalOpen(false);
+                navigate("/driver/tasks");
+              }}
+              className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+            >
+              กลับหน้าหลัก
+            </button>
           </div>
         </Modal>
       </div>

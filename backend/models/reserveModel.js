@@ -149,15 +149,40 @@ WHERE r.res_id = ?;`;
   }
 
   // ใช้ Promise.all() แล้ว loop update ทีละรายการ
-  static async updateReserve(con, updateArray) {
+  // static async updateReserve(con, updateArray) {
+  //   const sql = `UPDATE reserve SET res_status = ?, res_update_at = NOW() WHERE res_id = ?`;
+
+  //   try {
+  //     // สร้าง array ของ promises
+  //     const promises = updateArray.map(([status, id]) =>
+  //       con.query(sql, [status, id])
+  //     );
+  //     await Promise.all(promises);
+  //     return true;
+  //   } catch (error) {
+  //     console.error("Error updating reserve table!", error);
+  //     throw error;
+  //   }
+  // }
+
+  // ปรับให้สามารถอัปเดตได้หลายกรณีทั้งส่งมาแบบ array และแบบปกติ
+  static async updateReserve(con, updates) {
     const sql = `UPDATE reserve SET res_status = ?, res_update_at = NOW() WHERE res_id = ?`;
 
     try {
-      // สร้าง array ของ promises
-      const promises = updateArray.map(([status, id]) =>
-        con.query(sql, [status, id])
-      );
-      await Promise.all(promises);
+      // กรณีส่งหลายรายการ [["pending",2],["pending",3]]
+      if (Array.isArray(updates[0])) {
+        const promises = updates.map(([status, id]) =>
+          con.query(sql, [status, id])
+        );
+        await Promise.all(promises);
+      }
+      // กรณีส่งแค่หนึ่งรายการ ["picking_up",2]
+      else {
+        const [status, id] = updates;
+        await con.query(sql, [status, id]);
+      }
+
       return true;
     } catch (error) {
       console.error("Error updating reserve table!", error);

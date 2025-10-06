@@ -34,7 +34,7 @@ FROM timetable AS t
 JOIN timetable_detail AS td ON t.time_id = td.time_id
 JOIN reserve AS r ON td.res_id = r.res_id
 JOIN address AS a ON r.add_id = a.add_id
-WHERE t.driv_id = ? AND  t.time_date = ?
+WHERE t.driv_id = ? AND  t.time_date = ? AND t.time_status = "pending" || "in_progress"
 ORDER BY t.time_time_slot ASC, td.time_index ASC;
 `;
     const [rows] = await pool.query(sql, [driv_id, date]);
@@ -65,6 +65,56 @@ WHERE t.time_id = ?
 ORDER BY td.time_index ASC;`;
     const [rows] = await pool.query(sql, [timeId]);
     return rows;
+  }
+
+  // อัปเดต starttime
+  static async updateTimetableStart(timeId) {
+    try {
+      await pool.query(
+        `UPDATE timetable
+SET time_status = 'in_progress', time_starttime = NOW()
+WHERE time_id = ?`,
+        timeId
+      );
+      return true;
+    } catch (error) {
+      console.error("Error query update TimetableTable", error);
+      throw error;
+    }
+  }
+
+  // อัปเดต finishtime
+  static async updateTimetableFinish(timeId) {
+    try {
+      await pool.query(
+        `UPDATE timetable
+SET time_status = 'completed', time_finishtime = NOW()
+WHERE time_id = ?`,
+        timeId
+      );
+      return true;
+    } catch (error) {
+      console.error("Error query update TimetableTable", error);
+      throw error;
+    }
+  }
+
+  // ดึงข้อมูลสถานะเป็นจำนวนในแต่ละวันของคนขับ
+  static async getDriverTaskSummary(drivId,date) {
+    const sql = `
+    SELECT
+      COUNT(r.res_id) AS total_tasks,
+      SUM(CASE WHEN r.res_status IN ('picking_up','complete') THEN 1 ELSE 0 END) AS completed_tasks,
+      SUM(CASE WHEN r.res_status = 'pending' THEN 1 ELSE 0 END) AS pending_tasks
+    FROM timetable AS t
+    JOIN timetable_detail AS td ON t.time_id = td.time_id
+    JOIN reserve AS r ON td.res_id = r.res_id
+    WHERE t.driv_id = ?
+      AND DATE(t.time_date) = ?;
+  `;
+
+    const [rows] = await pool.query(sql, [drivId,date]);
+    return rows[0];
   }
 }
 

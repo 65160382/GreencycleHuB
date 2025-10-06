@@ -18,6 +18,7 @@ import DriverRoute from "./routes/DriverRoute";
 import MainDriver from "./pages/MainDriver";
 import MytaskDriver from "./pages/MytaskDriver";
 import MytaskDriverdetail from "./pages/MytaskDriverdetail";
+import DriverHistory from "./pages/DriverHistory";
 
 function App() {
   return (
@@ -56,6 +57,7 @@ function App() {
               </AdminRoute>
             }
           />
+          {/* DriverRoute */}
           <Route
             path="/driver"
             element={
@@ -80,6 +82,15 @@ function App() {
             </DriverRoute>
            }
            >
+          </Route>
+          <Route
+            path="/driver/history"
+            element={
+              <DriverRoute>
+                <DriverHistory/>
+              </DriverRoute>
+            }
+          >
           </Route>
           {/* <Route path="/image-processing" element={<Imagemodal setIsOpen={true}/>} /> */}
         </Routes>
