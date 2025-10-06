@@ -8,7 +8,7 @@ const getStatusStyle = (status) => {
       return "bg-cyan-100 text-cyan-600";
     case "arrived":
       return "bg-blue-100 text-blue-600";
-    case "completed":
+    case "complete":
       return "bg-emerald-100 text-emerald-600";
     case "canceled":
       return "bg-red-100 text-red-600";

@@ -2,11 +2,11 @@ import { Clock, CalendarDays } from "lucide-react";
 import StatusBadge from "./StatusBadge";
 import MapModal from "./MapModal";
 import ReserveDetail from "./ReserveDetail";
-import Modal from "../Core-UI/Modal";
+// import Modal from "../Core-UI/Modal";
 import { useState } from "react";
 import { formatDateString } from "../../utils/formateDateUtils";
 
-const ReserveCard = ({ reserves, setResid }) => {
+const ReserveCard = ({ reserves, setResid, showCheckbox = true}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [openMapModal, setOpenMapModal] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
@@ -34,7 +34,7 @@ const ReserveCard = ({ reserves, setResid }) => {
         >
           <div className="flex flex-wrap items-center justify-between gap-4">
             {/* checkbox */}
-            <input
+            {/* <input
               type="checkbox"
               value={item.res_id}
               // ยังไม่เข้าใจโค้ดตรงนี้
@@ -56,7 +56,28 @@ const ReserveCard = ({ reserves, setResid }) => {
               }}
               //
               className="size-4 accent-emerald-600 rounded border-gray-300 shadow-sm focus:ring-2 focus:ring-emerald-500 cursor-pointer"
-            ></input>
+            ></input> */}
+            {showCheckbox && (
+              <input
+                type="checkbox"
+                value={item.res_id}
+                // ยังไม่เข้าใจโค้ดตรงนี้
+                onChange={(e) => {
+                  const checked = e.target.checked;
+                  setSelectedId(() =>
+                    checked && [
+                      {
+                        id: item.res_id,
+                        lat: item.add_lat,
+                        lon: item.add_lat,
+                      },
+                    ] //เพิ่ม lat, lon ตอน click checkbox และลองเปลี่ยนเป็น object
+                  );
+                  handleCheckboxChange(item, checked);
+                }}
+                className="size-4 accent-emerald-600 rounded border-gray-300 shadow-sm focus:ring-2 focus:ring-emerald-500 cursor-pointer"
+              />
+            )}
             {/* profile + info */}
             <div className="flex items-center gap-4 flex-1 min-w-[200px]">
               <div className="w-12 h-12 bg-gray-500 rounded-full text-white flex items-center justify-center font-semibold">

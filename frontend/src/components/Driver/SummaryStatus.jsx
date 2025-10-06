@@ -4,9 +4,6 @@ import {
   Package,
 } from "lucide-react";
 
-// ตรงนี้ต้องเปลี่ยนเป็นดึงจำนวนรายการจอง
-
-
 const SummaryStatus = ({ summary }) => {
 
   const item = [

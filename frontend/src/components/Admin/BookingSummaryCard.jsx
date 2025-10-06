@@ -39,15 +39,8 @@ const BookingSummaryCard = ( {reserves, statusCount}) => {
       iconColor: "text-cyan-600",
     },
     {
-      img: <MapPinCheck size={24} />,
-      total: statusCount.arrived || 0,
-      label: "Arrived Booking",
-      bgColor: "bg-blue-100",
-      iconColor: "text-blue-600",
-    },
-    {
       img: <CircleCheck size={24} />,
-      total: statusCount.completed || 0,
+      total: statusCount.complete || 0,
       label: "Complete Booking",
       bgColor: "bg-emerald-100",
       iconColor: "text-emerald-600",

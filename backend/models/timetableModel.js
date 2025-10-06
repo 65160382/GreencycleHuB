@@ -34,7 +34,7 @@ FROM timetable AS t
 JOIN timetable_detail AS td ON t.time_id = td.time_id
 JOIN reserve AS r ON td.res_id = r.res_id
 JOIN address AS a ON r.add_id = a.add_id
-WHERE t.driv_id = ? AND  t.time_date = ? AND t.time_status = "pending" || "in_progress"
+WHERE t.driv_id = ? AND  t.time_date = ? AND t.time_status IN ('pending', 'in_progress')
 ORDER BY t.time_time_slot ASC, td.time_index ASC;
 `;
     const [rows] = await pool.query(sql, [driv_id, date]);
@@ -100,7 +100,7 @@ WHERE time_id = ?`,
   }
 
   // ดึงข้อมูลสถานะเป็นจำนวนในแต่ละวันของคนขับ
-  static async getDriverTaskSummary(drivId,date) {
+  static async getDriverTaskSummary(drivId, date) {
     const sql = `
     SELECT
       COUNT(r.res_id) AS total_tasks,
@@ -113,7 +113,7 @@ WHERE time_id = ?`,
       AND DATE(t.time_date) = ?;
   `;
 
-    const [rows] = await pool.query(sql, [drivId,date]);
+    const [rows] = await pool.query(sql, [drivId, date]);
     return rows[0];
   }
 }

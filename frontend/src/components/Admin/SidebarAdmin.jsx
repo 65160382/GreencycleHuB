@@ -7,7 +7,7 @@ import { AuthContext } from "../../context/AuthContext";
 const navItems = {
   admin: [
     { icon: <LayoutDashboard size={18} />, name: "Dashboard", path: "/admin" },
-    { icon: <Calendar size={18} />, name: "Booking", path: "/admin/booking" },
+    { icon: <Calendar size={18} />, name: "Timetable", path: "/admin/booking" },
     { icon: <Car size={18} />, name: "Driver", path: "#" },
     { icon: <UserRound size={18} />, name: "Customer", path: "#" },
   ],

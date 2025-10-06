@@ -25,7 +25,7 @@ const BookingAdmin = () => {
     All: null,
     Confirm: "confirmed",
     Pending: "pending",
-    Complete: "completed",
+    Complete: "complete",
     Canceled: "canceled",
   };
 
@@ -95,28 +95,32 @@ const BookingAdmin = () => {
           </h2>
 
           {/* แสดงจำนวนรายการจองต่างๆ */}
-          <BookingSummaryCard reserves={reserves} statusCount={statusCount} />
+          {/* <BookingSummaryCard reserves={reserves} statusCount={statusCount} /> */}
 
           {/* reserve sections */}
           <section className="mb-8">
             <div className="flex flex-col border border-gray-200 rounded-md p-4 bg-white shadow-sm">
               {/* top */}
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                {/* Filter Buttons */}
+                {/* filter date & timeslot */}
                 <div className="flex flex-wrap gap-2">
-                  {tabs.map((tab) => (
-                    <button
-                      key={tab}
-                      onClick={() => setActiveTab(tab)}
-                      className={`px-4 py-2 font-medium text-sm border-b-2 ${
-                        activeTab === tab
-                          ? "border-green-500 text-green-600"
-                          : "border-transparent text-gray-500 hover:text-gray-700"
-                      }`}
-                    >
-                      {tab}
-                    </button>
-                  ))}
+                  <div className="flex gap-4 ">
+                  <input
+                    type="date"
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                    className="border px-2 py-1 rounded-md"
+                  />
+                  <select
+                    value={selectedTimeslot}
+                    onChange={(e) => setSelectedTimeslot(e.target.value)}
+                    className="border px-2 py-1 rounded-md"
+                  >
+                    <option value="">-- เลือกรอบเวลา --</option>
+                    <option value="9.00-12.00">9.00-12.00</option>
+                    <option value="13.00-17.00">13.00-17.00</option>
+                  </select>
+                </div>
                 </div>
 
                 {/* สร้างตาราง timetable */}
@@ -152,27 +156,6 @@ const BookingAdmin = () => {
                       resid={selectedResid}
                     />
                   </Modal>
-                </div>
-              </div>
-
-              {/* filter date & timeslot */}
-              <div className="mt-2.5">
-                <div className="flex gap-4 ">
-                  <input
-                    type="date"
-                    value={selectedDate}
-                    onChange={(e) => setSelectedDate(e.target.value)}
-                    className="border px-2 py-1 rounded-md"
-                  />
-                  <select
-                    value={selectedTimeslot}
-                    onChange={(e) => setSelectedTimeslot(e.target.value)}
-                    className="border px-2 py-1 rounded-md"
-                  >
-                    <option value="">-- เลือกรอบเวลา --</option>
-                    <option value="9.00-12.00">9.00-12.00</option>
-                    <option value="13.00-17.00">13.00-17.00</option>
-                  </select>
                 </div>
               </div>
 

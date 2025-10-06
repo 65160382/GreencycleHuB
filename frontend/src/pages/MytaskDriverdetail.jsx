@@ -113,11 +113,11 @@ const MytaskDriverdetail = () => {
     setIsOpenModal(false);
     setIsTravelStarted(false); // รีเซ็ตให้พร้อมบ้านถัดไป
 
-    await fetch(`${apiUrl}/api/timtabledetail/arrive/${currentItem.res_id}`,{
-      method:"PATCH",
+    await fetch(`${apiUrl}/api/timtabledetail/arrive/${currentItem.res_id}`, {
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      credentials:"include",
-    })
+      credentials: "include",
+    });
 
     // ถ้าไม่ใช่บ้านสุดท้าย → ไปบ้านถัดไป
     if (currentIndex < items.length - 1) {
@@ -125,11 +125,11 @@ const MytaskDriverdetail = () => {
     } else {
       console.log("จบรอบการเดินรถแล้ว");
       // เรียกใช้  http://localhost:3000/api/timetable/arrive/:timeid
-      await fetch(`${apiUrl}/api/timetable/arrive/${currentItem.time_id}`,{
-        method:"PATCH",
+      await fetch(`${apiUrl}/api/timetable/arrive/${currentItem.time_id}`, {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        credentials:"include",
-      })
+        credentials: "include",
+      });
       setIsCompelteModalOpen(true); //เรียกใช้ modal จบงานสำเร็จ
     }
   };
@@ -138,10 +138,10 @@ const MytaskDriverdetail = () => {
   const handleStartTravel = async () => {
     setIsTravelStarted(true);
     // เรียกใช้ api สำหรับ update เวลาเริ่มต้น
-    await fetch(`${apiUrl}/api/timtabledetail/start/${currentItem.res_id}`,{
-      method:"PATCH",
+    await fetch(`${apiUrl}/api/timtabledetail/start/${currentItem.res_id}`, {
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      credentials:"include",
+      credentials: "include",
     });
   };
 
@@ -216,31 +216,62 @@ const MytaskDriverdetail = () => {
         {/* Modal แจ้งเสร็จสิ้นรอบ */}
         <Modal
           isOpen={isCompelteModalOpen}
-          title="งานในรอบนี้เสร็จสิ้นแล้ว 🎉"
           onClose={() => {
             setIsCompelteModalOpen(false);
             navigate("/driver/tasks");
           }}
-          // widthClass="w-1/3"
+          // widthClass="w-96"
         >
-          <div className="text-center p-6">
-            <p className="text-gray-700 mb-4">
-              คุณได้เก็บขยะครบทั้งหมดในรอบนี้เรียบร้อยแล้ว
+          <div className="text-center bg-white rounded-lg ">
+            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-6 animate-pulse-once">
+              {/*
+          แทนที่ด้วย Icon Component จริงที่คุณใช้ เช่น:
+          <CheckCircleIcon className="h-10 w-10 text-green-600" />
+        */}
+              <svg
+                className="h-10 w-10 text-green-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+            </div>
+
+            {/* หัวข้อแสดงความยินดี */}
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">
+              ตารางเดินรถรอบนี้สำเร็จแล้ว! 
+            </h3>
+
+            {/* ข้อความรายละเอียด */}
+            <p className="text-gray-600 mb-4 text-md">
+              คุณได้เก็บขยะครบทุกจุดในรอบนี้เรียบร้อยแล้ว **ยอดเยี่ยมมาก!**
             </p>
-            <p className="font-semibold text-green-600 mb-6">
-              ขอบคุณสำหรับการทำงานที่ยอดเยี่ยม!
+
+            {/* ข้อความแสดงความขอบคุณ (เน้นย้ำ) */}
+            <p className="font-extrabold text-lg text-green-700 mb-6">
+              ขอบคุณสำหรับการทำงานที่ยอดเยี่ยมและปลอดภัย!
             </p>
+
+            {/* ปุ่มกลับหน้าหลัก */}
             <button
               onClick={() => {
                 setIsCompelteModalOpen(false);
                 navigate("/driver/tasks");
               }}
-              className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+              className="w-full sm:w-auto px-8 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-150 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
             >
-              กลับหน้าหลัก
+              กลับสู่รายการงาน
             </button>
           </div>
         </Modal>
+
       </div>
     </div>
   );
