@@ -35,8 +35,8 @@ exports.updatearriveTime = async (req, res) => {
     // update timestamp ตอนถึงบ้านลูกค้า
     await Timetabledetail.updateTimearriveByid(con, resId);
 
-    const update = ["complete", resId];
-    // อัพเดตสถานะรายการจองให้เป็น complete
+    const update = ["collected", resId];
+    // อัพเดตสถานะรายการจองให้เป็น collected เพื่อแสดงว่าคนขับรถขยะมาแล้ว
     await Reserve.updateReserve(con, update);
 
     await con.commit(); // ยินยัน transaction

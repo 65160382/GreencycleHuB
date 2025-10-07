@@ -19,22 +19,24 @@ class Timetable {
 
   static async fetchTimetable(driv_id, date) {
     const sql = `SELECT
-t.time_id,
-t.time_date,
-t.time_time_slot,
-t.driv_id,
-td.res_id,
-td.time_index,
-r.res_weight,
-a.add_lat,
-a.add_lon,
-CONCAT_WS(' ', a.add_province, a.add_district, a.add_subdistrict, a.add_postcode) AS addressLine1,
-CONCAT_WS(' ', a.add_houseno, a.add_road) AS addressLine2
+  t.time_id,
+  t.time_date,
+  t.time_time_slot,
+  t.driv_id,
+  td.res_id,
+  td.time_index,
+  r.res_weight,
+  a.add_lat,
+  a.add_lon,
+  CONCAT_WS(' ', a.add_province, a.add_district, a.add_subdistrict, a.add_postcode) AS addressLine1,
+  CONCAT_WS(' ', a.add_houseno, a.add_road) AS addressLine2
 FROM timetable AS t
-JOIN timetable_detail AS td ON t.time_id = td.time_id
-JOIN reserve AS r ON td.res_id = r.res_id
-JOIN address AS a ON r.add_id = a.add_id
-WHERE t.driv_id = ? AND  t.time_date = ? AND t.time_status IN ('pending', 'in_progress')
+LEFT JOIN timetable_detail AS td ON t.time_id = td.time_id
+LEFT JOIN reserve AS r ON td.res_id = r.res_id
+LEFT JOIN address AS a ON r.add_id = a.add_id
+WHERE t.driv_id = ?
+  AND t.time_date = ?
+  AND t.time_status IN ('pending', 'in_progress')
 ORDER BY t.time_time_slot ASC, td.time_index ASC;
 `;
     const [rows] = await pool.query(sql, [driv_id, date]);

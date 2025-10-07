@@ -49,7 +49,7 @@ const MytaskDriver = () => {
       // console.log("debug res:",res);
       if (res.ok) {
         const data = await res.json();
-        // console.log("debug data:", data);
+        console.log("debug data:", data);
         setTimetable(data.timetable);
       }
     } catch (error) {

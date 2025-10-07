@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import SidebarAdmin from "../components/Admin/SidebarAdmin";
 import HeaderAdmin from "../components/Admin/HeaderAdmin";
-import BookingSummaryCard from "../components/Admin/BookingSummaryCard";
 import ReserveCard from "../components/Admin/ReserveCard";
 import Modal from "../components/Core-UI/Modal";
 import AssignDriverModal from "../components/Admin/AssignDriverModal";
@@ -13,26 +12,16 @@ const BookingAdmin = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [reserves, setReserves] = useState([]);
-  const [statusCount, setStatusCount] = useState({});
-  const [activeTab, setActiveTab] = useState("All");
-  const tabs = ["All", "Confirm", "Pending", "Complete"];
   // const [assignDriver, setAssignDriver] = useState("");
   const [selectedResid, setSelectedResid] = useState([]); // array ของ res_id เพิ่ม lat,lon
   const [selectedDate, setSelectedDate] = useState(""); // object: { [res_id]: { date, timeslot } }
   const [selectedTimeslot, setSelectedTimeslot] = useState(""); // object: { [res_id]: { date, timeslot } }
 
-  const STATUS_MAP = {
-    All: null,
-    Confirm: "confirmed",
-    Pending: "pending",
-    Complete: "complete",
-    Canceled: "canceled",
-  };
 
   useEffect(() => {
-    const status = STATUS_MAP[activeTab];
-    fetchData(status);
-  }, [activeTab]);
+    // const status = STATUS_MAP[activeTab];
+    fetchData("pending");
+  }, []);
 
   // debug
   // useEffect(() => {
@@ -50,16 +39,14 @@ const BookingAdmin = () => {
         )
       : reserves;
 
-  const fetchData = async (status) => {
+  const fetchData = async (status = "pending") => {
     try {
       const query = new URLSearchParams();
       if (status) query.set("status", status);
       const url = `${apiUrl}/api/admin/reserve${
         query.toString() ? `?${query.toString()}` : ""
       }`;
-
       // console.log("fetching from:", url);
-
       const res = await fetch(url, {
         method: "GET",
         credentials: "include",
@@ -69,13 +56,7 @@ const BookingAdmin = () => {
         // console.log("debug data:", data.result);
         // เก็บรายการจองทั้งหมด
         setReserves(data.result);
-
-        // แปลง status array → เป็น object แบบ key:value
-        const statusObj = {};
-        (data.status || []).forEach((item) => {
-          statusObj[item.res_status] = item.total;
-        });
-        setStatusCount(statusObj);
+        
       }
     } catch (error) {
       console.error("เกิดข้อผิดพลาดในการเชื่อมต่อเซิรฟ์เวอร์!", error);
@@ -94,16 +75,14 @@ const BookingAdmin = () => {
             Booking Management
           </h2>
 
-          {/* แสดงจำนวนรายการจองต่างๆ */}
-          {/* <BookingSummaryCard reserves={reserves} statusCount={statusCount} /> */}
-
           {/* reserve sections */}
           <section className="mb-8">
             <div className="flex flex-col border border-gray-200 rounded-md p-4 bg-white shadow-sm">
               {/* top */}
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                
                 {/* filter date & timeslot */}
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap justify-between gap-2">
                   <div className="flex gap-4 ">
                   <input
                     type="date"
@@ -120,7 +99,7 @@ const BookingAdmin = () => {
                     <option value="9.00-12.00">9.00-12.00</option>
                     <option value="13.00-17.00">13.00-17.00</option>
                   </select>
-                </div>
+                  </div>
                 </div>
 
                 {/* สร้างตาราง timetable */}

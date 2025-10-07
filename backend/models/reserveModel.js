@@ -109,6 +109,8 @@ WHERE r.res_id = ?;`;
                       r.res_booking_date,
                       r.res_time_slot,
                       r.res_status,
+                      r.res_weight,
+                      r.res_amount,
                       CONCAT_WS(' ', c.cus_fname, c.cus_lname) AS customers_name,
                       CONCAT_WS(' ', a.add_province, a.add_district, a.add_subdistrict, a.add_postcode) AS addressLine1,
                       CONCAT_WS(' ', a.add_houseno, a.add_road) AS addressLine2,
@@ -136,6 +138,7 @@ WHERE r.res_id = ?;`;
     }
   }
 
+
   static async getAllStatus() {
     try {
       const [result] = await pool.query(
@@ -147,6 +150,7 @@ WHERE r.res_id = ?;`;
       throw error;
     }
   }
+
 
   // ใช้ Promise.all() แล้ว loop update ทีละรายการ
   // static async updateReserve(con, updateArray) {

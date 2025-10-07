@@ -19,6 +19,8 @@ import MainDriver from "./pages/MainDriver";
 import MytaskDriver from "./pages/MytaskDriver";
 import MytaskDriverdetail from "./pages/MytaskDriverdetail";
 import DriverHistory from "./pages/DriverHistory";
+import AdminVerify from "./pages/AdminVerify";
+import AdminVerifyDetail from "./pages/AdminVerifyDetail";
 
 function App() {
   return (
@@ -54,6 +56,22 @@ function App() {
             element={
               <AdminRoute>
                 <BookingAdmin />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/verify"
+            element={
+              <AdminRoute>
+                <AdminVerify/>
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/verify/:resId"
+            element={
+              <AdminRoute>
+                <AdminVerifyDetail/>
               </AdminRoute>
             }
           />
