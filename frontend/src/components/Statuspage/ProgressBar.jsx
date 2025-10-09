@@ -1,11 +1,11 @@
-import { Check, Clock, Truck, MapPin, Package } from "lucide-react";
+import { Check, Clock, Truck, Package, CircleCheckBig } from "lucide-react";
 
 const steps = [
   { label: "ยืนยันการจอง", icon: Check },
   { label: "รอดำเนินการ", icon: Clock },
   { label: "กำลังดำเนินการ", icon: Truck },
-  { label: "ถึงจุดหมาย", icon: MapPin },
-  { label: "เสร็จสิ้น", icon: Package },
+  { label: "รับขยะสำเร็จ", icon: Package },
+  { label: "เสร็จสิ้น", icon: CircleCheckBig },
 ];
 
 export default function ProgressBar({ currentStep }) {

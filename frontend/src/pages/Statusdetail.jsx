@@ -1,27 +1,30 @@
 import Header from "../components/Core-UI/Header";
 import Footer from "../components/Core-UI/Footer";
 import { MapPinCheck, MapPin } from "lucide-react";
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 import ProgressBar from "../components/Statuspage/ProgressBar";
 import TableReserve from "../components/Statuspage/TableReserve";
 import { Breadcrumb } from "../components/Core-UI/Breadcrumb";
 import { useEffect, useState } from "react";
 import { formatDateString } from "../utils/formateDateUtils";
+import ConfirmModal from "../components/Core-UI/Confirmmodal";
 
 const Statusdetail = () => {
-  
+  const apiUrl = import.meta.env.VITE_API_URL;
   const { resId } = useParams();
   const [reserve, setReserve] = useState({});
   const [details, setDetails] = useState([]);
-  const [ step, setStep ] = useState('');
+  const [step, setStep] = useState("");
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const navigate = useNavigate()
 
   const status_MAP = {
-    "confirmed": "0",
-    "pending": "1",
-    "picking_up": "2",
-    "arrived": "3",
-    "completed": "5",
-  }
+    confirmed: "0",
+    pending: "1",
+    picking_up: "2",
+    collected: "3",
+    completed: "5",
+  };
 
   useEffect(() => {
     fetchReservations();
@@ -29,31 +32,51 @@ const Statusdetail = () => {
 
   // ตรวจสอบ state reserve แล้วทำการ map status เป็นตัวเลขที่กำหนดไว้เพื่อส่งให้ component progressbar
   useEffect(() => {
-    if(reserve.res_status){
-      const stepNumber  = status_MAP[reserve.res_status];
-      setStep(stepNumber); 
+    if (reserve.res_status) {
+      const stepNumber = status_MAP[reserve.res_status];
+      setStep(stepNumber);
       // console.log(step);
     }
-  },[reserve])
+  }, [reserve]);
 
+  // ดึงข้อมูลรายการจอง http://loclahost:3000/api/reserve/:resid
   const fetchReservations = async () => {
     try {
-      const apiUrl = import.meta.env.VITE_API_URL;
       const respone = await fetch(`${apiUrl}/api/reserve/${resId}`, {
         method: "GET",
         credentials: "include", // ส่ง cookies ไปด้วย
       });
       if (respone.ok) {
         const data = await respone.json();
-        // console.log("Reservations:", data.result);
+        console.log("Reservations:", data.result);
         setReserve(data.result.reserveResult);
         setDetails(data.result.reserveDetailResult);
       }
-      if(reserve.res_status){
-          console.log(reserve.res_status);
-        }
+      if (reserve.res_status) {
+        console.log(reserve.res_status);
+      }
     } catch (error) {
       console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);
+    }
+  };
+
+  // update reserve status http://localhost:3000/api/reserve/:resid
+  const handleCancel = async () => {
+    try {
+      const res = await fetch(`${apiUrl}/api/reserve/${resId}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: "canceled" }),
+      });
+      if(res.ok){
+        console.log("ยกเลิกรายการจองสำเร็จ!");
+        navigate("/status");
+      }
+    } catch (error) {
+      console.error("เกิดข้อผิดพลาดกับเซิรฟ์เวอร์", error);
     }
   };
 
@@ -62,7 +85,7 @@ const Statusdetail = () => {
       <Header />
       {/* Content div */}
       <div className="flex flex-col px-10 py-4">
-        <Breadcrumb/>
+        <Breadcrumb />
 
         {/* header */}
         <div className="rounded-md shadow-sm bg-gradient-to-r from-[#B9FF66] to-[#5AF3A7] p-4 my-4 mx-auto w-full max-w-5xl">
@@ -137,14 +160,25 @@ const Statusdetail = () => {
             <button
               className="border rounded-lg p-2.5 bg-[#EA4335]"
               type="button"
+              onClick={() => setIsConfirmOpen(true)}
+              hidden={reserve.res_status !== "confirmed"}
+              disabled={reserve.res_status !== "confirmed"}
             >
-              <span className="px-4 py-2 text-sm font-semibold text-white ">
+              <span className="px-4 py-2 text-sm font-semibold text-white">
                 ยกเลิกการจอง
               </span>
             </button>
           </div>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        title="ยืนยันยกเลิกรายการจอง"
+        message={`คุณต้องการยกเลิกรายการจองนี้ใช่หรือไม่?`}
+        onConfirm={() => handleCancel()}
+      />
       <Footer />
     </div>
   );
