@@ -12,4 +12,6 @@ router.get("/reserve",auth,ReserveController.getReserves);
 router.get("/admin/reserve",auth,checkAdmin,ReserveController.getAllReserves);
 // router.get("/reserve/",auth,ReserveController.getReserveStatus);
 
+router.patch("/reserve/:resid",ReserveController.updateStatusReserve);
+
 module.exports = router;

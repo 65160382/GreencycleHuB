@@ -21,6 +21,7 @@ import MytaskDriverdetail from "./pages/MytaskDriverdetail";
 import DriverHistory from "./pages/DriverHistory";
 import AdminVerify from "./pages/AdminVerify";
 import AdminVerifyDetail from "./pages/AdminVerifyDetail";
+import SuccessPage from "./pages/SuccessPage";
 
 function App() {
   return (
@@ -74,6 +75,14 @@ function App() {
                 <AdminVerifyDetail/>
               </AdminRoute>
             }
+          />
+          <Route
+          path="/admin/verify/success"
+          element={
+            <AdminRoute>
+              <SuccessPage/>
+            </AdminRoute>
+          }
           />
           {/* DriverRoute */}
           <Route

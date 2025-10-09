@@ -48,12 +48,22 @@ class Reserve {
   a.add_subdistrict,
   a.add_road,
   a.add_houseno,
-  a.add_postcode
+  a.add_postcode,
+  GROUP_CONCAT(DISTINCT rt.rec_type_name ORDER BY rt.rec_type_name SEPARATOR ', ') AS type,
+  DATE_FORMAT(t.time_finishtime, '%Y-%m-%d') AS date
 FROM reserve AS r
 JOIN customers AS c   ON c.cus_id = r.cus_id
 JOIN address AS a   ON a.add_id = r.add_id
-WHERE r.res_id = ?;`;
-      // AND r.res_id = ?;`;
+LEFT JOIN reserve_detail AS rd ON r.res_id = rd.res_id
+LEFT JOIN waste_collection AS wc ON rd.waste_collect_id = wc.waste_collect_id
+LEFT JOIN recycle_type AS rt ON wc.rec_type_id = rt.rec_type_id
+LEFT JOIN timetable_detail AS td ON r.res_id = td.res_id
+LEFT JOIN timetable AS t ON td.time_id = t.time_id
+WHERE r.res_id = ?
+GROUP BY 
+  r.res_id, r.res_code, r.res_booking_date, r.res_time_slot,
+  r.res_status, r.res_weight, r.res_amount, c.cus_fname, c.cus_lname, t.time_finishtime
+ORDER BY r.res_create_at DESC;`;
       const [result] = await pool.query(sql, [reserveId]);
       return result[0];
     } catch (error) {
@@ -104,21 +114,28 @@ WHERE r.res_id = ?;`;
   static async getAllReserves(status = null) {
     try {
       let sql = `SELECT
-                      r.res_id,
-                      r.res_code,
-                      r.res_booking_date,
-                      r.res_time_slot,
-                      r.res_status,
-                      r.res_weight,
-                      r.res_amount,
-                      CONCAT_WS(' ', c.cus_fname, c.cus_lname) AS customers_name,
-                      CONCAT_WS(' ', a.add_province, a.add_district, a.add_subdistrict, a.add_postcode) AS addressLine1,
-                      CONCAT_WS(' ', a.add_houseno, a.add_road) AS addressLine2,
-                      a.add_lat,
-                      a.add_lon
-                FROM reserve AS r
-                JOIN customers  AS c ON r.cus_id = c.cus_id
-                JOIN address    AS a ON r.add_id = a.add_id `;
+              r.res_id,
+              r.res_code,
+              r.res_booking_date,
+              r.res_time_slot,
+              r.res_status,
+              r.res_weight,
+              r.res_amount,
+              CONCAT_WS(' ', c.cus_fname, c.cus_lname) AS customers_name,
+              CONCAT_WS(' ', a.add_province, a.add_district, a.add_subdistrict, a.add_postcode) AS addressLine1,
+              CONCAT_WS(' ', a.add_houseno, a.add_road) AS addressLine2,
+              a.add_lat,
+              a.add_lon,
+			        GROUP_CONCAT(DISTINCT rt.rec_type_name ORDER BY rt.rec_type_name SEPARATOR ', ') AS type,
+              DATE_FORMAT(t.time_finishtime, '%Y-%m-%d') AS date
+          FROM reserve AS r
+          JOIN customers  AS c ON r.cus_id = c.cus_id
+          JOIN address    AS a ON r.add_id = a.add_id 
+		      LEFT JOIN reserve_detail AS rd ON r.res_id = rd.res_id
+          LEFT JOIN waste_collection AS wc ON rd.waste_collect_id = wc.waste_collect_id
+          LEFT JOIN recycle_type AS rt ON wc.rec_type_id = rt.rec_type_id
+          LEFT JOIN timetable_detail AS td ON r.res_id = td.res_id
+          LEFT JOIN timetable AS t ON td.time_id = t.time_id`;
 
       const params = [];
 
@@ -129,7 +146,15 @@ WHERE r.res_id = ?;`;
 
       // console.log("After push",params)
 
-      sql += ` ORDER BY r.res_create_at DESC; `;
+      // sql += ` ORDER BY r.res_create_at DESC; `;
+
+      sql += `
+      GROUP BY 
+        r.res_id, r.res_code, r.res_booking_date, r.res_time_slot,
+        r.res_status, r.res_weight, r.res_amount, c.cus_fname, c.cus_lname, t.time_finishtime
+      ORDER BY r.res_create_at DESC;
+    `;
+
       const [result] = await pool.query(sql, params);
       return result;
     } catch (error) {
@@ -137,7 +162,6 @@ WHERE r.res_id = ?;`;
       throw error;
     }
   }
-
 
   static async getAllStatus() {
     try {
@@ -150,7 +174,6 @@ WHERE r.res_id = ?;`;
       throw error;
     }
   }
-
 
   // ใช้ Promise.all() แล้ว loop update ทีละรายการ
   // static async updateReserve(con, updateArray) {

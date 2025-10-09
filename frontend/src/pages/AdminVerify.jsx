@@ -46,7 +46,8 @@ const AdminVerify = () => {
           </h2>
 
           {/* ตารางแสดงรายการรอตรวจสอบ */}
-          <section className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-x-auto">
+          {reserve.length > 0 ?  (
+            <section className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-x-auto">
             <div className="min-w-[800px]">
               <table className="min-w-full text-sm text-left text-gray-700">
                 <thead className="bg-[#5D866C] text-white font-semibold">
@@ -103,6 +104,9 @@ const AdminVerify = () => {
               </table>
             </div>
           </section>
+          ):(
+            <p className="items-center justify-center">ไม่มีข้อมูลขยะที่ต้องตรวจสอบ</p>
+          )}
 
         </main>
       </div>
