@@ -1,89 +1,77 @@
-import { IoCloseCircle } from "react-icons/io5";
-import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import Spinloading from "../Core-UI/Spinloading";
-import { loadNostraScript, initializeMap, showError } from "../../utils/nostraMapUtils";
+// import { useEffect } from "react";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import { X } from 'lucide-react';
 
-const backdropVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 0.5 },
-  exit: { opacity: 0 },
-};
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
 
-const modalVariants = {
-  hidden: { opacity: 0, scale: 0.95, y: -20 },
-  visible: { opacity: 1, scale: 1, y: 0 },
-  exit: { opacity: 0, scale: 0.95, y: -20 },
-};
+// --- แก้ปัญหา marker icon ไม่ขึ้นใน react-leaflet ---
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+});
 
-const MapModal = ({ isOpen, onClose, lat, lon }) => {
-  const apiKey = import.meta.env.VITE_NOSTRA_API_KEY;
-  const [isLoading, setIsLoading] = useState(false);
+// --- ฟังก์ชันเปลี่ยนมุมมองเมื่อ center เปลี่ยน ---
+function ChangeView({ center, zoom }) {
+  const map = useMap();
+  map.setView(center, zoom);
+  return null;
+}
 
-  useEffect(() => {
-    if (!isOpen) return;
-    setIsLoading(true);
+// --- Modal Component ---
+export default function MapModal({ isOpen, onClose, lat, lon, address }) {
+  if (!isOpen) return null;
 
-    // โหลด script จาก apikey
-    loadNostraScript(apiKey, () => {
-      try {
-        initializeMap(lat, lon); //สร้างแผนที่
-        setIsLoading(false);
-      } catch (error) {
-        showError(error);
-      } finally {
-        setTimeout(() => setIsLoading(false), 300); // UX soft delay
-      }
-    });
-  }, [isOpen, apiKey, lat, lon]);
-
-  // console.log("test result lat , lon:",lat,lon)
-
+  const position = [parseFloat(lat), parseFloat(lon)];
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          {/* Backdrop */}
-          <motion.div
-            className="fixed inset-0 z-50 bg-black"
-            variants={backdropVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div className="bg-white rounded-lg shadow-lg w-[90%] max-w-2xl overflow-hidden">
+        {/* Header */}
+        <div className="flex justify-between items-center px-4 py-2 border-b">
+          <h2 className="text-lg font-semibold">ตำแหน่งบ้านลูกค้า</h2>
+          <button
             onClick={onClose}
-            style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-          />
-
-          {/* Modal Container */}
-          <motion.div
-            className="fixed inset-0 z-50 flex justify-center items-start p-4 pt-16 overflow-y-auto"
-            variants={modalVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            onClick={(e) => e.stopPropagation()}
+            className="text-gray-600 hover:text-gray-900 text-xl"
           >
-            {isLoading && <Spinloading />}
-            <div className="w-full max-w-4xl rounded-lg bg-white p-6 shadow-lg max-h-[90vh] overflow-y-auto relative">
-              {/* Modal Header */}
-              <section className="flex items-start justify-end ">
-                <IoCloseCircle
-                  className="w-9 h-9 cursor-pointer text-gray-500 hover:text-red-500 transform hover:scale-110 transition-transform duration-200"
-                  onClick={onClose}
-                />
-              </section>
+            <X/>
+          </button>
+        </div>
 
-              {/* Content */}
-              <section className="mt-4">
-                <div id="map" className="w-full h-[400px] rounded border" />
-              </section>
-            </div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+        {/* แผนที่ */}
+        <div className="h-[400px]">
+          <MapContainer
+            center={position}
+            zoom={15}
+            style={{ height: "100%", width: "100%" }}
+          >
+            <ChangeView center={position} zoom={15} />
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <Marker position={position}>
+              <Popup>
+                <strong>ที่อยู่ลูกค้า:</strong>
+                <br />
+                {address || `Lat: ${lat}, Lon: ${lon}`}
+              </Popup>
+            </Marker>
+          </MapContainer>
+        </div>
+
+        {/* Footer */}
+        <div className="px-4 py-3 flex justify-end border-t">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+          >
+            ปิด
+          </button>
+        </div>
+      </div>
+    </div>
   );
-};
-
-export default MapModal;
+}

@@ -63,8 +63,20 @@ const AssignDriverModal = ({ onClose, date, timeslot, resid }) => {
         resId:resid
       }
 
+      // console.log("data before fetch api closet",nostramapdata);
+
       // http://localhost:3000/api/closet-facility --> ส่ง body ตำแหน่งรายการจองเพื่อหาจุดที่ใกล้ที่สุดและเรียงลำดับรายการเดินรถ
-      const nostramapresult = await fetch(`${apiUrl}/api/closest-facility`,{
+      // const nostramapresult = await fetch(`${apiUrl}/api/closest-facility`,{
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   credentials: "include",
+      //   body:JSON.stringify(nostramapdata)
+      // });
+
+      // version ของ Openrouteservice
+      const response = await fetch(`${apiUrl}/api/closest-facility`,{
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -73,13 +85,13 @@ const AssignDriverModal = ({ onClose, date, timeslot, resid }) => {
         body:JSON.stringify(nostramapdata)
       });
 
-      if(!nostramapresult.ok){
+      if(!response.ok){
         console.error("เกิดข้อผิดพลาดไม่สามารถคำนวณตำแหน่งที่ใกล้ที่สุดได้!");
       }
 
-      const resultsnostramap = await nostramapresult.json();
-      // console.log("debug datanostramap:",datanostramap);
-      const datanostramap = resultsnostramap.data;
+      const results = await response.json();
+      // console.log("debug data:",results);
+      const datanostramap = results.data;
 
       // destucter ค่า
       const reserveList = datanostramap.map(({facilityRank, res_id}) => ({
@@ -87,7 +99,7 @@ const AssignDriverModal = ({ onClose, date, timeslot, resid }) => {
         resId: res_id
       }));
 
-      console.log("debug reserveList:",reserveList);
+      // console.log("debug reserveList:",reserveList);
 
       const data = {
         assigndate: date,
@@ -96,7 +108,7 @@ const AssignDriverModal = ({ onClose, date, timeslot, resid }) => {
         reserve: reserveList //ตอนนี้กลายเป็น object { resid: resid index: ลำดับบ้านที่ต้องไป }
       };
 
-      console.log("test data:",data)
+      // console.log("test data:",data)
 
       // เรียกใช้ api เพื่อบันทึกข้อมูลลงตาราง timetable
       const res = await fetch(`${apiUrl}/api/admin/timetable`, {

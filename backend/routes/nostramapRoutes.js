@@ -1,10 +1,10 @@
 const express = require("express");
 const NostramapController = require("../controllers/nostramapController")
-const axios = require("axios");
+// const axios = require("axios");
 const router = express.Router();
 require("dotenv").config();
 
-const NOSTRAMAP_API_KEY = process.env.NOSTRAMAP_API_KEY;
+// const NOSTRAMAP_API_KEY = process.env.NOSTRAMAP_API_KEY;
 
 // router.get("/closest-facility", async (req, res) => {
 
@@ -53,7 +53,9 @@ const NOSTRAMAP_API_KEY = process.env.NOSTRAMAP_API_KEY;
 
 // router.get("/closest-facility",NostramapController.getClosetFacility);
 
-router.post("/closest-facility",NostramapController.getClosetFacility);
+// router.post("/closest-facility",NostramapController.getClosetFacility);
+
+router.post("/closest-facility",NostramapController.getOptimizedOrder);
 // test endpoint
 router.post("/route",NostramapController.getRoute)
 

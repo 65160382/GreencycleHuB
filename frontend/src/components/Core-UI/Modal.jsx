@@ -37,7 +37,7 @@ const Modal = ({
 
           {/* Modal Container */}
           <motion.div
-            className="fixed inset-0 z-50 flex justify-center items-start p-4 pt-16 overflow-y-auto"
+            className="fixed inset-0 z-[2000] flex justify-center items-start p-4 pt-16 overflow-y-auto"
             variants={modalVariants}
             initial="hidden"
             animate="visible"

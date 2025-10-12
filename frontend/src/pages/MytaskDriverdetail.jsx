@@ -2,21 +2,61 @@ import HeaderAdmin from "../components/Admin/HeaderAdmin";
 import SidebarAdmin from "../components/Admin/SidebarAdmin";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { MapPin, User, Phone, Mail, Clock } from "lucide-react";
 import Modal from "../components/Core-UI/Modal";
 import DestinationInfo from "../components/Driver/DestinationInfo";
 import ConfirmWasteModal from "../components/Driver/ConfirmWasteModal";
+// --- เพิ่ม imports ใหม่ ---
 import {
-  loadNostraScript,
-  initializeMap,
-  drawRoute,
-  clearRoute,
-} from "../utils/nostraMapUtils";
+  MapContainer,
+  TileLayer,
+  Marker,
+  Polyline,
+  Popup,
+  useMap,
+} from "react-leaflet";
+
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+
+// แก้ icon marker ไม่ขึ้น
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+});
+
+// ช่วย fit กล้องให้เห็น polyline พอดี
+function FitBoundsOnRoute({ polyline }) {
+  const map = useMap();
+  useEffect(() => {
+    if (polyline && polyline.length > 1) {
+      const bounds = L.latLngBounds(polyline);
+      map.fitBounds(bounds, { padding: [20, 20] });
+    }
+  }, [polyline, map]);
+  return null;
+}
+
+const depotIcon = new L.Icon({
+  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+});
+
+const destinationIcon = new L.Icon({
+  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+});
+
 
 const MytaskDriverdetail = () => {
   const { timeId } = useParams(); //ดึง id ตารางเดินรถจาก url
   const apiUrl = import.meta.env.VITE_API_URL;
-  const apiKey = import.meta.env.VITE_NOSTRA_API_KEY;
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isCompelteModalOpen, setIsCompelteModalOpen] = useState(false);
@@ -24,19 +64,19 @@ const MytaskDriverdetail = () => {
   const [items, setItems] = useState([]); //เก็บ รายการบ้านที่ต้องไปทั้งหมด
   const [currentIndex, setIscurrentIndex] = useState(0); //ตำแหน่งบ้านปัจจุบันเพื่อเอาไปเทียบกับ items
   const currentItem = items?.[currentIndex]; //เก็บข้อมูลรายละเอียดการจองตาม currentindex
-  const [route, setRoute] = useState([]); //เก็บเส้นทางที่คำนวณเเล้ว
-
   const navigate = useNavigate();
+  // test openrouteservice
+  const [polyline, setPolyline] = useState([]);
 
-  //test2
-  const [map, setMap] = useState(null);
+  // const [routeSummary, setRouteSummary] = useState({
+  //   distance: null,
+  //   duration: null,
+  // });
 
-  //test
-  const [companyLocation] = useState({
-    name: "Company",
-    lat: 13.288378,
-    lon: 100.924359,
-  });
+  // ค่าพิกัดบริษัท (อ่านจาก .env ถ้ามี, ถ้าไม่มีก็ fallback)
+  const depotLat = Number(import.meta.env.VITE_DEPOT_LAT || 13.288378);
+  const depotLon = Number(import.meta.env.VITE_DEPOT_LON || 100.924359);
+  const [startMarker, setStartMarker] = useState([depotLat, depotLon]);
 
   // ดึงข้อมูลบ้านทั้งหมดที่ต้องไปตามลำดับ
   useEffect(() => {
@@ -56,56 +96,54 @@ const MytaskDriverdetail = () => {
     // calculateRoute();
   }, [timeId]);
 
-  //เรียกฟังก์ชั่นสำหรับคำนวณเส้นทาง
-  // useEffect(() => {
-  //   if (!items.length) return;
+  // openrouteservice
+  // สร้างเส้นทางทุกครั้งที่ items พร้อม และ currentItem เปลี่ยน
+  useEffect(() => {
+    const fetchRoute = async () => {
+      if (!items.length || !currentItem) return;
 
-  //   let from, to;
-  //   if (currentIndex === 0) {
-  //     from = companyLocation;
-  //     to = items[0];
-  //   } else if (currentIndex < items.length) {
-  //     from = items[currentIndex - 1];
-  //     to = items[currentIndex];
-  //   } else {
-  //     from = items[items.length - 1];
-  //     to = companyLocation;
-  //   }
+      const startLat =
+        currentIndex === 0
+          ? depotLat
+          : Number(items[currentIndex - 1]?.add_lat);
+      const startLon =
+        currentIndex === 0
+          ? depotLon
+          : Number(items[currentIndex - 1]?.add_lon);
 
-  //   calculateRoute(from, to);
-  // }, [currentIndex, items]);
+      const destLat = Number(currentItem.add_lat);
+      const destLon = Number(currentItem.add_lon);
 
-  // โหลด script nostramap สำหรับทำแผนที่
-  // useEffect(() => {
-  //   loadNostraScript(apiKey, () => {
-  //     const mapInstance = initializeMap(13.288378, 100.924359);
-  //     setMap(mapInstance);
-  //   });
-  // }, []);
+      const waypoints = [
+        { lat: startLat, lon: startLon },
+        { lat: destLat, lon: destLon },
+      ];
 
-  //ฟังก์ชั่นสำหรับเรียก express คำนวณเส้นทาง
-  // const calculateRoute = async (from, to) => {
-  //   try {
-  //     const res = await fetch(`${apiUrl}/api/route`, {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       credentials: "include",
-  //       body: JSON.stringify({ from, to }),
-  //     });
-  //     if (res.ok) {
-  //       const data = await res.json();
-  //       console.log("debug route data:", data);
-  //       // setRoute(data.routedata);
+      try {
+        const res = await fetch(`${apiUrl}/api/route`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ waypoints }),
+        });
 
-  //       if (data.results) {
-  //         clearRoute();
-  //         drawRoute(data.results); // ส่งทั้ง object
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error("เกิดข้อผิดพลาดไม่สามารถคำนวณเส้นทางได้", error);
-  //   }
-  // };
+        if (res.ok) {
+          const data = await res.json();
+          setPolyline(data.route.polyline || []);
+          setStartMarker([startLat, startLon]); // อัปเดต marker จุดเริ่มต้นที่นี่
+        } else {
+          console.error("เรียกเส้นทางไม่สำเร็จ");
+          setPolyline([]);
+        }
+      } catch (err) {
+        console.error("เกิดข้อผิดพลาดในการเรียกเส้นทาง", err);
+        setPolyline([]);
+      }
+    };
+
+    fetchRoute();
+  }, [items, currentIndex, currentItem, apiUrl, depotLat, depotLon]);
+
 
   //ฟังก์ชั่นสำหรับเรียกเส้นทางถัดไป
   const handleConfirm = async () => {
@@ -168,10 +206,44 @@ const MytaskDriverdetail = () => {
           </div>
 
           {/* กล่องแผนที่ */}
-          <div
-            id="map"
-            className="relative overflow-hidden w-full h-72 border border-gray-300 rounded-lg mb-6 bg-white shadow-sm"
-          ></div>
+          <div className="relative overflow-hidden w-full h-72 border border-gray-300 rounded-lg mb-6 bg-white shadow-sm">
+            <MapContainer
+              center={[depotLat, depotLon]}
+              zoom={13}
+              style={{ height: "100%", width: "100%" }}
+            >
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+
+              {/* หมุดบริษัท / จุดเริ่มต้น */}
+              <Marker position={startMarker} icon={depotIcon}>
+                <Popup>ตำแหน่งปัจจุบัน</Popup>
+              </Marker>
+
+              {/* หมุดปลายทางปัจจุบัน */}
+              {currentItem && (
+                <Marker
+                  position={[
+                    Number(currentItem.add_lat),
+                    Number(currentItem.add_lon),
+                  ]}
+                  icon={destinationIcon}
+                >
+                  <Popup>จุดหมาย</Popup>
+                </Marker>
+              )}
+
+              {/* เส้นทาง */}
+              {polyline.length > 1 && (
+                <>
+                  <Polyline positions={polyline} weight={5} />
+                  <FitBoundsOnRoute polyline={polyline} />
+                </>
+              )}
+            </MapContainer>
+          </div>
 
           {/* ข้อมูลจุดหมาย */}
           <DestinationInfo currentItem={currentItem} />
@@ -246,7 +318,7 @@ const MytaskDriverdetail = () => {
 
             {/* หัวข้อแสดงความยินดี */}
             <h3 className="text-2xl font-bold text-gray-800 mb-2">
-              ตารางเดินรถรอบนี้สำเร็จแล้ว! 
+              ตารางเดินรถรอบนี้สำเร็จแล้ว!
             </h3>
 
             {/* ข้อความรายละเอียด */}
@@ -271,7 +343,6 @@ const MytaskDriverdetail = () => {
             </button>
           </div>
         </Modal>
-
       </div>
     </div>
   );

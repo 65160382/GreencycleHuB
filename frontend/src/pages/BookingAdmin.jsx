@@ -20,7 +20,7 @@ const BookingAdmin = () => {
 
   useEffect(() => {
     // const status = STATUS_MAP[activeTab];
-    fetchData("pending");
+    fetchData("confirmed");
   }, []);
 
   // debug
@@ -39,7 +39,7 @@ const BookingAdmin = () => {
         )
       : reserves;
 
-  const fetchData = async (status = "pending") => {
+  const fetchData = async (status = "confirmed") => {
     try {
       const query = new URLSearchParams();
       if (status) query.set("status", status);
