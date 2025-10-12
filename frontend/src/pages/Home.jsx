@@ -26,9 +26,9 @@ export default function Home() {
           const mapName = {
             "Plastic-PET": "PET",
             "Plastic-HDPE": "HDPE",
-            "Bottle-Glass": "Glass",
+            "BottleGlass": "Glass",
             "Card-Box": "Box",
-            "Can-Aluminium": "Can",
+            "Can": "Can",
           };
 
           // เตรียม object เปล่า

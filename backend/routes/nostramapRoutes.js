@@ -63,7 +63,7 @@ router.post("/route",NostramapController.getRoute)
 //   const url = "https://api.nostramap.com/service/v2/Network/Route";
 
 //   const data = {
-//     key: NOSTRAMAP_API_KEY, // ✅ ส่ง key เป็น param
+//     key: NOSTRAMAP_API_KEY, // ส่ง key เป็น param
 //     stops: JSON.stringify([
 //       { name: "sevenEleven2", lat: 13.2887, lon: 100.926896 },
 //       { name: "sevenEleven1", lat: 13.286474, lon: 100.925759 }

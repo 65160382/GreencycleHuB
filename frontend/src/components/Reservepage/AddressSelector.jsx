@@ -1,12 +1,15 @@
 import { Plus } from "lucide-react";
-import { useState, useEffect,useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import AddressModal from "./AddressModal";
+import AddAddressModal from "./AddAddressModal";
 import { ReserveContext } from "../../context/ReserveContext";
+
 
 const AddressSelector = () => {
   const [address, setAddress] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const {selectedAddress, setselectedAddress} = useContext(ReserveContext);
+  const [isAddOpen, setIsAddOpen] = useState(false);
+  const { selectedAddress, setselectedAddress } = useContext(ReserveContext);
 
   useEffect(() => {
     fetchDefaultAddress();
@@ -71,7 +74,6 @@ const AddressSelector = () => {
                 แก้ไข
               </button>
             </div>
-            
           </div>
 
           {/* ป้ายค่าเริ่มต้น */}
@@ -83,12 +85,23 @@ const AddressSelector = () => {
         <button
           type="button"
           className="flex items-center border-2 border-dashed border-gray-300 p-4 gap-2 rounded-lg hover:bg-gray-50 transition text-gray-600"
+          onClick={() => setIsAddOpen(true)}
         >
           <Plus className="w-5 h-5" />
           <span className="text-sm font-medium">เพิ่มที่อยู่</span>
         </button>
       )}
-      <AddressModal isOpen={isOpen} onClose={() => setIsOpen(false)} onUpdate={fetchDefaultAddress} />
+      <AddressModal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        onUpdate={fetchDefaultAddress}
+      />
+      {/* Modal เพิ่มที่อยู่ใหม่ */}
+      <AddAddressModal
+        isOpen={isAddOpen}
+        onClose={() => setIsAddOpen(false)}
+        onAddSuccess={fetchDefaultAddress}
+      />
     </>
   );
 };

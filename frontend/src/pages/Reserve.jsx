@@ -8,13 +8,13 @@ import AddressSelector from "../components/Reservepage/AddressSelector";
 import ConfirmModal from "../components/Reservepage/ConfirmModal";
 import { ReserveContext } from "../context/ReserveContext";
 import { Breadcrumb } from "../components/Core-UI/Breadcrumb";
-import { ChevronLeft } from "lucide-react";
 import { useState, useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
+import Spinloading from "../components/Core-UI/Spinloading";
 
 const Reserve = () => {
   const [wasteCollections, setWasteCollections] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { selectedWaste, selectedDate } = useContext(ReserveContext);
 
   useEffect(() => {
@@ -23,6 +23,7 @@ const Reserve = () => {
 
   //ดึงข้อมูลขยะที่ผู้ใช้สะสมเอาไว้มาแสดงผล http://localhost:3000/api/waste-collections
   const fetchWasteCollection = async () => {
+    setIsLoading(true)
     try {
       const apiUrl = import.meta.env.VITE_API_URL;
       const response = await fetch(`${apiUrl}/api/waste-collections`, {
@@ -36,35 +37,30 @@ const Reserve = () => {
       }
     } catch (error) {
       console.error("เกิดข้อผิดพลาดกับเซิรฟ์เวอร์!", error);
+    }finally{
+      setTimeout(() => setIsLoading(false), 300);
     }
   };
 
   return (
     <div className="bg-[#f3f3f3]">
       <Header />
-
+    {isLoading && <Spinloading/>}
       {/* content div */}
       <div className="flex flex-col px-10 py-4  ">
         {/* ปุ่มย้อนกลับ + หัวข้อ + progress bar  */}
         <div className="p-2.5">
           <section className="flex  m-2.5  font-medium">
-            {/* <ChevronLeft className="cursor-pointer" />
-            <Link
-              to={"/home"}
-              className="hover:text-green-600 transition-colors cursor-pointer"
-            >
-              กลับสู่หน้าหลัก
-            </Link> */}
             <Breadcrumb />
           </section>
           <h1 className="font-bold m-2.5">จองคิวรับซื้อขยะ</h1>
-          <section className="flex flex-col m-2.5 text-base">
+          {/* <section className="flex flex-col m-2.5 text-base">
             <p>ขั้นตอนที่ 1 จาก 2 : กรอกข้อมูลรายละเอียดส่วนตัว</p>
-            {/* ส่วน progress bar */}
+            ส่วน progress bar
             <div className="mt-4 overflow-hidden rounded-full bg-[#d9d9d9]">
               <div className="h-2 w-1/3 rounded-full bg-[#349A2D]"></div>
             </div>
-          </section>
+          </section> */}
         </div>
 
         {/* step 1 เลือกประเภทของขยะรีไซเคิลที่ต้องการขาย */}

@@ -34,7 +34,7 @@ const WasteDashboard = ({ wasteCollections }) => {
       value: wasteCollections?.Box || 0,
     },
     {
-      name: "Can Aluminium",
+      name: "Can",
       icon: <Beer className="w-6 h-6 text-gray-700" />,
       color: "bg-gray-50",
       unit: "กก.",

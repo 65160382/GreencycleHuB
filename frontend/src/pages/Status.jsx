@@ -9,7 +9,7 @@ const STATUS_MAP = {
   "ทั้งหมด": null,
   "รอดำเนินการ": "pending",
   "กำลังดำเนินการ": "picking_up",
-  "สำเร็จ": "completed",
+  "สำเร็จ": "complete",
   "ยกเลิกแล้ว": "canceled",
 };
 
