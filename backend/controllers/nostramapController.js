@@ -1,11 +1,12 @@
 const axios = require("axios");
-const { normalizeLocation } = require("../utils/nostramapUtils");
+// const { normalizeLocation } = require("../utils/nostramapUtils");
 require("dotenv").config();
 
+// version nostramap api
 exports.getClosetFacility = async (req, res) => {
   try {
     const { resId } = req.body;
-    // console.log("debug resid:",resId)
+    console.log("debug resid:",resId);
     const url = "https://api.nostramap.com/Service/V2/Network/ClosestFacility";
 
     incident = [{ name: "Company", lat: 13.288378, lon: 100.924359 }];
@@ -77,42 +78,175 @@ exports.getClosetFacility = async (req, res) => {
 };
 
 // คำนวณเส้นทางการเดินรถไปยังตำแหน่งต่างๆตามลำดับที่วางเอาไว้
-exports.getRoute = async (req, res) => {
-  // รับข้อมูลที่อยู่ต่างๆของลูกค้าตามลำดับจาก react
-  let { from, to } = req.body;
-  // console.log("debug from ",from," to ",to);
+// exports.getRoute = async (req, res) => {
+//   // รับข้อมูลที่อยู่ต่างๆของลูกค้าตามลำดับจาก react
+//   let { from, to } = req.body;
+//   // console.log("debug from ",from," to ",to);
 
-  // สร้าง object ใหม่ที่ตรงตาม pattern nostramaps
-   from = normalizeLocation(from);
-   to = normalizeLocation(to);
+//   // สร้าง object ใหม่ที่ตรงตาม pattern nostramaps
+//    from = normalizeLocation(from);
+//    to = normalizeLocation(to);
 
-  // ต้อง push จุดเริ่มต้นและจุดสิ้นสุดไปในตัวแรกและตัวสุดท้ายด้วยรวมเป็น array
-  const stops = [from, to];
-  // console.log("debug stops:", stops);
-  const url = process.env.NOSTRAMAP_ROUTE_URL;
+//   // ต้อง push จุดเริ่มต้นและจุดสิ้นสุดไปในตัวแรกและตัวสุดท้ายด้วยรวมเป็น array
+//   const stops = [from, to];
+//   // console.log("debug stops:", stops);
+//   const url = process.env.NOSTRAMAP_ROUTE_URL;
 
-  const data = {
-    key: process.env.NOSTRAMAP_API_KEY,
-    stops: JSON.stringify(stops),
-    mode: "Car",
-    impedance: "Distance",
-    returnedRouteDetail: "True", //รายละเอียดเส้นทางทั้งหมด
-    findBestSequence: "True",
-    preserveFirstStop: "True", //บังคับให้จุดแรกต้องเริ่มที่ stop[0]
-  };
+//   const data = {
+//     key: process.env.NOSTRAMAP_API_KEY,
+//     stops: JSON.stringify(stops),
+//     mode: "Car",
+//     impedance: "Distance",
+//     returnedRouteDetail: "True", //รายละเอียดเส้นทางทั้งหมด
+//     findBestSequence: "True",
+//     preserveFirstStop: "True", //บังคับให้จุดแรกต้องเริ่มที่ stop[0]
+//   };
 
+//   try {
+//     const response = await axios.get(url, { params: data });
+//     const results = response.data.results;
+//     // console.log("debug results", results);
+//     // const routedata = {
+//     //   totalLength:results.totalLength,
+//     //   totalTime:results.totalTime,
+//     //   geometry:results.route
+//     // }
+//     // res.status(200).json({ message: "คำนวณเส้นทางสำเร็จ!",routedata });
+//     res.status(200).json({ message: "คำนวณเส้นทางสำเร็จ!",results });
+//   } catch (error) {
+//     console.error("เกิดข้อผิดพลาดในการเรียกใช้งาน API", error);
+//   }
+// };
+
+// version openrouteservice
+exports.getOptimizedOrder = async (req, res) => {
   try {
-    const response = await axios.get(url, { params: data });
-    const results = response.data.results;
-    // console.log("debug results", results);
-    // const routedata = {
-    //   totalLength:results.totalLength,
-    //   totalTime:results.totalTime,
-    //   geometry:results.route
-    // }
-    // res.status(200).json({ message: "คำนวณเส้นทางสำเร็จ!",routedata });
-    res.status(200).json({ message: "คำนวณเส้นทางสำเร็จ!",results });
-  } catch (error) {
-    console.error("เกิดข้อผิดพลาดในการเรียกใช้งาน API", error);
+    const { resId } = req.body;
+    // console.log("debug resId:", resId);
+
+    if (!Array.isArray(resId) || resId.length === 0) {
+      return res.status(400).json({ message: "resId is required" });
+    }
+
+    const depotLat = parseFloat(process.env.DEPOT_LAT);
+    const depotLon = parseFloat(process.env.DEPOT_LON);
+
+    const jobs = resId.map((r) => ({
+      id: Number(r.id),
+      location: [parseFloat(r.lon), parseFloat(r.lat)], // [lon, lat]
+    }));
+
+    const vehicles = [
+      {
+        id: 1,
+        profile: "driving-car", // ต้องใส่ตรงนี้ ไม่ใช่ใน query string
+        start: [depotLon, depotLat],
+        end: [depotLon, depotLat], // จะให้กลับบริษัทหรือไม่ก็ได้
+      },
+    ];
+
+    const orsUrl = "https://api.openrouteservice.org/optimization"; 
+    const response = await axios.post(
+      orsUrl,
+      { jobs, vehicles },
+      {
+        headers: {
+          Authorization: process.env.ORS_API_KEY,
+          "Content-Type": "application/json",
+        },
+        timeout: 20000,
+      }
+    );
+
+    const steps = response.data?.routes?.[0]?.steps || [];
+    const ordered = steps
+      .filter((s) => typeof s.job === "number")
+      .map((s, i) => ({
+        res_id: s.job,
+        facilityRank: i + 1,
+        totalLength: null,
+        totalTime: null,
+      }));
+
+    return res.status(200).json({
+      message: "คำนวณลำดับเส้นทางแบบ Optimization สำเร็จ",
+      data: ordered,
+    });
+  } catch (err) {
+    console.error(
+      "ORS Optimization error:",
+      err?.response?.data || err.message || err
+    );
+    return res
+      .status(500)
+      .json({ message: "ไม่สามารถคำนวณลำดับเส้นทางแบบ optimization ได้" });
   }
 };
+
+// ORS Directions: วาดเส้นทาง polyline จากจุดเริ่ม -> จุดปลาย (รองรับหลายจุดถ้าจะขยายต่อ)
+exports.getRoute = async (req, res) => {
+  try {
+    const { waypoints, from, to } = req.body;
+    // console.log("check reqbody:",waypoints," from:",from," to:",to)
+
+    // --- 1) เตรียมพิกัด [lon, lat] ---
+    let coords = [];
+    if (Array.isArray(waypoints) && waypoints.length >= 2) {
+      coords = waypoints.map((p) => [parseFloat(p.lon), parseFloat(p.lat)]);
+    } else if (from && to) {
+      coords = [
+        [parseFloat(from.lon), parseFloat(from.lat)],
+        [parseFloat(to.lon), parseFloat(to.lat)],
+      ];
+    } else {
+      return res.status(400).json({ message: "ต้องส่ง waypoints >= 2 จุด หรือ from/to" });
+    }
+
+    // --- 2) เรียก ORS Directions (GeoJSON) ---
+    // profile = driving-car, รูปแบบผลลัพธ์ = GeoJSON (อ่านง่าย)
+    const url = "https://api.openrouteservice.org/v2/directions/driving-car/geojson";
+    const axios = require("axios");
+
+    const orsRes = await axios.post(
+      url,
+      {
+        coordinates: coords,       // [[lon,lat], [lon,lat], ...] ลำดับตามที่ส่งมา
+        instructions: false,       // ไม่ต้องเอาคำสั่งเลี้ยว (ถ้าจะใช้เปิดเป็น true ได้)
+        elevation: false,
+      },
+      {
+        headers: {
+          Authorization: process.env.ORS_API_KEY,
+          "Content-Type": "application/json",
+        },
+        timeout: 20000,
+      }
+    );
+
+    // --- 3) แปลงผลลัพธ์เป็น polyline สำหรับ Leaflet ---
+    const feature = orsRes.data?.features?.[0];
+    if (!feature) {
+      return res.status(500).json({ message: "ไม่มีเส้นทางจาก ORS" });
+    }
+
+    const line = feature.geometry?.coordinates || []; // [ [lon,lat], ... ]
+    const polyline = line.map(([lon, lat]) => [lat, lon]); // แปลงเป็น [lat,lon] สำหรับ Leaflet
+
+    const summary = feature.properties?.summary || {}; // {distance (m), duration (s)}
+
+    return res.status(200).json({
+      message: "คำนวณเส้นทางสำเร็จ!",
+      route: {
+        polyline, // [[lat,lon], ...]
+        distance: summary.distance ?? null,  // เมตร
+        duration: summary.duration ?? null,  // วินาที
+      },
+    });
+  } catch (err) {
+    console.error("ORS Directions error:", err?.response?.data || err.message || err);
+    return res.status(500).json({ message: "ไม่สามารถคำนวณเส้นทางได้" });
+  }
+};
+
+
+
