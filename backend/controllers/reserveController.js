@@ -15,7 +15,9 @@ const createReserveCode = () => {
 
 // ฟังก์ชั่นสำหรับสร้างการจอง
 exports.createReserve = async (req, res) => {
+  const con = await pool.getConnection(); // สร้าง connection
   try {
+    await con.beginTransaction();
     const cusId = req.user.cus_id;
     const { bookingDate, timeslot, amount, weight, addrId, recTypeIds } =
       req.body;
@@ -39,7 +41,7 @@ exports.createReserve = async (req, res) => {
         .json({ message: { error: "ไม่มีข้อมูลจำนวนน้ำหนักทั้งหมด" } });
     if (!addrId)
       return res.status(400).json({ message: { error: "ไม่มีข้อมูลที่อยู่" } });
-    if (!recTypeIds)
+    if (!recTypeIds || recTypeIds.length === 0)
       return res.status(400).json({ message: { error: "ไม่มีประเภทขยะ" } });
 
     //create res_code หรือหมายเลขคำสั่งซื้อ
@@ -47,25 +49,15 @@ exports.createReserve = async (req, res) => {
     // console.log("test resCode:",resCode);
 
     // insert reserve table!
-    const resId = await Reserve.insertReserve(
-      resCode,
-      bookingDate,
-      timeslot,
-      amount,
-      weight,
-      cusId,
-      addrId
-    );
+    const resId = await Reserve.insertReserve(con,resCode,bookingDate,timeslot,amount,weight,cusId,addrId);
+
     if (!resId) {
-      return res
-        .status(400)
-        .json({ message: "เกิดข้อผิดพลาดไม่มี reserveId!" });
+      return res.status(400).json({ message: "เกิดข้อผิดพลาดไม่มี reserveId!" });
     }
     // console.log("reserveId:",resId)
 
-    //insert reservedetail table!
     // ค้นหาตาม id ของประเภทขยะเพื่อหาขยะแต่ละประเภทที่สะสมไว้ในแต่ละครั้ง
-    const wasteRows = await WasteCollection.findWasteCollectionById(
+    const wasteRows = await WasteCollection.findWasteCollectionById(con,
       recTypeIds,
       cusId
     );
@@ -73,24 +65,25 @@ exports.createReserve = async (req, res) => {
 
     // สร้าง array ของค่า [resId, waste_collect_id] สำหรับแต่ละประเภทขยะ เพื่อเตรียม insert ลงใน reserve_detail
     const values = wasteRows.map((row) => [resId, row.waste_collect_id]);
-    const result = await ReserveDetail.insertReserveDetail(values);
+    
+    //insert reservedetail table!
+    await ReserveDetail.insertReserveDetail(con,values);
 
-    if (result) {
-      return res
-        .status(200)
-        .json({ message: "บันทึกข้อมูลการจองสำเร็จ!", resId: resId });
-    } else {
-      return res
-        .status(500)
-        .json({ message: "เกิดข้อผิดพลาดไม่สามารถอัปโหลดข้อมูลได้" });
-    }
+    //update waste_collection_sold ให้เป็น sold
+    const wasteIds = wasteRows.map((row)=> row.waste_collect_id);
+    await WasteCollection.updateWastecollectionById(con,wasteIds);
 
-    // return result
+    // conmmit transaction
+    await con.commit()
+
+    return res.status(200).json({ message: "บันทึกข้อมูลการจองสำเร็จ!", resId: resId });
+
   } catch (error) {
+    await con.rollback();
     console.error("เกิดข้อผิดพลาดไม่สามารถเพิ่มข้อมูลลงฐานข้อมูลได้", error);
-    res
-      .status(500)
-      .json({ message: "เกิดข้อผิดพลาดไม่สามารถเพิ่มข้อมูลลงฐานข้อมูลได้" });
+    res.status(500).json({ message: "เกิดข้อผิดพลาดไม่สามารถเพิ่มข้อมูลลงฐานข้อมูลได้" });
+  }finally{
+    con.release();
   }
 };
 
@@ -165,6 +158,21 @@ exports.updateStatusReserve = async (req, res) => {
     if (!status) {
       return res.status(400).json({ message: "กรุณาระบุสถานะ (status)" });
     }
+
+    // ถ้าสถานะรายการจองเป็น canceled ให้ทำการเปลี่ยน สถานะใน waste_collection เป็นยังไม่ขาย
+    if(status === "canceled"){
+      console.log("กำลังเปลี่ยนสถานะให้เป็น false");
+      // ดึง waste_collect_id ทั้งหมดของรายการจองนี้
+      const wasteRows = await ReserveDetail.getWastecollectId(con,resid);
+      console.log("debug wasterows:",wasteRows);
+      
+      if(wasteRows.length > 0){
+        const wasteIds = wasteRows.map((r) => r.waste_collect_id); // map ผลลัพธ์เอา waste_collect_id
+        // update waste_collect_sold เป็น false
+        await WasteCollection.updateWastecollectionSoldById(con,wasteIds);
+        console.log("อัปเดตสถานะเป็นยังไม่ขาย")
+      }
+    } 
 
     // เตรียมข้อมูลสำหรับส่งไป model
     const updates = [status, resid];

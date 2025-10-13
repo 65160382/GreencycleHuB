@@ -56,19 +56,47 @@ class WasteCollection {
     }
   }
 
-  static async findWasteCollectionById(rectypeId, cusId){
+  // ค้นหา id waste_collection ของ cus_id ตามประเภท rectypeId 
+  static async findWasteCollectionById(con,rectypeId, cusId){
     try {
       const sql = `SELECT waste_collect_id FROM waste_collection WHERE rec_type_id IN (?) AND waste_collect_sold = false AND cus_id = ?;`;
-      const [result] = await pool.query(sql,[rectypeId,cusId]);
+      const [result] = await con.query(sql,[rectypeId,cusId]);
       return result;
     } catch (error) {
       console.error("Error query WasteCollection table!",error);
       throw error;
     }
-
   }
 
-  
+  // อัปเดตสถานะ waste_collect_sold เป็น true 
+  static async updateWastecollectionById(con,wasteIds){
+    try {
+      const sql = `UPDATE waste_collection
+               SET waste_collect_sold = true, waste_collect_update_at = NOW()
+               WHERE waste_collect_id IN (?)`;
+      await con.query(sql,[wasteIds]);
+      return true;
+    } catch (error) {
+      console.error("Error query WasteCollection table!", error);
+      throw error;
+    }
+  }
+
+  // อัปเดตสถานะ waste_collect_sold เป็น false
+  static async updateWastecollectionSoldById(con,wasteIds){
+    try {
+      await con.query(
+      `UPDATE waste_collection
+       SET waste_collect_sold = false, waste_collect_update_at = NOW()
+       WHERE waste_collect_id IN (?)`,
+      [wasteIds]
+    );
+    return true;
+    } catch (error) {
+      console.error("Error to query WasteCollection table!",error);
+      throw error;
+    }
+  }
 }
 
 module.exports = WasteCollection;

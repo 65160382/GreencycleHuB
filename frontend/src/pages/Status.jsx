@@ -1,7 +1,7 @@
 import Header from "../components/Core-UI/Header";
 import Footer from "../components/Core-UI/Footer";
 import { useNavigate } from "react-router-dom";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Breadcrumb } from "../components/Core-UI/Breadcrumb";
 import DateRangePicker from "../components/Statuspage/DateRangePicker";
 
@@ -17,81 +17,67 @@ const Status = () => {
   const apiUrl = import.meta.env.VITE_API_URL;
   const [activeTab, setActiveTab] = useState("ทั้งหมด");
   const [reservations, setReservations] = useState([]);
-  const tabs = ["ทั้งหมด", "รอดำเนินการ","กำลังดำเนินการ", "สำเร็จ", "ยกเลิกแล้ว"];
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const tabs = ["ทั้งหมด", "รอดำเนินการ", "กำลังดำเนินการ", "สำเร็จ", "ยกเลิกแล้ว"];
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const navigate = useNavigate();
 
-  useEffect(()=> {
-    const statusEn = STATUS_MAP[activeTab]; // map ไทย -> อังกฤษ (หรือ null)
+  useEffect(() => {
+    const statusEn = STATUS_MAP[activeTab];
     fetchReservations(statusEn);
-  },[activeTab, startDate, endDate])
+  }, [activeTab, startDate, endDate]);
 
-
-  // http://localhost:3000/reserve
   const fetchReservations = async (status) => {
     try {
       const query = new URLSearchParams();
-
-      if(status) query.set("status",status);
-      if(startDate) query.set("start",formatDatetoYMD(startDate));
-      if(endDate) query.set("end",formatDatetoYMD(endDate));
+      if (status) query.set("status", status);
+      if (startDate) query.set("start", formatDatetoYMD(startDate));
+      if (endDate) query.set("end", formatDatetoYMD(endDate));
 
       const url = `${apiUrl}/api/reserve${query.toString() ? `?${query.toString()}` : ""}`;
-
-      const response = await fetch(url,{
-        method: "GET",
-        credentials:"include", // ส่ง cookies ไปด้วย
-      });
-      if(response.ok){
+      const response = await fetch(url, { method: "GET", credentials: "include" });
+      if (response.ok) {
         const data = await response.json();
-        // console.log("Reservations:",data);
         setReservations(data.result);
       }
     } catch (error) {
       console.error("Error fetching reservations:", error);
-      setReservations([]); // ป้องกันค้างค่าเก่า
+      setReservations([]);
     }
   };
 
-  // ฟังก์ชั่นสำหรับจัดรูปแบบวันที่ toLocaleDateString()
   const formatDateString = (date) => {
-    // const date = reservations.res_booking_date;
     if (!date) return "ไม่มีข้อมูลวันที่จอง";
-    
-    // ถ้าใช้ "th-TH" → จะได้เป็น 15/08/2568 (พ.ศ.)
-    const formattedDate = new Date(date).toLocaleDateString("th-TH", {
+    return new Date(date).toLocaleDateString("th-TH", {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
     });
-    return formattedDate;
   };
 
   const formatDatetoYMD = (dateStr) => {
-    if(!dateStr) return undefined;
+    if (!dateStr) return undefined;
     const date = new Date(dateStr);
     return date.toISOString().split("T")[0];
   };
 
-
   return (
-    <div className="bg-[#f3f3f3]">
+    <div className="bg-[#f3f3f3] min-h-screen flex flex-col">
       <Header />
-      {/* Content div */}
-      <div className="flex flex-col px-10 py-4">
-        <section className="flex m-2.5 font-medium py-2.5">
-          <Breadcrumb/>
+
+      <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 md:px-10 py-6">
+        <section className="mb-3">
+          <Breadcrumb />
         </section>
-        
-        <div className="min-h-screen bg-gray-50 p-4 rounded-md shadow-sm">
+
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
           {/* Tabs */}
-          <div className="flex border-b mb-4">
+          <div className="flex flex-wrap border-b mb-4">
             {tabs.map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 font-medium text-sm border-b-2 ${
+                className={`px-3 sm:px-4 py-2 text-sm sm:text-base font-medium border-b-2 transition ${
                   activeTab === tab
                     ? "border-green-500 text-green-600"
                     : "border-transparent text-gray-500 hover:text-gray-700"
@@ -102,56 +88,78 @@ const Status = () => {
             ))}
           </div>
 
-          {/* filterDate */}
-          <div className="mb-4 relative">
-            <DateRangePicker startDate={startDate}  setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate}/>
+          {/* Date Filter */}
+          <div className="mb-4">
+            <DateRangePicker
+              startDate={startDate}
+              setStartDate={setStartDate}
+              endDate={endDate}
+              setEndDate={setEndDate}
+            />
           </div>
 
-          {/* List */}
+          {/* Reservation List */}
           <div className="space-y-3">
             {reservations.map((item) => (
               <div
                 key={item.res_id}
-                className="flex items-start gap-4 rounded-md border bg-white p-4 shadow-sm"
+                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border rounded-lg bg-gray-50 p-4 hover:shadow-md transition"
               >
-                {/* Placeholder image */}
-                <img 
-                className="h-20 w-20 rounded-md object-cover"
-                src="https://i0.wp.com/discoverandshare.org/wp-content/uploads/2025/07/da62b-recycling_sign_green.png?fit=1024%2C1024&ssl=1" alt="recycle-logo">
-                </img>
-                <div className="flex-1 text-sm">
-                  <p className="font-semibold text-gray-800">
-                    หมายเลขการจอง {item.res_code}
-                  </p>
-                  <p>ชื่อ {item.customers_name}</p>
-                  <p>
-                    วันที่จอง {formatDateString(item.res_booking_date)} รอบ {item.res_time_slot}
-                  </p>
-                  <p className="text-gray-800">สถานะ: 
-                    <span className="text-green-600 pl-1 font-medium">
-                      {item.res_status}
-                    </span>
-                  </p>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                  <img
+                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-md object-cover flex-shrink-0"
+                    src="https://i0.wp.com/discoverandshare.org/wp-content/uploads/2025/07/da62b-recycling_sign_green.png?fit=1024%2C1024&ssl=1"
+                    alt="recycle-logo"
+                  />
+                  <div className="text-sm sm:text-base text-gray-700">
+                    <p className="font-semibold text-gray-900">
+                      หมายเลขการจอง {item.res_code}
+                    </p>
+                    <p>ชื่อ: {item.customers_name}</p>
+                    <p>
+                      วันที่จอง {formatDateString(item.res_booking_date)} รอบ{" "}
+                      {item.res_time_slot}
+                    </p>
+                    <p className="text-gray-800">
+                      สถานะ:{" "}
+                      <span
+                        className={`font-medium ${
+                          item.res_status === "complete"
+                            ? "text-green-600"
+                            : item.res_status === "pending"
+                            ? "text-yellow-600"
+                            : item.res_status === "canceled"
+                            ? "text-red-500"
+                            : "text-gray-700"
+                        }`}
+                      >
+                        {item.res_status}
+                      </span>
+                    </p>
+                  </div>
                 </div>
 
-                <button 
-                  className="shrink-0 rounded-md bg-gray-100 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-200"
-                  onClick={() => navigate(`/status/${item.res_id}`)}
+                <div className="flex sm:block">
+                  <button
+                    className="w-full sm:w-auto text-center rounded-md bg-green-500 text-white text-sm sm:text-base px-4 py-2 font-medium hover:bg-green-600 transition"
+                    onClick={() => navigate(`/status/${item.res_id}`)}
                   >
-                  ดูรายละเอียด
-                </button>
+                    ดูรายละเอียด
+                  </button>
+                </div>
               </div>
             ))}
 
             {/* กรณีไม่มีรายการ */}
             {reservations.length === 0 && (
-              <div className="text-sm text-gray-500 p-4 border rounded bg-white">
+              <div className="text-sm text-gray-500 text-center p-5 border rounded bg-gray-50">
                 ไม่พบรายการในสถานะ “{activeTab}”
               </div>
             )}
           </div>
         </div>
-      </div>
+      </main>
+
       <Footer />
     </div>
   );

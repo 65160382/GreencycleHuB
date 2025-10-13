@@ -23,7 +23,7 @@ const Statusdetail = () => {
     pending: "1",
     picking_up: "2",
     collected: "3",
-    completed: "5",
+    complete: "5",
   };
 
   useEffect(() => {

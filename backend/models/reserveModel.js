@@ -3,6 +3,7 @@ const pool = require("../config/database");
 class Reserve {
   // เพิ่มข้อมูลลง table reserve
   static async insertReserve(
+    con,
     resCode,
     bookingDate,
     timeslot,
@@ -14,7 +15,7 @@ class Reserve {
     try {
       const sql = `INSERT INTO reserve(res_status, res_code, res_booking_date, res_time_slot, res_amount, res_weight, res_create_at, res_update_at, cus_id, add_id) 
       VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?)`;
-      const [result] = await pool.query(sql, [
+      const [result] = await con.query(sql, [
         "confirmed",
         resCode,
         bookingDate,

@@ -1,10 +1,10 @@
 const pool = require("../config/database");
 
 class ReserveDetail {
-  static async insertReserveDetail(values) {
+  static async insertReserveDetail(con,values) {
     try {
       const sql = `INSERT INTO reserve_detail (res_id, waste_collect_id) VALUES ?`;
-      const result = await pool.query(sql, [values]);
+      const [result] = await con.query(sql, [values]);
       return result;
     } catch (error) {
       console.error("Error query ReserveDetail Table!");
@@ -30,6 +30,20 @@ class ReserveDetail {
       return result;
     } catch (error) {
       console.error("Error query ReserveDetail Table!", error);
+      throw error;
+    }
+  }
+
+  // ดึง waste_collect_id จาก resId
+  static async getWastecollectId(con,resid){
+    try {
+      const [wasteRows] = await con.query(
+      `SELECT waste_collect_id FROM reserve_detail WHERE res_id = ?`,
+      [resid]
+    );
+    return wasteRows;
+    } catch (error) {
+      console.error("Error query ReserveDetail Table!",error);
       throw error;
     }
   }

@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
           const data = await response.json();
           setIsLoggedIn(true);
           setUser(data.user);
-          console.log("เข้าสู่ระบบแล้ว");
+          // console.log("เข้าสู่ระบบแล้ว",data.user);
         } else if (response.status === 401 || response.status === 403) {
           // ถ้า token หมดอายุ ลอง refresh
           console.log("Token หมดอายุ, กำลังเรียก api สำหรับต่ออายุ token");

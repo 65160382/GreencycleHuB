@@ -1,236 +1,227 @@
-import { IoCloseCircle } from "react-icons/io5";
+import { useEffect, useState } from "react";
 import { Volume2, Camera, X } from "lucide-react";
+import Modal from "../Core-UI/Modal";
 import Uploadfile from "./Uploadfile";
 import { Uploadphoto } from "./Uploadphoto";
 import Submitdata from "./Submitdata";
-import { useEffect, useState } from "react";
-
-import { motion, AnimatePresence } from "framer-motion";
-
-// กำหนด animation สำหรับ backdrop (พื้นหลังคลุมหน้าจอ)
-const backdropVariants = {
-  hidden: { opacity: 0 }, // เริ่มต้นโปร่งใส
-  visible: { opacity: 0.5 }, // แสดงพื้นหลังสีดำโปร่ง 50%
-  exit: { opacity: 0 }, // ปิดโดยลดความทึบ
-};
-
-// กำหนด animation สำหรับ modal panel (กล่อง modal)
-const modalVariants = {
-  hidden: { opacity: 0, scale: 0.95, y: -20 }, // เริ่มต้นเล็กและเลื่อนขึ้นเล็กน้อย
-  visible: { opacity: 1, scale: 1, y: 0 }, // แสดงเต็มขนาดและตำแหน่งปกติ
-  exit: { opacity: 0, scale: 0.95, y: -20 }, // ปิดโดยลดขนาดและเลื่อนขึ้น
-};
+// import { IoCloseCircle } from "react-icons/io5";
 
 const Imagemodal = ({ isOpen, onClose }) => {
   const [image, setImage] = useState(null);
   const [wasteType, setWasteType] = useState("");
   const [weight, setWeight] = useState("");
-  // สร้าง state สำหรับเก็บผลลัพธ์การวิเคราะห์ประเภทขยะ
   const [predictResult, setPredictResult] = useState(null);
+  const [progressStep, setProgressStep] = useState(30); // เริ่มต้น 30% ตอนอัปโหลด
 
-  // เคลียร์ข้อมูลทุกครั้งเมื่อ modal ปิด
+  // เคลียร์ข้อมูลเมื่อ modal ปิด
   useEffect(() => {
     if (!isOpen) {
-      deleteFileSelect(); // เคลียร์รูปภาพที่เลือก
-      setWasteType(""); // ล้างประเภทขยะ
-      setPredictResult(null); // รีเซ็ตผลลัพธ์การวิเคราะห์
-      setWeight(""); // รีเซ็ตค่าน้ำหนัก
+      setImage(null);
+      setWasteType("");
+      setPredictResult(null);
+      setWeight("");
+      setProgressStep(30);
     }
   }, [isOpen]);
 
-  // ฟังก์ชันสำหรับจัดการไฟล์ที่เลือกมา
   const handleFileSelect = (file) => {
     if (file) {
       setImage({
         file,
-        previewUrl: URL.createObjectURL(file), // สร้าง object url สำหรับแสดง preview รูปภาพ
+        previewUrl: URL.createObjectURL(file),
       });
     }
   };
 
-  // ฟังก์ชันลบไฟล์ที่เลือกออก
-  const deleteFileSelect = async () => {
+  const deleteFileSelect = () => {
     setImage(null);
     setWeight("");
-    setPredictResult(null); // ล้างผลลัพธ์การวิเคราะห์เมื่อมีการลบรูป
-    // console.log("ลบภาพที่เลือกแล้ว!");
+    setPredictResult(null);
+  };
+
+  //progressbar
+  // เมื่อวิเคราะห์เสร็จให้ขยับ progress ไป 70%
+  useEffect(() => {
+    if (predictResult) {
+      setProgressStep(70);
+    }
+  }, [predictResult]);
+
+  // เมื่อบันทึกสำเร็จให้ progress เต็มและปิด modal
+  const handleSuccess = () => {
+    setProgressStep(100);
+    setTimeout(() => {
+      onClose();
+    }, 500);
   };
 
   return (
-    // AnimatePresence ช่วยจัดการการ mount/unmount ของ modal พร้อม animation
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          {/* Backdrop พื้นหลังสีดำโปร่งคลุมหน้าจอ */}
-          <motion.div
-            className="fixed inset-0 z-50 bg-black"
-            variants={backdropVariants} // กำหนด animation จาก variants
-            initial="hidden" // เริ่มด้วยสถานะ hidden
-            animate="visible" // เมื่อแสดงสถานะ visible
-            exit="exit" // ตอนปิดให้ใช้สถานะ exit
-            onClick={onClose} // คลิกที่พื้นหลังปิด modal
-            style={{ backgroundColor: "rgba(0,0,0,0.5)" }} // สีดำโปร่ง 50%
-          />
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="สแกนรูปภาพขยะรีไซเคิล"
+      widthClass="max-w-4xl"
+    >
+      <div className="p-2.5 space-y-4 max-h-[80vh] overflow-y-auto">
+        {/* Progress bar */}
+        <div className="space-y-2">
+          <div className="overflow-hidden rounded-full bg-gray-200">
+            <div
+              className="h-2 rounded-full bg-green-500 transition-all duration-500"
+              style={{ width: `${progressStep}%` }}
+            ></div>
+          </div>
+          <div className="flex justify-between text-xs text-gray-600 font-medium">
+            <span>อัปโหลดรูปภาพ</span>
+            <span>ตรวจสอบข้อมูล</span>
+            <span>เสร็จสิ้น</span>
+          </div>
+        </div>
 
-          {/* Modal panel กล่องเนื้อหาหลัก */}
-          <motion.div
-            className="fixed inset-0 z-50 flex justify-center items-start p-4 pt-16 overflow-y-auto"
-            variants={modalVariants} // กำหนด animation สำหรับ modal panel
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            onClick={(e) => e.stopPropagation()} // ป้องกันคลิกข้างใน modal ปิด modal โดยไม่ตั้งใจ
+        {/* ส่วนคำแนะนำ */}
+        <div className="flex flex-row gap-2.5 border p-3 rounded-xl border-[#FFEAA7] bg-[#FFF3CD] shadow-sm">
+          <Volume2 className="w-5 text-[#856404]" />
+          <p className="text-[#856404] text-sm">
+            <strong>คำแนะนำ:</strong> ถ่ายรูปขยะ 1
+            ชิ้นเพื่อให้ระบบวิเคราะห์ประเภท
+            จากนั้นกรอกน้ำหนักรวมของขยะทั้งหมดเพื่อยืนยันจำนวน
+          </p>
+        </div>
+
+        {/* ส่วนอัปโหลดรูป */}
+        <div className="mt-3 font-medium">
+          <h1 className="mb-2.5">
+            อัปโหลดรูปขยะ 1 ชิ้น (สำหรับวิเคราะห์ประเภทของขยะ)
+          </h1>
+          <label
+            htmlFor="File"
+            className="flex flex-col items-center rounded border border-gray-300 p-4 text-gray-900 shadow-sm sm:p-6 cursor-pointer hover:border-[#B9FF66]"
           >
-            <div className="w-full max-w-4xl rounded-lg bg-white p-6 shadow-lg max-h-[90vh] overflow-y-auto">
-              {/* หัว modal */}
-              <div className="flex items-start justify-between">
-                <h1 className="text-xl font-bold text-gray-900 sm:text-2xl text-center">
-                  สแกนรูปภาพขยะรีไซเคิล
-                </h1>
-                {/* ปุ่มปิด modal */}
-                <IoCloseCircle
-                  className="w-9 h-9 cursor-pointer text-gray-500 hover:text-red-500 transform hover:scale-110 transition-transform duration-200"
-                  onClick={onClose}
+            <Camera className="w-7 h-7" />
+            <span className="mt-2 text-base">ลากรูปภาพมาวางที่นี่ หรือ</span>
+
+            <span className="mt-2 inline-block rounded-2xl border bg-[#f3f3f3] px-3 py-1.5 text-center text-xs font-medium text-gray-700 shadow-sm hover:bg-[#D2FF95] hover:border-[#B9FF66]">
+              เลือกไฟล์
+            </span>
+            <Uploadfile onFileSelect={handleFileSelect} />
+          </label>
+        </div>
+
+        {/* หมายเหตุ */}
+        <div className="">
+          <p className="text-sm text-gray-700 mt-2">
+            <strong>หมายเหตุ:</strong> หมวดหมู่ขยะที่สามารถตรวจจับได้ ได้แก่
+            PET, HDPE, กระป๋องอะลูมิเนียม, กล่องกระดาษ, ขวดแก้ว
+          </p>
+
+          {/* preview รูปภาพ */}
+          <div className="relative flex justify-center items-center mt-3">
+            {image && (
+              <div className="relative">
+                <img
+                  src={image.previewUrl}
+                  alt="preview"
+                  className="w-64 h-auto object-contain rounded shadow"
                 />
-              </div>
-
-              {/* ส่วน progress bar */}
-              <div className="p-2.5">
-                <div className="mt-4 overflow-hidden rounded-full bg-gray-200">
-                  <div className="h-2 w-1/3 rounded-full bg-[#349A2D]"></div>
-                </div>
-                <div className="flex flex-row text-center items-center justify-center gap-2.5 p-5">
-                  <p className="px-2.5 py-2 rounded-2xl bg-[#E9FFC7] text-[#349A2D]">
-                    อัปโหลดรูปภาพ
-                  </p>
-                  <p className="px-2.5 py-2 rounded-2xl bg-[#F3F3F3] text-[#353637]">
-                    ตรวจสอบข้อมูล
-                  </p>
-                  <p className="px-2.5 py-2 rounded-2xl bg-[#F3F3F3] text-[#353637]">
-                    เสร็จสิ้น
-                  </p>
-                </div>
-              </div>
-
-              {/* ส่วนคำแนะนำ */}
-              <div className="flex flex-row gap-2.5  border p-2.5 rounded-xl border-[#FFEAA7] bg-[#FFF3CD] shadow-md">
-                <Volume2 className="w-5 text-[#856404]" />
-                <p className="text-[#856404] text-base">
-                  <strong>คำแนะนำ : </strong>กรุณาถ่ายรูปขยะ 1 ชิ้น
-                  เพื่อให้ระบบวิเคราะห์ประเภท
-                  จากนั้นกรอกจำนวนขยะที่มีทั้งหมดเพื่อยืนยันจำนวน{" "}
-                </p>
-              </div>
-
-              {/* ส่วนเพิ่มรูปภาพ */}
-              <div className="mt-5 mb-2 font-medium">
-                <h1 className="mb-2.5">
-                  อัปโหลดรูปขยะ 1 ชิ้น (สำหรับวิเคราะห์ประเภทของขยะ)
-                </h1>
-                <label
-                  htmlFor="File"
-                  className="flex flex-col items-center rounded border border-gray-300 p-4 text-gray-900 shadow-sm sm:p-6 cursor-pointer"
+                <button
+                  type="button"
+                  onClick={deleteFileSelect}
+                  className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-[3px] hover:bg-red-700"
                 >
-                  <Camera className="w-7 h-7" />
-                  <span className="mt-2 text-base">ลากรูปภาพมาวางที่นี่ หรือ</span>
-
-                  {/* ปุ่มเลือกไฟล์ */}
-                  <span className="mt-2 inline-block rounded-2xl border bg-[#f3f3f3] px-3 py-1.5 text-center text-xs font-medium text-gray-700 shadow-sm hover:bg-[#D2FF95] hover:border-[#B9FF66]">
-                    เลือกไฟล์
-                  </span>
-                  <Uploadfile onFileSelect={handleFileSelect} />
-                </label>
+                  <X size={16} />
+                </button>
               </div>
+            )}
+          </div>
+        </div>
 
-              {/* หมายเหตุใต้รูป */}
-              <div className="">
-                <p className="text-base">
-                  <strong>หมายเหตุ : </strong> หมวดหมู่ของขยะที่สามารถตรวจจับได้
-                  ได้แก่ Plastic PET, Plastic HDPE, Can aluminuim, Card Box, Bottle
-                  glass
-                </p>
+        {/* ปุ่มอัปโหลดไปวิเคราะห์ */}
+        {!predictResult && (
+          <div className="flex justify-center mt-4">
+            <Uploadphoto image={image} setPredictResult={setPredictResult} />
+          </div>
+        )}
 
-                {/* preview แสดงรูปภาพที่อัปโหลด */}
-                <div
-                  id="preview"
-                  className="relative flex justify-center items-center w-auto pt-2.5 pb-2.5"
+        {/* ผลลัพธ์การวิเคราะห์ */}
+        {predictResult && (
+          <>
+            {/* แสดงผลลัพธ์การวิเคราะห์ */}
+            <section className="mt-6 bg-gradient-to-r from-green-50 to-green-100 border border-green-400 rounded-2xl shadow-sm p-5 flex flex-col items-center text-center">
+              <div className="flex items-center justify-center w-14 h-14 bg-green-500 rounded-full shadow-md mb-3">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  stroke="white"
+                  className="w-8 h-8"
                 >
-                  {image && (
-                    <div className="relative">
-                      <img
-                        src={image.previewUrl}
-                        alt="preview"
-                        className="w-64 h-auto object-contain rounded shadow"
-                      />
-                      <button
-                        type="button"
-                        onClick={deleteFileSelect}
-                        className="absolute top-1 right-1 bg-red-600 text-white rounded-full  hover:bg-red-700"
-                      >
-                        <X className="p-[1px]" />
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* ปุ่มอัปโหลดไฟล์ */}
-              {!predictResult && (
-                <div className="flex justify-center">
-                  <Uploadphoto image={image} setPredictResult={setPredictResult} />
-                </div>
-              )}
-
-              {/* แสดงผลลัพธ์การวิเคราะห์ประเภทขยะ */}
-              {predictResult && (
-                <>
-                  <div className="border-2 border-[#349A2D] bg-[#F6FFE5] justify-center flex flex-col p-2.5 mt-4 mb-4 rounded-2xl max-w-md mx-auto">
-                    <h1 className="text-[#349A2D] font-semibold ml-2.5">
-                      ตรวจพบขยะประเภท : {predictResult.label}
-                    </h1>
-                    <p className="text-base ml-2.5">
-                      ความน่าจะเป็น : {predictResult.probabilities}%
-                    </p>
-                  </div>
-
-                  {/* ส่วนคำแนะนำ */}
-                  <div className="flex flex-row gap-2.5 border p-2.5 mt-4  rounded-xl border-[#FFEAA7] bg-[#FFF3CD] shadow-md">
-                    <Volume2 className="w-5 text-[#856404]" />
-                    <p className="text-[#856404] text-base">
-                      <strong>คำแนะนำ : </strong>
-                      ผู้ใช้กรุณาชัั่งน้ำหนักและกรอกน้ำหนักโดยรวมของขยะรีไซเคิลชนิดนี้
-                    </p>
-                  </div>
-
-                  {/* ส่วนกรอกน้ำหนักขยะ */}
-                  <div className="flex flex-row gap-2.5 mt-2.5 mb-2.5 items-center p-2 font-medium">
-                    <p className="">จำนวนน้ำหนักของขยะรวมทั้งหมดที่ผู้ใช้มี</p>
-                    <input
-                      type="number"
-                      step="0.1" // ทศนิยม 1 ตำแหน่ง
-                      min="0" // ไม่ให้กรอกค่าติดลบ
-                      className="border border-[#D4D7E3] bg-[#F7FBFF] text-[#353637] rounded-xl px-2.5 py-2 w-[210px]"
-                      placeholder="กรอกน้ำหนักขยะของคุณ"
-                      value={weight}
-                      onChange={(e) => setWeight(e.target.value)} // อัปเดตค่าเมื่อมีการเปลี่ยนแปลง
-                    ></input>
-                    <p className="">กิโลกรัม</p>
-                  </div>
-
-                  {/* ปุ่มสำหรับบันทึกข้อมูลขยะที่ผู้ใช้กรอกน้ำหนักแล้ว */}
-                  <Submitdata
-                    image={image}
-                    weight={weight}
-                    wasteType={predictResult.label}
-                    onSuccess={onClose}
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M5 13l4 4L19 7"
                   />
-                </>
-              )}
+                </svg>
+              </div>
+
+              <h2 className="text-xl font-bold text-green-800 mb-1">
+                ผลลัพธ์การวิเคราะห์
+              </h2>
+              <p className="text-xl font-extrabold text-green-700 tracking-wide">
+                {predictResult.label}
+              </p>
+
+              <div className="mt-3 flex items-center gap-2 bg-white/70 px-4 py-2 rounded-full border border-green-300 shadow-inner">
+                <p className="text-sm text-gray-700 font-medium">
+                  ความน่าจะเป็นการตรวจจับ:
+                </p>
+                <span className="text-base font-semibold text-green-700">
+                  {predictResult.probabilities}%
+                </span>
+              </div>
+            </section>
+
+            <div className="flex flex-row gap-2.5 border p-3 mt-4 rounded-xl border-[#FFEAA7] bg-[#FFF3CD] shadow-sm">
+              <Volume2 className="w-5 text-[#856404]" />
+              <p className="text-[#856404] text-sm">
+                <strong>คำแนะนำ:</strong>{" "}
+                กรุณาชั่งน้ำหนักและกรอกน้ำหนักรวมของขยะรีไซเคิลชนิดนี้
+              </p>
             </div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+
+            {/* ฟอร์มกรอกน้ำหนัก */}
+            <div className="flex flex-col sm:flex-row gap-2 mt-3 mb-2 items-start sm:items-center font-medium">
+              {/* The label/text for total weight */}
+              <p className="flex shrink-0">จำนวนน้ำหนักขยะรวมทั้งหมดที่คุณมี</p>
+
+              {/* The input field and the unit 'kg' group */}
+              <div className="flex flex-row gap-2 items-center w-full sm:w-auto">
+                <input
+                  type="number"
+                  step="0.1"
+                  min="0"
+                  className="border border-[#D4D7E3] bg-[#F7FBFF] text-[#353637] rounded-xl px-2.5 py-2 w-full sm:w-[200px]"
+                  placeholder="กรอกน้ำหนัก"
+                  value={weight}
+                  onChange={(e) => setWeight(e.target.value)}
+                />
+                <p className="flex shrink-0">กิโลกรัม</p>
+              </div>
+            </div>
+
+            {/* ปุ่มบันทึก */}
+            <div className="flex justify-center mt-4">
+              <Submitdata
+                image={image}
+                weight={weight}
+                wasteType={predictResult.label}
+                onSuccess={handleSuccess}
+              />
+            </div>
+          </>
+        )}
+      </div>
+    </Modal>
   );
 };
 

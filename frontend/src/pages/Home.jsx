@@ -55,7 +55,7 @@ export default function Home() {
   return (
     <div>
       <Header />
-      <Imagenav />
+      <Imagenav wasteCollections={wasteCollections} />
 
       <div className="p-6">
         <WasteDashboard wasteCollections={wasteCollections} />

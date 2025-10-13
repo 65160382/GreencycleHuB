@@ -1,11 +1,15 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { ReserveContext } from "../../context/ReserveContext";
+// import { ReserveContext } from "../../context/ReserveContext";
 
 const PersonalComponent = () => {
   const { user } = useContext(AuthContext);
   // const { personInfo, setPersonInfo} = useContext(ReserveContext);
 
+  useEffect(()=>{
+    console.log("debug user:",user)
+  },[user])
+  
   return (
     <>
       {/* กล่องข้อมูลลูกค้าแบบ responsive พร้อมจัดระยะห่างให้เหมาะสม */}

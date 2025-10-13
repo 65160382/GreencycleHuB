@@ -56,17 +56,17 @@ const Sidebar = ({ isOpen, onClose }) => {
           <Link to="/home" className="text-gray-700 hover:text-green-600 transittion-all duration-300 hover:translate-x-2">
             หน้าแรก
           </Link>
-          <Link to="#" className="text-gray-700 hover:text-green-600 transittion-all duration-300 hover:translate-x-2">
+          {/* <Link to="#" className="text-gray-700 hover:text-green-600 transittion-all duration-300 hover:translate-x-2">
             สแกนขยะ
-          </Link>
+          </Link> */}
           <Link to="/reserve" className="text-gray-700 hover:text-green-600 transittion-all duration-300 hover:translate-x-2">
             จองคิวรับซื้อขยะ
           </Link>
           <Link to="/status" className="text-gray-700 hover:text-green-600 transittion-all duration-300 hover:translate-x-2">
             รายการจองของฉัน
           </Link>
-          <Link to="#" className="text-gray-700 hover:text-green-600 transittion-all duration-300 hover:translate-x-2">ประวัติการสแกนขยะ</Link>
-          <Link to="#" className="text-gray-700 hover:text-green-600 transittion-all duration-300 hover:translate-x-2">โปรไฟล์</Link>
+          {/* <Link to="#" className="text-gray-700 hover:text-green-600 transittion-all duration-300 hover:translate-x-2">ประวัติการสแกนขยะ</Link> */}
+          {/* <Link to="#" className="text-gray-700 hover:text-green-600 transittion-all duration-300 hover:translate-x-2">โปรไฟล์</Link> */}
           <Link to="/logout" onClick={handlelogout} className="text-gray-700 hover:text-green-600 transittion-all duration-300 hover:translate-x-2">ออกจากระบบ</Link>
 
         </nav>
