@@ -12,10 +12,10 @@ const navItems = {
     // { icon: <UserRound size={18} />, name: "Customer", path: "#" },
   ],
   driver: [
-    { icon: <Home size={18} />, name: "Home", path: "/driver" },
+    // { icon: <Home size={18} />, name: "Home", path: "/driver" },
     { icon: <ListTodo size={18}/>, name: "My Tasks", path: "/driver/tasks" },
     { icon: <History size={18}/>, name: "History", path: "/driver/history" },
-    { icon: <FileText size={18}/>, name: "Report", path: "/driver/report" },
+    // { icon: <FileText size={18}/>, name: "Report", path: "/driver/report" },
   ],
 };
 

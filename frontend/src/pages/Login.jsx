@@ -34,7 +34,7 @@ const Login = () => {
         if (data.payload.role == "admin") {
           navigate("/admin");
         } else if(data.payload.role == "driver"){
-          navigate("/driver");
+          navigate("/driver/tasks");
         } else {
           navigate("/home");
         }

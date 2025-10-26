@@ -4,11 +4,10 @@ import Modal from "../Core-UI/Modal";
 import Uploadfile from "./Uploadfile";
 import { Uploadphoto } from "./Uploadphoto";
 import Submitdata from "./Submitdata";
-// import { IoCloseCircle } from "react-icons/io5";
 
 const Imagemodal = ({ isOpen, onClose }) => {
   const [image, setImage] = useState(null);
-  const [wasteType, setWasteType] = useState("");
+  // const [wasteType, setWasteType] = useState("");
   const [weight, setWeight] = useState("");
   const [predictResult, setPredictResult] = useState(null);
   const [progressStep, setProgressStep] = useState(30); // เริ่มต้น 30% ตอนอัปโหลด
@@ -17,7 +16,7 @@ const Imagemodal = ({ isOpen, onClose }) => {
   useEffect(() => {
     if (!isOpen) {
       setImage(null);
-      setWasteType("");
+      // setWasteType("");
       setPredictResult(null);
       setWeight("");
       setProgressStep(30);
@@ -27,8 +26,8 @@ const Imagemodal = ({ isOpen, onClose }) => {
   const handleFileSelect = (file) => {
     if (file) {
       setImage({
-        file,
-        previewUrl: URL.createObjectURL(file),
+        file, //ตัวไฟล์จริงที่ผู้ใช้เลือก
+        previewUrl: URL.createObjectURL(file), //สร้าง “ลิงก์ชั่วคราว” สำหรับไฟล์ที่อยู่ในเครื่อง
       });
     }
   };
@@ -37,6 +36,7 @@ const Imagemodal = ({ isOpen, onClose }) => {
     setImage(null);
     setWeight("");
     setPredictResult(null);
+    setProgressStep(30);
   };
 
   //progressbar
@@ -199,7 +199,7 @@ const Imagemodal = ({ isOpen, onClose }) => {
                 <input
                   type="number"
                   step="0.1"
-                  min="0"
+                  min="0" //ป้องกันไม่ให้กรอกต่ำกว่า 0
                   className="border border-[#D4D7E3] bg-[#F7FBFF] text-[#353637] rounded-xl px-2.5 py-2 w-full sm:w-[200px]"
                   placeholder="กรอกน้ำหนัก"
                   value={weight}

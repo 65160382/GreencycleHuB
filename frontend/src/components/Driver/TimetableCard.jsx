@@ -9,8 +9,10 @@ const TimetableCard = ({ round, onSelectPoint, selectedPoint, onStart }) => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">รอบเก็บขยะ {round.time_slot}</h2>
-        <span className="px-3 py-1 bg-yellow-500 text-white text-sm rounded-full">
-          Pending
+        {/* <span className=`px-3 py-1 bg-yellow-500 text-white text-sm rounded-full`> */}
+        <span className={`px-3 py-1 ${round.time_status === "pending" ? "bg-yellow-500" : "bg-orange-400"} text-white text-sm rounded-full`}>
+          {/* Pending */}
+          {round.time_status}
         </span>
       </div>
 

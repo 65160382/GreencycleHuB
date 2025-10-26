@@ -1,5 +1,4 @@
 const axios = require("axios");
-// const { normalizeLocation } = require("../utils/nostramapUtils");
 require("dotenv").config();
 
 // version nostramap api
@@ -128,14 +127,17 @@ exports.getOptimizedOrder = async (req, res) => {
       return res.status(400).json({ message: "resId is required" });
     }
 
+
     const depotLat = parseFloat(process.env.DEPOT_LAT);
     const depotLon = parseFloat(process.env.DEPOT_LON);
 
+    //แปลงรายการจองเป็น parameter jobs เพื่อเรียกใช้ service optimizedOrder
     const jobs = resId.map((r) => ({
       id: Number(r.id),
       location: [parseFloat(r.lon), parseFloat(r.lat)], // [lon, lat]
     }));
 
+    // กำหนดยานพาหนะ
     const vehicles = [
       {
         id: 1,
@@ -145,7 +147,8 @@ exports.getOptimizedOrder = async (req, res) => {
       },
     ];
 
-    const orsUrl = "https://api.openrouteservice.org/optimization"; 
+    // const orsUrl = "https://api.openrouteservice.org/optimization"; 
+    const orsUrl = process.env.ORS_OPTIMIZATION_URL; 
     const response = await axios.post(
       orsUrl,
       { jobs, vehicles },
@@ -158,54 +161,53 @@ exports.getOptimizedOrder = async (req, res) => {
       }
     );
 
-    const steps = response.data?.routes?.[0]?.steps || [];
+    const steps = response.data?.routes?.[0]?.steps || []; //หยิบลำดับจาก routes[0].steps
     const ordered = steps
-      .filter((s) => typeof s.job === "number")
-      .map((s, i) => ({
+      .filter((s) => typeof s.job === "number") //กรองออกเฉพาะ step ที่เป็น “จุดลูกค้า (job)” เท่านั้น
+      //ตัด step ที่เป็น "start" หรือ "end" ทิ้ง เพราะไม่ใช่งานจริง
+      .map((s, i) => ({ //แปลงแต่ละ step ให้เป็น object
         res_id: s.job,
         facilityRank: i + 1,
-        totalLength: null,
-        totalTime: null,
+        // totalLength: null,
+        // totalTime: null,
       }));
 
-    return res.status(200).json({
-      message: "คำนวณลำดับเส้นทางแบบ Optimization สำเร็จ",
-      data: ordered,
-    });
+    return res.status(200).json({ message: "คำนวณลำดับเส้นทางแบบ Optimization สำเร็จ",data: ordered});
   } catch (err) {
-    console.error(
-      "ORS Optimization error:",
-      err?.response?.data || err.message || err
-    );
-    return res
-      .status(500)
-      .json({ message: "ไม่สามารถคำนวณลำดับเส้นทางแบบ optimization ได้" });
+    console.error("ORS Optimization error:",err?.response?.data || err.message || err);
+    return res.status(500).json({ message: "ไม่สามารถคำนวณลำดับเส้นทางแบบ optimization ได้" });
   }
 };
 
-// ORS Directions: วาดเส้นทาง polyline จากจุดเริ่ม -> จุดปลาย (รองรับหลายจุดถ้าจะขยายต่อ)
+// ORS Directions: วาดเส้นทาง polyline จากจุดเริ่ม -> จุดปลาย 
 exports.getRoute = async (req, res) => {
   try {
-    const { waypoints, from, to } = req.body;
+    // const { waypoints, from, to } = req.body;
+    const { waypoints } = req.body;
     // console.log("check reqbody:",waypoints," from:",from," to:",to)
 
-    // --- 1) เตรียมพิกัด [lon, lat] ---
+    // เตรียมพิกัด [lon, lat] 
     let coords = [];
+    // if (Array.isArray(waypoints) && waypoints.length >= 2) {
+    //   coords = waypoints.map((p) => [parseFloat(p.lon), parseFloat(p.lat)]);
+    // } else if (from && to) {
+    //   coords = [
+    //     [parseFloat(from.lon), parseFloat(from.lat)],
+    //     [parseFloat(to.lon), parseFloat(to.lat)],
+    //   ];
+    // } else {
+    //   return res.status(400).json({ message: "ต้องส่ง waypoints >= 2 จุด หรือ from/to" });
+    // }
+    //แปลงค่าที่รับมาจาก React ให้กลายเป็นลิสต์ coords ที่ ORS เข้าใจ
     if (Array.isArray(waypoints) && waypoints.length >= 2) {
       coords = waypoints.map((p) => [parseFloat(p.lon), parseFloat(p.lat)]);
-    } else if (from && to) {
-      coords = [
-        [parseFloat(from.lon), parseFloat(from.lat)],
-        [parseFloat(to.lon), parseFloat(to.lat)],
-      ];
     } else {
-      return res.status(400).json({ message: "ต้องส่ง waypoints >= 2 จุด หรือ from/to" });
+      return res.status(400).json({ message: "ต้องส่ง waypoints เพื่อคำนวณเส้นทาง" });
     }
 
-    // --- 2) เรียก ORS Directions (GeoJSON) ---
-    // profile = driving-car, รูปแบบผลลัพธ์ = GeoJSON (อ่านง่าย)
-    const url = "https://api.openrouteservice.org/v2/directions/driving-car/geojson";
-    const axios = require("axios");
+    // เรียก ORS Directions (GeoJSON) 
+    // const url = "https://api.openrouteservice.org/v2/directions/driving-car/geojson";
+    const url = process.env.ORS_DIRECTIONS_URL;
 
     const orsRes = await axios.post(
       url,
@@ -223,7 +225,7 @@ exports.getRoute = async (req, res) => {
       }
     );
 
-    // --- 3) แปลงผลลัพธ์เป็น polyline สำหรับ Leaflet ---
+    //แปลงผลลัพธ์เป็น polyline สำหรับ Leaflet 
     const feature = orsRes.data?.features?.[0];
     if (!feature) {
       return res.status(500).json({ message: "ไม่มีเส้นทางจาก ORS" });
@@ -237,7 +239,7 @@ exports.getRoute = async (req, res) => {
     return res.status(200).json({
       message: "คำนวณเส้นทางสำเร็จ!",
       route: {
-        polyline, // [[lat,lon], ...]
+        polyline, // [[lat,lon], ...] 
         distance: summary.distance ?? null,  // เมตร
         duration: summary.duration ?? null,  // วินาที
       },

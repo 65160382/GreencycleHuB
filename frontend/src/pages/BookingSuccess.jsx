@@ -28,7 +28,7 @@ const BookingSuccess = () => {
 
       if(response.ok){
         const data = await response.json();
-        // console.log("Booking Data: ",data.result);
+        console.log("Booking Data: ",data.result);
         setReserve(data.result.reserveResult);
         setDetails(data.result.reserveDetailResult);
       }
@@ -98,7 +98,8 @@ const BookingSuccess = () => {
 
               <span className="font-semibold text-neutral-800">ชื่อ</span>
               <span className="text-right text-neutral-700 break-words">
-                {reserve.cus_fname} {reserve.cus_lname}
+                {/* {reserve.cus_fname} {reserve.cus_lname} */}
+                {reserve.customername}
               </span>
 
               <span className="font-semibold text-neutral-800">

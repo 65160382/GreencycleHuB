@@ -22,7 +22,7 @@ const Submitdata = ({ image, weight, wasteType, onSuccess }) => {
       if (response.ok) {
         const result = await response.json();
         console.log("อัพโหลดรูปภาพไป cloudinary สำเร็จ!");
-        submitWasteCollection(result);
+        submitWasteCollection(result); //เรียกใช้ api ที่บันทึกข้อมูลงฐานข้อมูล
       } else {
         setIsLoading(false);
         toast.error("อัพโหลดรูปภาพไม่สำเร็จ");

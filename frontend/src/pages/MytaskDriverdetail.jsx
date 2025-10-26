@@ -5,14 +5,14 @@ import { useParams, useNavigate } from "react-router-dom";
 import Modal from "../components/Core-UI/Modal";
 import DestinationInfo from "../components/Driver/DestinationInfo";
 import ConfirmWasteModal from "../components/Driver/ConfirmWasteModal";
-// --- เพิ่ม imports ใหม่ ---
+// --- เพิ่ม imports ใหม่เกี่ยวเก็บแผนที่ ---
 import {
-  MapContainer,
-  TileLayer,
-  Marker,
+  MapContainer, //คอนเทนเนอร์หลักของแผนที่ 
+  TileLayer, //พื้นหลังแผนที่ (OSM)
+  Marker, // หมุดตำแหน่ง
   Polyline,
-  Popup,
-  useMap,
+  Popup, // กล่องข้อความเมื่อคลิก
+  useMap, //hook เพื่อเข้าถึงอ็อบเจ็กต์ map
 } from "react-leaflet";
 
 import "leaflet/dist/leaflet.css";
@@ -27,18 +27,19 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
-// ช่วย fit กล้องให้เห็น polyline พอดี
+// ช่วย fit กล้องให้เห็น polyline พอดี /useMap() ดึงอ็อบเจ็กต์แผนที่ แล้วเรียก fitBounds(bounds)
 function FitBoundsOnRoute({ polyline }) {
   const map = useMap();
   useEffect(() => {
     if (polyline && polyline.length > 1) {
-      const bounds = L.latLngBounds(polyline);
-      map.fitBounds(bounds, { padding: [20, 20] });
+      const bounds = L.latLngBounds(polyline); // รับ [ [lat,lon], [lat,lon], ... ]
+      map.fitBounds(bounds, { padding: [20, 20] }); // ขยับกล้องครอบคลุมเส้นทาง พร้อม padding
     }
   }, [polyline, map]);
   return null;
 }
 
+// ไอคอนต้นทาง
 const depotIcon = new L.Icon({
   iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
@@ -46,6 +47,7 @@ const depotIcon = new L.Icon({
   iconAnchor: [12, 41],
 });
 
+// ไอคอนปลายทาง
 const destinationIcon = new L.Icon({
   iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png",
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
@@ -65,15 +67,10 @@ const MytaskDriverdetail = () => {
   const [currentIndex, setIscurrentIndex] = useState(0); //ตำแหน่งบ้านปัจจุบันเพื่อเอาไปเทียบกับ items
   const currentItem = items?.[currentIndex]; //เก็บข้อมูลรายละเอียดการจองตาม currentindex
   const navigate = useNavigate();
-  // test openrouteservice
-  const [polyline, setPolyline] = useState([]);
+  const [polyline, setPolyline] = useState([]); //เก็บเส้นทางที่จะวาดลงแผนที่
 
-  // const [routeSummary, setRouteSummary] = useState({
-  //   distance: null,
-  //   duration: null,
-  // });
 
-  // ค่าพิกัดบริษัท (อ่านจาก .env ถ้ามี, ถ้าไม่มีก็ fallback)
+  // ค่าพิกัดบริษัท (อ่านจาก .env ถ้าไม่มีก็ fallback)
   const depotLat = Number(import.meta.env.VITE_DEPOT_LAT || 13.288378);
   const depotLon = Number(import.meta.env.VITE_DEPOT_LON || 100.924359);
   const [startMarker, setStartMarker] = useState([depotLat, depotLon]);
@@ -100,20 +97,17 @@ const MytaskDriverdetail = () => {
   // สร้างเส้นทางทุกครั้งที่ items พร้อม และ currentItem เปลี่ยน
   useEffect(() => {
     const fetchRoute = async () => {
-      if (!items.length || !currentItem) return;
+      if (!items.length || !currentItem) return; //ถ้ายังไม่มีข้อมูลปลายทางไม่ต้องทำ
 
-      const startLat =
-        currentIndex === 0
-          ? depotLat
-          : Number(items[currentIndex - 1]?.add_lat);
-      const startLon =
-        currentIndex === 0
-          ? depotLon
-          : Number(items[currentIndex - 1]?.add_lon);
+      // หาตำแหน่งต้นทาง กรณีที่เป็นบ้านหลังแรกจะต้องเริ่มจากบริษัท แต่ถ้าไม่ใช่ต้องเป็นบ้านหลังก่อนหน้า
+      const startLat = currentIndex === 0 ? depotLat : Number(items[currentIndex - 1]?.add_lat);
+      const startLon = currentIndex === 0 ? depotLon : Number(items[currentIndex - 1]?.add_lon);
 
+      // ตำแหน่งปลายทาง
       const destLat = Number(currentItem.add_lat);
       const destLon = Number(currentItem.add_lon);
 
+      // สร้างอาเรย์ คู่เส้นทางส่งให้ openrouteservice คำนวณเส้นทางทีละคู่
       const waypoints = [
         { lat: startLat, lon: startLon },
         { lat: destLat, lon: destLon },
@@ -129,7 +123,7 @@ const MytaskDriverdetail = () => {
 
         if (res.ok) {
           const data = await res.json();
-          setPolyline(data.route.polyline || []);
+          setPolyline(data.route.polyline || []); // อัปเดตเส้นทาง polyline
           setStartMarker([startLat, startLon]); // อัปเดต marker จุดเริ่มต้นที่นี่
         } else {
           console.error("เรียกเส้นทางไม่สำเร็จ");
@@ -199,8 +193,8 @@ const MytaskDriverdetail = () => {
               &lt; กลับ
             </button>
             <div className="text-center flex-1">
-              <p className="font-medium">รอบ 9.00-12.00 น.</p>
-              <p className="text-sm text-gray-500">1 / ? จุด</p>
+              <p className="font-medium">รอบ 9.00-12.00 น.</p> //แก้ไขตรงนี้ด้วย
+              <p className="text-sm text-gray-500">1 / ? จุด</p> //แก้ไขตรงนี้ด้วย
             </div>
             {/* <button className="text-sm text-blue-600">เสร็จสิ้น</button> */}
           </div>
@@ -208,18 +202,18 @@ const MytaskDriverdetail = () => {
           {/* กล่องแผนที่ */}
           <div className="relative overflow-hidden w-full h-72 border border-gray-300 rounded-lg mb-6 bg-white shadow-sm">
             <MapContainer
-              center={[depotLat, depotLon]}
+              center={[depotLat, depotLon]} //กำหนดจุดศูนย์กลาง
               zoom={13}
               style={{ height: "100%", width: "100%" }}
             >
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
+              /> // แผนที่ใช้ openstreetmap
 
-              {/* หมุดบริษัท / จุดเริ่มต้น */}
+              {/* จุดเริ่มต้นที่บริษัท */}
               <Marker position={startMarker} icon={depotIcon}>
-                <Popup>ตำแหน่งปัจจุบัน</Popup>
+                <Popup>ตำแหน่งปัจจุบัน</Popup> //คำอธิบาย 
               </Marker>
 
               {/* หมุดปลายทางปัจจุบัน */}
@@ -235,7 +229,7 @@ const MytaskDriverdetail = () => {
                 </Marker>
               )}
 
-              {/* เส้นทาง */}
+              {/* เส้นทาง ปรับมุมมองด้วยฟังก์ชั่น FitBoundsOnRoute */}
               {polyline.length > 1 && (
                 <>
                   <Polyline positions={polyline} weight={5} />
@@ -323,13 +317,13 @@ const MytaskDriverdetail = () => {
 
             {/* ข้อความรายละเอียด */}
             <p className="text-gray-600 mb-4 text-md">
-              คุณได้เก็บขยะครบทุกจุดในรอบนี้เรียบร้อยแล้ว **ยอดเยี่ยมมาก!**
+              คุณได้เก็บขยะครบทุกจุดในรอบนี้เรียบร้อยแล้ว
             </p>
 
             {/* ข้อความแสดงความขอบคุณ (เน้นย้ำ) */}
-            <p className="font-extrabold text-lg text-green-700 mb-6">
+            {/* <p className="font-extrabold text-lg text-green-700 mb-6">
               ขอบคุณสำหรับการทำงานที่ยอดเยี่ยมและปลอดภัย!
-            </p>
+            </p> */}
 
             {/* ปุ่มกลับหน้าหลัก */}
             <button

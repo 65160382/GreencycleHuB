@@ -40,6 +40,7 @@ class Reserve {
   r.res_status,
   CONCAT(c.cus_fname,' ',c.cus_lname) AS customername,
   c.cus_email,
+  c.cus_phone,
   r.res_booking_date,
   r.res_time_slot,
   r.res_amount,

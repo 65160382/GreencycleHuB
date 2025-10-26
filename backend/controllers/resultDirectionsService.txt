@@ -1,0 +1,179 @@
+{
+  "type": "FeatureCollection",
+  "bbox": [8.681423, 49.414599, 8.690123, 49.420514],
+  "features": [
+    {
+      "bbox": [8.681423, 49.414599, 8.690123, 49.420514],
+      "type": "Feature",
+      "properties": {
+        //รายละเอียดแต่ละช่วงของเส้นทาง
+        "segments": [
+          {
+            "distance": 889.7,
+            "duration": 189.4,
+            // step คือ รายการคำสั่งเลี้ยว
+            "steps": [
+              {
+                "distance": 1.8,
+                "duration": 0.4,
+                "type": 11,
+                "instruction": "Head west on Gerhart-Hauptmann-Straße",
+                "name": "Gerhart-Hauptmann-Straße",
+                "way_points": [0, 1]
+              },
+              {
+                "distance": 313.8,
+                "duration": 75.3,
+                "type": 1,
+                "instruction": "Turn right onto Wielandtstraße",
+                "name": "Wielandtstraße",
+                "way_points": [1, 6]
+              },
+              {
+                "distance": 251.7,
+                "duration": 36.2,
+                "type": 1,
+                "instruction": "Turn right onto Mönchhofstraße",
+                "name": "Mönchhofstraße",
+                "way_points": [6, 12]
+              },
+              {
+                "distance": 211.9,
+                "duration": 50.9,
+                "type": 0,
+                "instruction": "Turn left onto Keplerstraße",
+                "name": "Keplerstraße",
+                "way_points": [12, 15]
+              },
+              {
+                "distance": 108.7,
+                "duration": 26.1,
+                "type": 1,
+                "instruction": "Turn right onto Moltkestraße",
+                "name": "Moltkestraße",
+                "way_points": [15, 16]
+              },
+              {
+                "distance": 1.9,
+                "duration": 0.4,
+                "type": 0,
+                "instruction": "Turn left onto Werderplatz",
+                "name": "Werderplatz",
+                "way_points": [16, 17]
+              },
+              {
+                "distance": 0,
+                "duration": 0,
+                "type": 10,
+                "instruction": "Arrive at Werderplatz, on the right",
+                "name": "-",
+                "way_points": [17, 17]
+              }
+            ]
+          },
+          {
+            "distance": 481,
+            "duration": 103,
+            "steps": [
+              {
+                "distance": 1.9,
+                "duration": 0.4,
+                "type": 11,
+                "instruction": "Head south on Werderplatz",
+                "name": "Werderplatz",
+                "way_points": [17, 18]
+              },
+              {
+                "distance": 265.5,
+                "duration": 63.7,
+                "type": 0,
+                "instruction": "Turn left onto Moltkestraße",
+                "name": "Moltkestraße",
+                "way_points": [18, 21]
+              },
+              {
+                "distance": 83,
+                "duration": 7.5,
+                "type": 2,
+                "instruction": "Turn sharp left onto Handschuhsheimer Landstraße, B 3",
+                "name": "Handschuhsheimer Landstraße, B 3",
+                "way_points": [21, 23]
+              },
+              {
+                "distance": 130.6,
+                "duration": 31.4,
+                "type": 0,
+                "instruction": "Turn left onto Roonstraße",
+                "name": "Roonstraße",
+                "way_points": [23, 24]
+              },
+              {
+                "distance": 0,
+                "duration": 0,
+                "type": 10,
+                "instruction": "Arrive at Roonstraße, straight ahead",
+                "name": "-",
+                "way_points": [24, 24]
+              }
+            ]
+          }
+        ],
+        "way_points": [0, 17, 24],
+        "summary": { "distance": 1370.7, "duration": 292.4 }
+      },
+      // เป็น properties ที่เราจะเอาไปวาด ployline
+      "geometry": {
+        "coordinates": [
+          [8.681495, 49.414599],
+          [8.68147, 49.414599],
+          [8.681488, 49.41465],
+          [8.681423, 49.415746],
+          [8.681656, 49.41659],
+          [8.681826, 49.417081],
+          [8.681881, 49.417392],
+          [8.682461, 49.417389],
+          [8.682676, 49.417387],
+          [8.682781, 49.417386],
+          [8.683023, 49.417384],
+          [8.683595, 49.417372],
+          [8.68536, 49.417365],
+          [8.685299, 49.417726],
+          [8.685035, 49.419211],
+          [8.685026, 49.419258],
+          [8.686508, 49.41942],
+          [8.686506, 49.41943],
+          [8.686508, 49.41942],
+          [8.68711, 49.419484],
+          [8.688398, 49.41963],
+          [8.690123, 49.419833],
+          [8.689854, 49.420217],
+          [8.689653, 49.420514],
+          [8.687871, 49.420322]
+        ],
+        "type": "LineString"
+      }
+    }
+  ],
+  // metadata ข้อความอ้างอิงผู้ให้บริการ
+  "metadata": {
+    "attribution": "openrouteservice.org | OpenStreetMap contributors",
+    "service": "routing",
+    "timestamp": 1761491077472,
+    "query": {
+      "coordinates": [
+        [8.681495, 49.41461],
+        [8.686507, 49.41943],
+        [8.687872, 49.420318]
+      ],
+      "profile": "driving-car",
+      "profileName": "driving-car",
+      "format": "geojson"
+    },
+    "engine": {
+      "version": "9.3.0",
+      "build_date": "2025-06-06T15:39:25Z",
+      "graph_date": "2025-10-19T11:22:22Z",
+      "osm_date": "2025-10-12T23:59:57Z"
+    }
+  }
+}

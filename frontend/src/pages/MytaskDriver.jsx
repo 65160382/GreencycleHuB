@@ -21,8 +21,8 @@ const MytaskDriver = () => {
 
   useEffect(() => {
     if (user?.drivId) {
-      // const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
-      const today = "2025-08-18"; // YYYY-MM-DD
+      const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+      // const today = "2025-08-18"; // YYYY-MM-DD
       fetchData(user.drivId, today);
       fetchSummary(user.drivId);
     }
@@ -34,7 +34,7 @@ const MytaskDriver = () => {
       // ใส่ query params วันที่ลงไปเพราะว่าจะแสดงแค่รายวัน
       const query = new URLSearchParams({
         drivId,
-        date, // "2025-09-28"
+        date, // format "2025-09-28"
       });
 
       // console.log("debug params:",query)
@@ -46,7 +46,8 @@ const MytaskDriver = () => {
         method: "GET",
         credentials: "include",
       });
-      // console.log("debug res:",res);
+      
+      console.log("debug res:",res);
       if (res.ok) {
         const data = await res.json();
         console.log("debug data:", data);

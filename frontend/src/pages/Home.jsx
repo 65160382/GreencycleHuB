@@ -20,7 +20,7 @@ export default function Home() {
 
         if (response.ok) {
           const data = await response.json();
-          console.log("data:", data);
+          // console.log("data:", data);
 
           // map ชื่อประเภทให้ตรงกับ key ที่ใช้ใน dashboard
           const mapName = {
@@ -31,12 +31,14 @@ export default function Home() {
             "Can": "Can",
           };
 
-          // เตรียม object เปล่า
+          // เตรียม object เปล่า ที่ใช้เก็บ น้ำหนักรวมของแต่ละประเภทขยะ
           const mapped = { PET: 0, HDPE: 0, Glass: 0, Box: 0, Can: 0 };
 
           // วน loop จาก data.result
           data.result.forEach((item) => {
-            const key = mapName[item.rec_type_name] || null;
+            //เอาค่าชื่อประเภทขยะจาก API item.rec_type_name ไปหาว่ามีใน mapName ไหม
+            const key = mapName[item.rec_type_name] || null; 
+            // เอาน้ำหนักรวม (item.total_weight) แปลงเป็นตัวเลข (parseFloat)
             if (key) mapped[key] = parseFloat(item.total_weight) || 0;
           });
 

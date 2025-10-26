@@ -22,6 +22,7 @@ class Timetable {
   t.time_id,
   t.time_date,
   t.time_time_slot,
+  t.time_status,
   t.driv_id,
   td.res_id,
   td.time_index,
@@ -102,7 +103,7 @@ WHERE time_id = ?`,
   }
 
   // ดึงข้อมูลสถานะเป็นจำนวนในแต่ละวันของคนขับ
-  static async getDriverTaskSummary(drivId, date) {
+  static async getDriverTaskSummary(drivId) {
     const sql = `
     SELECT
       COUNT(r.res_id) AS total_tasks,
@@ -112,10 +113,10 @@ WHERE time_id = ?`,
     JOIN timetable_detail AS td ON t.time_id = td.time_id
     JOIN reserve AS r ON td.res_id = r.res_id
     WHERE t.driv_id = ?
-      AND DATE(t.time_date) = ?;
+      AND DATE(t.time_date) = CURDATE();
   `;
 
-    const [rows] = await pool.query(sql, [drivId, date]);
+    const [rows] = await pool.query(sql, [drivId]);
     return rows[0];
   }
 }

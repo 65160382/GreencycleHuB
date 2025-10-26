@@ -21,7 +21,7 @@ const AdminVerifyDetail = () => {
 
   useEffect(() => {
   const fetchReserveByid = async () => {
-    setIsLoading(true); // ✅ เริ่มโหลด
+    setIsLoading(true); //  เริ่มโหลด
     try {
       const res = await fetch(`${apiUrl}/api/reserve/${resId}`, {
         method: "GET",
@@ -38,7 +38,7 @@ const AdminVerifyDetail = () => {
     } catch (error) {
       console.error("เกิดข้อผิดพลาดกับเซิร์ฟเวอร์", error);
     } finally {
-      setIsLoading(false); // ✅ ปิด loading หลังจากจบจริง
+      setIsLoading(false); //  ปิด loading หลังจากจบจริง
     }
   };
 
@@ -189,6 +189,7 @@ const AdminVerifyDetail = () => {
                           <input
                             type="number"
                             step="0.1" //เพิ่มขึ้นทีละ 0.1
+                            min={0} // ใส่ attribute min ของ type number เพื่อป้องกันค่าติดลบ
                             value={actualWeights[index] ?? ""} //เพิ่ม fallback ป้องกัน undefined
                             onChange={(e) =>
                               handleWeightChange(index, e.target.value)

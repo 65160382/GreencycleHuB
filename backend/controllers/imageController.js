@@ -39,8 +39,9 @@ exports.predictImage = async (req, res) => {
 
     const predictionData = await model.predict(inputTensor).data(); // Float32Array ของความน่าจะเป็นแต่ละ class (เรียงตามลำดับ labels)
     const prediction = Array.from(predictionData); // แปลงเป็น Array ปกติ
+    console.log("debug predictdata:",prediction); //จะแสดงผลลัพธ์ของความน่าจะเป็นแต่ละคลาส
 
-    // สร้าง array ของ label:
+    // สร้าง array ของ label ตาม class:
     const labels = [
       "Plastic-PET",
       "Plastic-HDPE",

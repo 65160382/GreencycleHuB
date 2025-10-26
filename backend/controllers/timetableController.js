@@ -99,6 +99,8 @@ exports.getTimetable = async (req, res) => {
           time_id: item.time_id,
           time_date: item.time_date,
           time_slot: item.time_time_slot,
+          // test เพิ่ม status ของสถานะแต่ละตารางการเดินรถ
+          time_status: item.time_status,
           items: [],
           total_weight: 0, // <-- เก็บน้ำหนักรวม
         };
@@ -129,9 +131,7 @@ exports.getTimetable = async (req, res) => {
     if (timetable) {
       return res.status(200).json({ timetable });
     } else {
-      return res
-        .status(404)
-        .json({ message: "ไม่พบข้อมูลตารางการเดินรถของคนขับ!" });
+      return res.status(404).json({ message: "ไม่พบข้อมูลตารางการเดินรถของคนขับ!" });
     }
   } catch (error) {
     console.log("เกิดข้อผิดพลาดกับเซิร์ฟเวอร์!", error);
@@ -216,13 +216,14 @@ exports.updateTimetableFinish = async(req, res) => {
 exports.getDriverTaskSummary = async(req,res) => {
   try {
     const { drivId } = req.query
-    const date = "2025-08-18"
+    // const date = "2025-08-18"
 
     if(!drivId){
       return res.status(400).json({ message: "ไม่มี driveId"});
     }
 
-    const summary = await Timetable.getDriverTaskSummary(drivId,date)
+    // const summary = await Timetable.getDriverTaskSummary(drivId,date)
+    const summary = await Timetable.getDriverTaskSummary(drivId)
     return res.status(200).json({ summary });
 
   } catch (error) {

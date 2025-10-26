@@ -12,6 +12,7 @@ export const Uploadphoto = ({ image, setPredictResult }) => {
       formData.append("image", image.file); //image.file คือ ค่า (value) ที่จะส่งไป ซึ่งเป็น File object ที่ได้จาก input type="file"
 
       //ส่งข้อมูลไปยัง api
+      //http://localhost:3000/api/predict
       const response = await fetch(`${apiUrl}/api/predict`, {
         method: "POST",
         body: formData, //ส่งข้อมูลรูปภาพไปยัง api
