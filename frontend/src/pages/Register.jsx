@@ -1,7 +1,7 @@
 import RegisterForm from "../components/Registerpage/RegisterForm";
 // import "../components/Registerpage/Register.css";
 import { useContext, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { data, Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
 const Register = () => {
@@ -9,8 +9,10 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
+  const [phone, setPhone] = useState("")
   const navigate = useNavigate();
   const { setIsLoggedIn, setUser } = useContext(AuthContext);
+  const [error, setError] = useState("")
 
   // จัดการบันทึกข้อมูลเมื่อส่ง form
   const handleRegister = async () => {
@@ -27,6 +29,7 @@ const Register = () => {
           password: password,
           firstname: firstname,
           lastname: lastname,
+          phone: phone
         }),
       });
       if (response.ok) {
@@ -35,6 +38,10 @@ const Register = () => {
         console.log(data);
         setUser(data.payload);
         navigate("/home");
+      }else{
+        const data = await response.json();
+        setError(data?.message);
+        return;
       }
     } catch (error) {
       console.error("เกิดข้อผิดพลาด", error);
@@ -53,11 +60,14 @@ const Register = () => {
           password={password}
           firstname={firstname}
           lastname={lastname}
+          phone={phone}
           onEmailChange={setEmail}
           onPasswordChange={setPassword}
           onFirstnameChange={setFirstname}
           onLastnameChange={setLastname}
+          onPhoneChange={setPhone}
           onSubmit={handleRegister}
+          error={error}
         />
         <div className="flex justify-center mt-5 gap-2 text-sm">
           <p >มีบัญชีผู้ใช้อยู่แล้ว </p>

@@ -1,11 +1,11 @@
 const pool = require("../config/database");
 
 class Customer {
-    static async createCustomer(fristname,lastname,email,userid){
+    static async createCustomer(fristname,lastname,email, phone, userid){
         try {
-            const sql = `INSERT INTO customers (cus_fname, cus_lname, cus_email, users_id ) VALUES (?, ?, ?, ?)`
-            const [result] = await pool.query(sql,[fristname,lastname,email,userid]);
-            return result;
+            const sql = `INSERT INTO customers (cus_fname, cus_lname, cus_email, cus_phone, users_id ) VALUES (?, ?, ?, ?, ?)`
+            const [result] = await pool.query(sql,[fristname,lastname,email, phone,userid]);
+            return result.insertId;
         } catch (error) {
             console.error(error);
             throw error;

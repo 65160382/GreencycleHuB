@@ -3,11 +3,14 @@ const RegisterForm = ({
   password,
   firstname,
   lastname,
+  phone,
   onEmailChange,
   onPasswordChange,
   onFirstnameChange,
   onLastnameChange,
+  onPhoneChange,
   onSubmit,
+  error
 }) => {
   const handleSubmit = (e) => {
     e.preventDefault(); // ป้องกันไม่ให้โหลดหน้าเว็บใหม่
@@ -40,6 +43,19 @@ const RegisterForm = ({
         />
       </div>
 
+
+      <div className="p-2.5 ">
+        <label className="block text-gray-700 font-medium mb-1">เบอร์โทรศัพท์</label>
+        <input
+          type="text"
+          placeholder="เบอร์โทรศัพท์"
+          value={phone}
+          onChange={(e) => onPhoneChange(e.target.value)}
+          required
+          className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
       <div className="p-2.5 ">
         <label className="block text-gray-700 font-medium mb-1">อีเมล</label>
         <input
@@ -50,6 +66,12 @@ const RegisterForm = ({
           required
           className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+        {/* กรณีเกิด error */}
+        {error && (
+          <p id="email-error" className="mt-1 text-sm text-red-600">
+            {error}
+          </p>
+        )}
       </div>
 
       <div className="p-2.5 ">

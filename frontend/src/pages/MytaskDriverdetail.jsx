@@ -123,8 +123,8 @@ const MytaskDriverdetail = () => {
 
         if (res.ok) {
           const data = await res.json();
-          setPolyline(data.route.polyline || []); // อัปเดตเส้นทาง polyline
-          setStartMarker([startLat, startLon]); // อัปเดต marker จุดเริ่มต้นที่นี่
+          setPolyline(data.route.polyline || []); 
+          setStartMarker([startLat, startLon]); 
         } else {
           console.error("เรียกเส้นทางไม่สำเร็จ");
           setPolyline([]);
@@ -138,6 +138,9 @@ const MytaskDriverdetail = () => {
     fetchRoute();
   }, [items, currentIndex, currentItem, apiUrl, depotLat, depotLon]);
 
+  useEffect(()=>{
+    console.log("debug current:",currentItem);
+  },[currentItem])
 
   //ฟังก์ชั่นสำหรับเรียกเส้นทางถัดไป
   const handleConfirm = async () => {
@@ -193,8 +196,9 @@ const MytaskDriverdetail = () => {
               &lt; กลับ
             </button>
             <div className="text-center flex-1">
-              <p className="font-medium">รอบ 9.00-12.00 น.</p> //แก้ไขตรงนี้ด้วย
-              <p className="text-sm text-gray-500">1 / ? จุด</p> //แก้ไขตรงนี้ด้วย
+              {/* แก้ไขตรงนี้ */}
+              <p className="font-medium">{`รอบ ${currentItem?.time_time_slot} น.`}</p> 
+              <p className="text-sm text-gray-500">{`1 / ${items.length} จุด`}</p>
             </div>
             {/* <button className="text-sm text-blue-600">เสร็จสิ้น</button> */}
           </div>

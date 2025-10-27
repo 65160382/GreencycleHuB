@@ -39,7 +39,7 @@ exports.predictImage = async (req, res) => {
 
     const predictionData = await model.predict(inputTensor).data(); // Float32Array ของความน่าจะเป็นแต่ละ class (เรียงตามลำดับ labels)
     const prediction = Array.from(predictionData); // แปลงเป็น Array ปกติ
-    console.log("debug predictdata:",prediction); //จะแสดงผลลัพธ์ของความน่าจะเป็นแต่ละคลาส
+    // console.log("debug predictdata:",prediction); //จะแสดงผลลัพธ์ของความน่าจะเป็นแต่ละคลาส
 
     // สร้าง array ของ label ตาม class:
     const labels = [
@@ -60,10 +60,8 @@ exports.predictImage = async (req, res) => {
     // แปลงเป็นเปอร์เซ็นต์
     const percent = (maxProbability * 100).toFixed(2); // ปัดทศนิยม 2 ตำแหน่ง
 
-    res.json({
-      label: predictedLabel,
-      probabilities: percent,
-    });
+    res.json({label: predictedLabel, probabilities: percent});
+
   } catch (error) {
     console.error("เกิดข้อผิดพลาดในการประมวลผลรูปภาพ", error);
     res.status(500).json({ error: "เกิดข้อผิดพลาดในการประมวลผลรูปภาพ" });
@@ -91,13 +89,7 @@ exports.uploadImage = async (req, res) => {
 
     const public_id = result.public_id; // เก็บข้อมูล public_id
     const secure_url = result.secure_url; // เก็บข้อมูล secure_url
-    res
-      .status(200)
-      .json({
-        message: "บันทึกข้อมูลง Cloudinary เรียบร้อย!",
-        public_id,
-        secure_url,
-      }); // ส่ง public_id , secure_url ไปให้ react
+    res.status(200).json({ message: "บันทึกข้อมูลง Cloudinary เรียบร้อย!", public_id, secure_url}); // ส่ง public_id , secure_url ไปให้ react
   } catch (error) {
     console.error("อัปโหลดไม่สำเร็จ:", error);
     res.status(500).json({ message: "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์" });

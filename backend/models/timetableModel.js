@@ -49,6 +49,7 @@ ORDER BY t.time_time_slot ASC, td.time_index ASC;
 t.time_id,
 t.time_date,
 t.driv_id,
+t.time_time_slot,
 td.res_id,
 td.time_index,
 r.cus_id,

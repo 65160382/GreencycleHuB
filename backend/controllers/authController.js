@@ -105,13 +105,11 @@ exports.loginUser = async (req, res) => {
 
 exports.registerUser = async (req, res) => {
   try {
-    const { email, password, firstname, lastname } = req.body;
+    const { email, password, firstname, lastname, phone } = req.body;
     //ตรวจสอบ email ซ้ำหรือไม่
     const check = await User.checkEmailQuery(email);
     if (check.length > 0) {
-      return res
-        .status(409)
-        .json({ message: "อีเมลนี้มีในระบบแล้ว กรุณาใช้อีเมลอื่น!" });
+      return res.status(409).json({ message: "อีเมลนี้มีในระบบแล้ว กรุณาใช้อีเมลอื่น!" });
     }
     // เพิ่มข้อมูลลงตาราง User
     const userid = await User.createUser(email, password);
@@ -121,6 +119,7 @@ exports.registerUser = async (req, res) => {
       firstname,
       lastname,
       email,
+      phone,
       userid
     );
 
